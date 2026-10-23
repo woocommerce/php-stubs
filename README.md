@@ -45,7 +45,7 @@ release.
 
 ## For extension developers
 
-To have the stubs of your WooCommerce Marketplace extension published here, add this line to the
+To have the stubs of your [WooCommerce Marketplace](https://woocommerce.com/products/) extension published here, add this line to the
 header of your main plugin file in your next release:
 
 ```php
