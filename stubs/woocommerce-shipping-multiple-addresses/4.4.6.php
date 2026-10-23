@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for woocommerce-shipping-multiple-addresses 4.4.6.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 namespace {

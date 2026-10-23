@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for woocommerce-shipping-new-zealand-post 5.1.2.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 class WC_NZP_Auth_Client

@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for woocommerce-table-rate-shipping 3.7.4.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 namespace WooCommerce\Shipping\Table_Rate {

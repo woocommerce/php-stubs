@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for composite-products-conditional-images-for-woocommerce 2.0.3.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 /**

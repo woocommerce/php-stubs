@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for woocommerce-gift-cards 2.9.1.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 /**

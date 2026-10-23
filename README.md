@@ -36,6 +36,13 @@ Each extension has a directory in [`stubs/`](stubs), with a `<version>.neon` for
 each of its newest 10 minor versions, and for its newest release. Pin your minimum to the first
 release of a minor version.
 
+## Usage in other tools
+
+The stubs are plain PHP, so Phan, Psalm and IDEs can read them too. Load the files that a release's
+`<version>.neon` lists under `scanFiles`: its stub (`<version>.overridden.php`, with corrected
+docblocks, when one exists) and any shared framework stub it needs. `latest.neon` names the newest
+release.
+
 ## For extension developers
 
 To have the stubs of your WooCommerce Marketplace extension published here, add this line to the

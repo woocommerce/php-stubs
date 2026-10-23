@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for woocommerce-min-max-quantities 3.0.0.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 /**

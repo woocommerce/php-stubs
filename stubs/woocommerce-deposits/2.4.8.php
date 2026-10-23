@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for woocommerce-deposits 2.4.8.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 /**

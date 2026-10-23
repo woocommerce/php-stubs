@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for product-recommendations-custom-locations 2.0.4.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 /**

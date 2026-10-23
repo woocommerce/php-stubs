@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for woocommerce-payfast-gateway 1.6.10.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 /**

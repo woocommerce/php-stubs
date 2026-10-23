@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for woocommerce-gateway-amazon-payments-advanced 2.4.1.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 /**

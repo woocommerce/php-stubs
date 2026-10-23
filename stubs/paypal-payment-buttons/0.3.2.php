@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for paypal-payment-buttons 0.3.2.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 /**

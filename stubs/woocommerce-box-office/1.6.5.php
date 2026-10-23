@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for woocommerce-box-office 1.6.5.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 /**

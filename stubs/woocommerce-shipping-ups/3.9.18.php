@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for woocommerce-shipping-ups 3.9.18.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 namespace WooCommerce\UPS\API {

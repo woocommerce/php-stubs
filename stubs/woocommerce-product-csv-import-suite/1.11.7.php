@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for woocommerce-product-csv-import-suite 1.11.7.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 /**

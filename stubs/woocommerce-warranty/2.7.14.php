@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for woocommerce-warranty 2.7.14.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 namespace {

@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for reddit-for-woocommerce 1.0.7.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 namespace RedditForWooCommerce\API\AdPartner {

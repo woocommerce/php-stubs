@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for snapchat-for-woocommerce 1.0.7.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 namespace SnapchatForWooCommerce\API\AdPartner {

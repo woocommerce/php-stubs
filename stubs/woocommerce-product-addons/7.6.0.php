@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for woocommerce-product-addons 7.6.0.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 /**

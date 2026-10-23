@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for google-listings-and-ads 3.10.0.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 namespace Automattic\WooCommerce\GoogleListingsAndAds\Options {

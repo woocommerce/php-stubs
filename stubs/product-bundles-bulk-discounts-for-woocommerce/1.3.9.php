@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for product-bundles-bulk-discounts-for-woocommerce 1.3.9.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 class WC_PB_Bulk_Discounts

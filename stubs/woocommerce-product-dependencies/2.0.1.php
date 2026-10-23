@@ -1,7 +1,7 @@
 <?php
 /**
  * Generated stub declarations for woocommerce-product-dependencies 2.0.1.
- * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ * @see https://github.com/woocommerce/php-stubs
  */
 
 /**
