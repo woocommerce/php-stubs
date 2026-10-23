@@ -10,11 +10,11 @@ new release. This repository is generated, so pull requests are not accepted; pl
 
 ## Installation
 
-Require this package as a development dependency with [Composer](https://getcomposer.org), next to
+Require [this package](https://packagist.org/packages/woocommerce/php-stubs) as a development
+dependency with [Composer](https://getcomposer.org), next to
 [php-stubs/woocommerce-stubs](https://github.com/php-stubs/woocommerce-stubs):
 
 ```bash
-composer config repositories.woocommerce-php-stubs vcs https://github.com/woocommerce/php-stubs
 composer require --dev woocommerce/php-stubs:dev-trunk php-stubs/woocommerce-stubs
 ```
 
