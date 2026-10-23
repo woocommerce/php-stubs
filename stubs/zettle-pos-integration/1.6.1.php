@@ -20964,3 +20964,20 @@ class RequiredPluginsValidator implements \Dhii\Validation\ValidatorInterface
     {
     }
 }
+namespace Inpsyde\Zettle;
+
+/**
+ * Display an error message in the WP admin
+ *
+ * @param string $message The message content
+ *
+ * @return void
+ */
+function errorNotice(string $message)
+{
+}
+namespace Inpsyde\Zettle;
+
+function init(): ?\Psr\Container\ContainerInterface
+{
+}

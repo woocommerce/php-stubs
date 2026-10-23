@@ -5361,6 +5361,160 @@ class WC_Product_Addons_Migration_3_0
     {
     }
 }
+/**
+ * Main class.
+ *
+ * @version 8.4.5
+ */
+class WC_Product_Addons
+{
+    /**
+     * Groups controller instance (legacy).
+     *
+     * @var WC_Product_Add_Ons_Groups_Controller
+     */
+    protected $groups_controller;
+    /**
+     * The single instance of the class.
+     *
+     * @var WC_Product_Addons|null
+     */
+    protected static $_instance = \null;
+    /**
+     * Main WC_Product_Addons instance. Ensures only one instance is loaded or can be loaded - @see 'WC_PAO()'.
+     *
+     * @static
+     * @return  WC_Product_Addons
+     */
+    public static function instance()
+    {
+    }
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Initializes plugin classes.
+     *
+     * @version 8.3.1
+     * @return void
+     */
+    public function init()
+    {
+    }
+    /**
+     * Init post types used for addons.
+     *
+     * @return void
+     */
+    public function init_post_types()
+    {
+    }
+    /**
+     * Initialize the REST API
+     *
+     * @since 2.9.0
+     * @param WP_REST_Server $wp_rest_server Rest server class.
+     * @return void
+     */
+    public function rest_api_init($wp_rest_server)
+    {
+    }
+    /**
+     * Plugin action links
+     *
+     * @param string[] $links Array of links.
+     * @param string   $file  Path to the plugin file relative to the plugins directory.
+     * @return string[]
+     */
+    public function plugin_row_meta($links, $file)
+    {
+    }
+    /**
+     * On activation.
+     * Runs on activation. Assigns a notice message to a WordPress option.
+     *
+     * @return void
+     */
+    public function notices()
+    {
+    }
+    /**
+     * Declare HPOS( Custom Order tables) compatibility.
+     *
+     * @since 5.0.1
+     * @return void
+     */
+    public function declare_hpos_compatibility()
+    {
+    }
+    /**
+     * Declare cart/checkout Blocks compatibility.
+     *
+     * @since 6.5.0
+     * @return void
+     */
+    public function declare_blocks_compatibility()
+    {
+    }
+    /**
+     * Get PAO screen ids.
+     */
+    public function get_screen_ids()
+    {
+    }
+    /**
+     * Checks if the current admin screen belongs to extension.
+     *
+     * @param   string[] $extra_screens_to_check Extra screen IDs to check (optional).
+     * @return  bool
+     */
+    public function is_current_screen($extra_screens_to_check = array())
+    {
+    }
+    /**
+     * Get formatted screen id.
+     *
+     * @param  string $screen_id Screen ID.
+     * @return string
+     */
+    function get_formatted_screen_id($screen_id)
+    {
+    }
+    /**
+     * Returns URL to a doc or support resource.
+     *
+     * @since  6.5.0
+     *
+     * @param  string $handle
+     * @return string|false
+     */
+    public function get_resource_url($handle)
+    {
+    }
+    /**
+     * Plugin version getter.
+     *
+     * @since  6.9.0
+     *
+     * @param  boolean $base
+     * @param  string  $version
+     * @return string
+     */
+    public function plugin_version($base = \false, $version = '')
+    {
+    }
+}
+/**
+ * Returns the main instance of WC_Product_Addons to prevent the need to use globals.
+ *
+ * @return  WC_Product_Addons
+ */
+function WC_PAO()
+{
+}
 // phpcs:disable WordPress.Files.FileName
 /**
  * WooCommerce fallback notice.

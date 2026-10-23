@@ -43284,3 +43284,38 @@ define('PAYPAL_SANDBOX_API_URL', 'https://api-m.sandbox.paypal.com');
 define('PAYPAL_SANDBOX_URL', 'https://www.sandbox.paypal.com');
 define('PAYPAL_INTEGRATION_DATE', '2026-09-30');
 define('PPCP_PAYPAL_BN_CODE', 'Woo_PPCP');
+namespace WooCommerce\PayPalCommerce;
+
+/**
+ * Initialize the plugin and its modules.
+ */
+function init(): bool
+{
+}
+namespace WooCommerce\PayPalCommerce;
+
+/**
+ * Check if WooCommerce is active.
+ *
+ * @return bool true if WooCommerce is active, otherwise false.
+ */
+function is_woocommerce_activated(): bool
+{
+}
+namespace WooCommerce\PayPalCommerce;
+
+/**
+ * Displays an admin notice and optionally deactivates the current plugin.
+ *
+ * This function registers a callback to display administrative notices on both
+ * single-site and network admin areas. It's typically used to show error messages
+ * when plugin requirements are not met, followed by automatic plugin deactivation.
+ *
+ * @param callable $notice_callback The callback function that outputs the admin notice HTML.
+ *                                  Should echo/print the notice markup directly.
+ * @param bool     $auto_deactivate Optional. Whether to automatically deactivate the plugin
+ *                                  after displaying the notice. Default true.
+ */
+function show_admin_notice_and_deactivate(callable $notice_callback, bool $auto_deactivate = \true): void
+{
+}

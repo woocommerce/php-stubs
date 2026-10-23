@@ -16081,3 +16081,20 @@ class ValidationFailedException extends \RuntimeException
     {
     }
 }
+namespace Syde\Vendor\Zettle\Syde\PayPal\PointOfSale;
+
+/**
+ * Display an error message in the WP admin
+ *
+ * @param string $message The message content
+ *
+ * @return void
+ */
+function errorNotice(string $message): void
+{
+}
+namespace Syde\Vendor\Zettle\Syde\PayPal\PointOfSale;
+
+function init(): ?\Syde\Vendor\Zettle\Inpsyde\Modularity\Package
+{
+}
