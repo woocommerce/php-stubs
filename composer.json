@@ -1,0 +1,11 @@
+{
+    "name": "woocommerce/php-stubs",
+    "description": "PHP stub declarations of WooCommerce extensions, for static analysis of code that integrates with them.",
+    "type": "library",
+    "keywords": ["woocommerce", "wordpress", "stubs", "phpstan", "static analysis"],
+    "homepage": "https://github.com/woocommerce/php-stubs",
+    "license": "GPL-3.0-or-later",
+    "support": {
+        "issues": "https://github.com/woocommerce/php-stubs/issues"
+    }
+}

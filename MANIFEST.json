@@ -1,0 +1,1344 @@
+{
+    "plugins": {
+        "automatewoo": {
+            "6.9.4": {
+                "source_zip_sha256": "2ef79f363884f087281d12c487052e63db21a4e79699d7ae2a92479b4a512bf0",
+                "stub_sha256": "5b4f25e1704f95f9b47d7c68db53d3dce9abfe22d54a893e7dfd8054ae780d0f",
+                "generated_at": "2026-10-21T21:29:43Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "blaze-ads": {
+            "0.7.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/blaze-ads.0.7.0.zip",
+                "source_zip_sha256": "719b52bdece11b88bec4d7d741f60d8d34b60335a3e286cb05f1dea971f7544b",
+                "stub_sha256": "0626bae160b6c35a35df02f79a681e5c2e39388f4d5b3892cd682a9ea444c342",
+                "generated_at": "2026-10-23T07:31:51Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "0.8.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/blaze-ads.0.8.1.zip",
+                "source_zip_sha256": "8c6cda7fd9ce7dbe9fc3b021a1bf9b6ca9e9dfe13ae6215e181e0489909fd783",
+                "stub_sha256": "f2101db3e4d58b3e685b43d83521e385cb6823e43536b08c7c6d7387eb0fa721",
+                "generated_at": "2026-10-23T07:32:29Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "0.9.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/blaze-ads.0.9.0.zip",
+                "source_zip_sha256": "696b2eae1b50ae078daa70fa9d941421179a9cd9eb191c6dcfec1f78fbcbbe55",
+                "stub_sha256": "a936b669656090c38da3157f51ab827bacc8f5cbc60f0c8a1773048aa05fa30a",
+                "generated_at": "2026-10-23T07:32:59Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "composite-products-conditional-images-for-woocommerce": {
+            "1.2.6": {
+                "source_url": "https://downloads.wordpress.org/plugin/composite-products-conditional-images-for-woocommerce.1.2.6.zip",
+                "source_zip_sha256": "62952a3c58f6b0be32e34e55fa4240610b209bb015557f5823970fa897153fd3",
+                "stub_sha256": "35d00b06903c6d5e6cbfaa188d13d7fb25f3403cc6f990bdd2ce29b575d0a05d",
+                "generated_at": "2026-10-23T07:33:29Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "1.3.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/composite-products-conditional-images-for-woocommerce.1.3.0.zip",
+                "source_zip_sha256": "9294efef5dfe46176c4d7665ce40241376d579feb5dfd483325a620d61b7bedc",
+                "stub_sha256": "b30ce1c7e1cfc8abecb300b350bfe3ade1ed5e7181071191b3de5b959828aaaa",
+                "generated_at": "2026-10-23T07:33:58Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "2.0.3": {
+                "source_url": "https://downloads.wordpress.org/plugin/composite-products-conditional-images-for-woocommerce.2.0.3.zip",
+                "source_zip_sha256": "d726536cacc21c4a66d955e0546b89446994af3d87bcfcc8352941c6b4a4e510",
+                "stub_sha256": "a50b367d1605d32bca16ab1ac8ad4ad12bc4cae2b68d5eac0f3cde6e8479ee52",
+                "generated_at": "2026-10-23T07:34:28Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "gift-cards-coupon-input": {
+            "1.0.3": {
+                "source_url": "https://downloads.wordpress.org/plugin/gift-cards-coupon-input.1.0.3.zip",
+                "source_zip_sha256": "3328713acda524a4ff1bf608fffa5631ed1403a9bc84a690f1eaedf00b349907",
+                "stub_sha256": "c7e5f08c3412537f85c4724e8602f50920220e3dc3eb843b88022502077061db",
+                "generated_at": "2026-10-23T07:34:57Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "2.0.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/gift-cards-coupon-input.2.0.1.zip",
+                "source_zip_sha256": "f740fd3c6807ae39d0b60917633fb14f69c0e910c3d03f9b94351d7e8c313522",
+                "stub_sha256": "f35ec582ee8b51ac12a002cc66b953ec2ed85f9f93a9bc2c37fa34ef0d7d0c88",
+                "generated_at": "2026-10-23T07:35:27Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "google-listings-and-ads": {
+            "3.8.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/google-listings-and-ads.3.8.1.zip",
+                "source_zip_sha256": "41737b511bd16bbb7057275472542d9b9ae006f1fc547590b0bf0bd775d07a7a",
+                "stub_sha256": "a914a650d73bb5a137940870c8f33de6ff8dcd9fdcc123da993b6821c960f52d",
+                "generated_at": "2026-10-23T07:35:58Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "3.9.6": {
+                "source_url": "https://downloads.wordpress.org/plugin/google-listings-and-ads.3.9.6.zip",
+                "source_zip_sha256": "e3a9eb6fe646c540ae878edbed4bad66aa46e8122ccee596c052f8327278ada2",
+                "stub_sha256": "160f9d9f971abc5276786fe285c2a858f4b6c0113a3378342dbccfd3b8d3f0f5",
+                "generated_at": "2026-10-23T07:36:32Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "3.10.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/google-listings-and-ads.3.10.0.zip",
+                "source_zip_sha256": "0f556cc3164bd2fe70bf4b8469c85989d258934a175d42db2c1d8f8f03cc02a9",
+                "stub_sha256": "6e095159a923dcbacc2e59a5ce94eeada95c8b9b9a59c3db0fda26ca141fe87b",
+                "generated_at": "2026-10-23T07:37:06Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "mailpoet": {
+            "5.41.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/mailpoet.5.41.0.zip",
+                "source_zip_sha256": "872416391d0dff4db2df4ea479561a051f0fa92998166c71a7cdbda87f8f8fa0",
+                "stub_sha256": "6862a262619804420c73b9c4a671897ee227fd3bf60e4f58cca4aeb9e11e0029",
+                "generated_at": "2026-10-23T07:37:40Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "5.42.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/mailpoet.5.42.0.zip",
+                "source_zip_sha256": "ff47b95abdf86fce2a3735062884ffe19ff17bce66eb6516732fb50c93bbb4b2",
+                "stub_sha256": "24251df58fd91fa635c08453d180c7563d920fdef8343fd9030df14c8531ea38",
+                "generated_at": "2026-10-23T07:38:21Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "5.43.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/mailpoet.5.43.0.zip",
+                "source_zip_sha256": "95c33f7428cfeede55d03b357a48f43dbc20efbf98484983bd15a2893f3ef9d2",
+                "stub_sha256": "4eb73959e4ead8dd469bd2b812b0d4c8118157114d28fb782668929e0c79caf1",
+                "generated_at": "2026-10-23T07:39:03Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "paypal-payment-buttons": {
+            "0.3.2": {
+                "source_url": "https://downloads.wordpress.org/plugin/paypal-payment-buttons.0.3.2.zip",
+                "source_zip_sha256": "328f35fedf539d4ef661ee4903abdbab868b0543eaf5952125f5462d73f53a3c",
+                "stub_sha256": "c97197615c84321891e9f20f7228a0ee680d1ab9c3d45a419aa7ec133ca8e322",
+                "generated_at": "2026-10-23T07:39:44Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "0.4.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/paypal-payment-buttons.0.4.0.zip",
+                "source_zip_sha256": "76e9348c4a51d2bf754c326155cf4d82078a6fdde62ed123cdee0c2e5b231082",
+                "stub_sha256": "d88d8795d7a91e115292eebebdab378feea30e5404a94afb28fd7fed223997e3",
+                "generated_at": "2026-10-23T07:40:19Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "0.5.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/paypal-payment-buttons.0.5.0.zip",
+                "source_zip_sha256": "2a787a40502880dfb1f98e1f16e4dd71fe9b2b3de2c331fe9346adbfff9cd962",
+                "stub_sha256": "f5a8696e7b7aec416bd6956bbb53a8bc49711b90368a4a83b53db7363bee51ff",
+                "generated_at": "2026-10-23T07:40:55Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "pinterest-for-woocommerce": {
+            "1.4.28": {
+                "source_url": "https://downloads.wordpress.org/plugin/pinterest-for-woocommerce.1.4.28.zip",
+                "source_zip_sha256": "eaa9654ca97f31b91af90a219115f2447222457f99fb8fef06c676b56783d4c9",
+                "stub_sha256": "5ab737c23c8a86c0aaaf3ce40c995c5aa2dbb34b1d51bd3858ae3c9216a71d93",
+                "generated_at": "2026-10-23T07:41:30Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "1.5.4": {
+                "source_url": "https://downloads.wordpress.org/plugin/pinterest-for-woocommerce.1.5.4.zip",
+                "source_zip_sha256": "4bac6b6e52af459ff97c9f7c8b0f5c8c5724c3e7d0f19d7dc0b02f4a1eda5e7e",
+                "stub_sha256": "c8f9b07e90826eb7d3e80ccd0873607bb9de17302c31d057b4e45ca34207ca33",
+                "generated_at": "2026-10-23T07:42:11Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "1.6.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/pinterest-for-woocommerce.1.6.0.zip",
+                "source_zip_sha256": "11007e8999e4b636064cf034a222999a9cc514219275174c95e885ffd448c42c",
+                "stub_sha256": "64a8ec21ab20bde6b8a5f1ef7a567ffd433396f707e9ed832bdd26baf637f700",
+                "generated_at": "2026-10-23T07:42:53Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "product-bundles-bulk-discounts-for-woocommerce": {
+            "1.3.9": {
+                "source_url": "https://downloads.wordpress.org/plugin/product-bundles-bulk-discounts-for-woocommerce.1.3.9.zip",
+                "source_zip_sha256": "9032ead23c7a47f3af20347b3b4ab512a50859e0a0ac9bb91fe28d69dced97ba",
+                "stub_sha256": "16334a30c99e3b775b79c35fec940266b44a741181c390134a490a55591e7e8e",
+                "generated_at": "2026-10-23T07:43:35Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "1.4.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/product-bundles-bulk-discounts-for-woocommerce.1.4.1.zip",
+                "source_zip_sha256": "f7b17ee7c454c4553788ce44b73e3f2945733400c1ae9a2e57a2d146d6525602",
+                "stub_sha256": "c5d97a805714bed9723d52ffcc4b1ae104c270200bc223e40a917561a3f2abfa",
+                "generated_at": "2026-10-23T07:44:14Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "2.0.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/product-bundles-bulk-discounts-for-woocommerce.2.0.1.zip",
+                "source_zip_sha256": "8fc8748ed30d55efbf1f22c41bcccf91322ef8a7e3bdd9ec65d1cb86c583b0e2",
+                "stub_sha256": "4e8676b40949807ce47ce4be552e308202311de82cfeb0d6b24cc46317afb99c",
+                "generated_at": "2026-10-23T07:44:53Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "product-bundles-variation-bundles": {
+            "1.0.3": {
+                "source_url": "https://downloads.wordpress.org/plugin/product-bundles-variation-bundles.1.0.3.zip",
+                "source_zip_sha256": "8ce2440d26adf52b176030276128167fbdf0cbf2bf662b4a4a8b273e1e22d3b7",
+                "stub_sha256": "89125abc35b36802f54a60647fae19107ffd21739da7fea8ec8f8e2bee969eab",
+                "generated_at": "2026-10-23T07:49:21Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "1.1.4": {
+                "source_url": "https://downloads.wordpress.org/plugin/product-bundles-variation-bundles.1.1.4.zip",
+                "source_zip_sha256": "014b1fd599430d64a721f69577d2f0e86ef95b9ba571c9d8101edbc98aa3d5b0",
+                "stub_sha256": "e222d97ab2d8b2219453793bc02da773098725907abf6be989f47a01fa452174",
+                "generated_at": "2026-10-23T07:50:09Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "2.0.2": {
+                "source_url": "https://downloads.wordpress.org/plugin/product-bundles-variation-bundles.2.0.2.zip",
+                "source_zip_sha256": "7755f7b07f7a5be95701065935a1a96930b6ca385f4653a7efe4e48eb9f94aff",
+                "stub_sha256": "e9604fe765a469b39b11514451a7be39d16edda1a7953320ff345b4ab048f647",
+                "generated_at": "2026-10-23T07:50:47Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "product-recommendations-custom-locations": {
+            "1.0.3": {
+                "source_url": "https://downloads.wordpress.org/plugin/product-recommendations-custom-locations.1.0.3.zip",
+                "source_zip_sha256": "c16096bdccc33e5315dd30ac1f8d9b2e2cb54fbb4ba8af218c4f0719c540e59d",
+                "stub_sha256": "9695d5801a898aa52b783c787d0da5729a680e6ca6a3f599199521d077aa3248",
+                "generated_at": "2026-10-23T07:51:26Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "2.0.4": {
+                "source_url": "https://downloads.wordpress.org/plugin/product-recommendations-custom-locations.2.0.4.zip",
+                "source_zip_sha256": "fe78e912857ada4d2fe638136578628250e5f960d994ffff1859460b7076b38d",
+                "stub_sha256": "10b27f8ff944cf7f531e86f4879457cd34d15314acf9bb54ea81d9e0eff74c1a",
+                "generated_at": "2026-10-23T07:52:05Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "reddit-for-woocommerce": {
+            "1.0.7": {
+                "source_url": "https://downloads.wordpress.org/plugin/reddit-for-woocommerce.1.0.7.zip",
+                "source_zip_sha256": "7471a544bdc8fc9b7e85baa2812a24d3ae22fceae986e1984d83b16d12c4f5ed",
+                "stub_sha256": "59916b284ccc86f07cee950c41991cbc8542a37b127b70ce84df7fa783a13dda",
+                "generated_at": "2026-10-23T07:52:44Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "snapchat-for-woocommerce": {
+            "1.0.7": {
+                "source_url": "https://downloads.wordpress.org/plugin/snapchat-for-woocommerce.1.0.7.zip",
+                "source_zip_sha256": "e2d6ce3118fb2e9a72522a453c03fa5e32a3135a39b837f06ce0761efe6d0fe0",
+                "stub_sha256": "fa4f6c0494d0e6b6b8fb17e129939278c6f0a681b71714541c659d4b8f787318",
+                "generated_at": "2026-10-23T07:53:23Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "tiktok-for-business": {
+            "1.2.9": {
+                "source_url": "https://downloads.wordpress.org/plugin/tiktok-for-business.1.2.9.zip",
+                "source_zip_sha256": "a4baf0333b8a2cd132973f149a7bb80f996167e14d561c80b3ee51e51b6a8a23",
+                "stub_sha256": "d51e3ce44fa968db9ef6170f90f3c06a967176f5a33632d0fb877e04be3f0050",
+                "generated_at": "2026-10-23T07:54:03Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "1.3.9": {
+                "source_url": "https://downloads.wordpress.org/plugin/tiktok-for-business.1.3.9.zip",
+                "source_zip_sha256": "87f31076d3a55ff12df8b5d4766eafdceef94dc7fdc077281249a4bd094814e0",
+                "stub_sha256": "c90b0a1ff60e1d8aa6d2473d7cfc40fe53fb80730eb10968ba29ec6ceb7828f0",
+                "generated_at": "2026-10-23T07:54:43Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "1.4.2": {
+                "source_url": "https://downloads.wordpress.org/plugin/tiktok-for-business.1.4.2.zip",
+                "source_zip_sha256": "13eac000f0c06a0e4058344155bab538c36183b5daee8838a905ee523030d689",
+                "stub_sha256": "6401c8f744882761a58a6d0223b194a3beb94c019f125449edef99798105b42d",
+                "generated_at": "2026-10-23T07:55:23Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-accommodation-bookings": {
+            "1.1.43": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-accommodation-bookings.1.1.43.zip",
+                "source_zip_sha256": "5390a88edd2361805e5192897650ae5ec98aecef9219ad2213adae9901eba1ce",
+                "stub_sha256": "13aefa92c5910f86e751e87d783deca43fc3d44711a441792b58b876754d8bf6",
+                "generated_at": "2026-10-23T07:56:03Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "1.2.10": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-accommodation-bookings.1.2.10.zip",
+                "source_zip_sha256": "49e47c8baed6e3bfb0af7b9164e2d7f20138c509408050b56f58ada554bc9167",
+                "stub_sha256": "80f9da0e69bfba2acfa88210c47028b698422ab71fab3ef1454064e8ec30fbb9",
+                "generated_at": "2026-10-23T07:56:44Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "1.3.15": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-accommodation-bookings.1.3.15.zip",
+                "source_zip_sha256": "c9c647e3666d9f2ad82f606cb1bddaa37dafcb73622d857ae2039588e1e50d20",
+                "stub_sha256": "f6283847f3cf87edd9acd66c26ecd54423a2f09e1b699458e53a8b011ef69e3e",
+                "generated_at": "2026-10-23T07:57:23Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-all-products-for-subscriptions": {
+            "6.1.0": {
+                "source_zip_sha256": "e02817cf877a7670c43f2c3b34a534546c1621b8981d9d01225c89cd475cd0f2",
+                "stub_sha256": "eb4739ad68730d664eadf70fac40076a3adb90dfd962224c026875cd214cefbf",
+                "generated_at": "2026-10-21T21:30:08Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-analytics": {
+            "0.9.16": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-analytics.0.9.16.zip",
+                "source_zip_sha256": "8410ba2d91325709b01e8b5f74056b0bb8f8ccb2574b9171d4fa07e9881f91f9",
+                "stub_sha256": "ca332194341bedc53ec4283e2191e4667122bd39b890d707ed86e814d2d5f207",
+                "generated_at": "2026-10-23T07:58:04Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "0.10.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-analytics.0.10.0.zip",
+                "source_zip_sha256": "c0455741d51397c5570649d0af80f848c24d096078a85d8ce46bb1efaf7ddbce",
+                "stub_sha256": "db9713a0ac3c0cee55dff6c1322cd38aeae07579d070e23c3de25c7bed403816",
+                "generated_at": "2026-10-23T07:58:45Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-back-in-stock-notifications": {
+            "3.3.5": {
+                "source_zip_sha256": "a40877cfa5b4aeee05df181060db7148369b49bacc1e2a7962c79c201d9d22c2",
+                "stub_sha256": "56e802788fbe9e9eb4ec858059ad1f686cb75a40380029f669bb85335582fb13",
+                "generated_at": "2026-10-21T21:30:38Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-bookings": {
+            "3.10.0": {
+                "source_zip_sha256": "71142936ee0a1e95f4d9a4fc5ad456dfcf85f9f673f8001ea4ed39d6174a8ad8",
+                "stub_sha256": "e02a2786ce4e08ccaa0e9037b1629b1c24dfff719c8c22fe8aba5fc87f9c80c8",
+                "generated_at": "2026-10-21T21:31:02Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "3.11.0": {
+                "source_zip_sha256": "825490b40be97d95cafd8f7c39be3dade5f6045797031b6f1ea60d2ce25deee1",
+                "stub_sha256": "2a5e42cb8f4bc5fb9101524bbfa6e83634f24e4105e964832840d5a5a617f45c",
+                "generated_at": "2026-10-22T12:09:38Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "3.12.0": {
+                "source_zip_sha256": "0b0fe780991f1cd08d43f22ca0d060a8972140fce6d50a02fa5160fb644dd906",
+                "stub_sha256": "f777b75e426187386b0d93bfbbae03fbb18202a7b1b4e2624521af66dfc7a9b4",
+                "generated_at": "2026-10-22T12:10:53Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "3.12.1": {
+                "source_zip_sha256": "cf81c81f875f9dd2b74247e94b5c4943aa7ddaf6ecfc96ae6f4b45bc198bb345",
+                "stub_sha256": "e5b7212ca5f46ff6693ef68f8b9d9d33f211ee3ca32b2478da4ad3a5c1cda1d8",
+                "generated_at": "2026-10-21T21:00:41Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-box-office": {
+            "1.6.5": {
+                "source_zip_sha256": "d1b50048792a7dd37f1caf6af07986f2ada86625e8f9412ab94bfa8a48d04b1a",
+                "stub_sha256": "7e33a69cd01eb1d69d0f43210a0bd66cc289193bdbba4c664c31a1ceb2ef87e7",
+                "generated_at": "2026-10-22T16:50:40Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-checkout-field-editor": {
+            "1.7.28": {
+                "source_zip_sha256": "e7c8e283926a163dfca9a9f3bbdbdeff89bf0a4f09c5b25c033b031cd9d72fde",
+                "stub_sha256": "2e6e43ce4b19f4f715211496b5722959c4c7ee283fe0ad2f3f9ccacdf544e4f9",
+                "generated_at": "2026-10-22T17:01:08Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-composite-products": {
+            "10.0.0": {
+                "source_zip_sha256": "1dafe4e105deb2f98ef0b228572279266c9ad03ed34c075d721ac1704a8a221d",
+                "stub_sha256": "1d6bc5e2c7e891a1c2f5e21367ff07f99fe00e77255988cab1bf0497bd77b242",
+                "generated_at": "2026-10-23T03:04:41Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "10.1.0": {
+                "source_zip_sha256": "16c4387a6abe5ab08361d6619b9affc332623b3edef655ee3b510b56f62ca2c6",
+                "stub_sha256": "2f4c1d010cee16a671e4c7ba3e0c63134e4be91caa153e4ad4ebe9d34b5c9f5b",
+                "generated_at": "2026-10-21T21:31:59Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "10.2.0": {
+                "source_zip_sha256": "8687297db9d05deee05d0f1adda9a08502db0d96cec1127f10d75ab0557ac4ba",
+                "stub_sha256": "3917d9b910ab3ba2c39d785f4ed9014cbc09ee055ea5731cc2c88eae1f6ec5ae",
+                "generated_at": "2026-10-21T21:32:26Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "10.3.0": {
+                "source_zip_sha256": "b3389e71000d75acc1ce61e5f166948782e1f0478415c7518cf46546e18f33bc",
+                "stub_sha256": "92cc44b539fd641d8c0e1466f353af7e7f3134d65174a9999706bbc9c1d7597a",
+                "generated_at": "2026-10-23T03:05:09Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "10.4.0": {
+                "source_zip_sha256": "ed19dedc027ce3bdd2a2f214c8ab1e4888e0145b18dbd2e03779218a714caa83",
+                "stub_sha256": "60d92b1036314e3f4ca104dc0690b3b5e79f62358ceb39c13d54bca3b1d986ed",
+                "generated_at": "2026-10-23T03:05:38Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "10.5.0": {
+                "source_zip_sha256": "ba8e863747488c2a3ad7034f814b437a9559f8b06071719a417b340cb1d37a7d",
+                "stub_sha256": "8e6e5e6ff520fc0456ab698ecbb60a317b3cb7892fe99790d8ac37a10dfc8a66",
+                "generated_at": "2026-10-23T03:06:06Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "10.6.0": {
+                "source_zip_sha256": "aad72a299edec9e024bd662fb8a94fd32c2d8227ce29f042b24b7291084ad763",
+                "stub_sha256": "6444cb2a265ae0f9eddcea3fbb48770fa07b61fcaf76d11af4e009fd98ed753f",
+                "generated_at": "2026-10-23T03:06:35Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "11.0.0": {
+                "source_zip_sha256": "4788a2b5517f6156afcbbce4dd9e416ffe4b93b2459c81af933e187dcb555a78",
+                "stub_sha256": "80a997c572751fd7888bfb171a9e28773dc7232def07fcd6a391058aa6325cf0",
+                "generated_at": "2026-10-23T03:07:03Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "11.1.0": {
+                "source_zip_sha256": "f9d245c8940bf5af1e9231f0362d11421cd5389c1c972c5d99a09019b8d5103f",
+                "stub_sha256": "0ec4032ef2427f1a28ac7162cc5fe85a3c38c192d2336cedc69fe8f48ec724fb",
+                "generated_at": "2026-10-23T03:07:32Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "11.2.0": {
+                "source_zip_sha256": "aa593a0043a5916bf70e7a7e1860d204929d2832cb4a1afd9bc0932e80755f37",
+                "stub_sha256": "77d8b2ef01c468e395b378c065da0553166d4c999b552aff468936ee6be0d6c2",
+                "generated_at": "2026-10-23T03:08:00Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "11.2.1": {
+                "source_zip_sha256": "8bd1cd9adc252532b24a02578f83b4cce65b248e5e514cc4d252db623fcc4633",
+                "stub_sha256": "4239615173d48281118657c9cd1d0ac2027c602c9a787240f196c11865f09a59",
+                "generated_at": "2026-10-21T21:32:58Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-conditional-shipping-and-payments": {
+            "3.2.1": {
+                "source_zip_sha256": "10db862bfaf25112e20ae5ed1eadd6ad3a47877c3bde8561eda6839b51135df3",
+                "stub_sha256": "45a98f5d7e3c0c39d55a42a6cfa68e381df2c128b2aa4484c157df5f654efac2",
+                "generated_at": "2026-10-22T17:04:30Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-coupon-campaigns": {
+            "1.2.40": {
+                "source_zip_sha256": "ef40165b9f13476412704746cc24e08766720245b8be9e0c7c832832e6ebb31f",
+                "stub_sha256": "9cd03a109f75f3f9121ebab891e0479ee3c21f7cdac5082ca1e2eaf81f7d4b83",
+                "generated_at": "2026-10-22T17:05:38Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-deposits": {
+            "2.4.8": {
+                "source_zip_sha256": "a81f860bd91c37fd208c2fb8065482b64d6811996e27014d6a7bb7d8c02a51b1",
+                "stub_sha256": "7610fe4b8bbe6ceb6469f442730db8d6faaa111cfdf2bf31781ab4c31bba4f13",
+                "generated_at": "2026-10-22T16:04:59Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-eu-vat-number": {
+            "3.2.1": {
+                "source_zip_sha256": "46985601b525241c65d5397713bf3b425cebbc46084625c73f173ee83d14281e",
+                "stub_sha256": "c0c265d4e3736ed3afc5c22cb00553e49ab7aaf67bd4d61e9216a3cf3fe825b9",
+                "generated_at": "2026-10-22T17:06:37Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-gateway-amazon-payments-advanced": {
+            "2.4.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-amazon-payments-advanced.2.4.1.zip",
+                "source_zip_sha256": "0e584ca2fa1fdb34a4555b8327956d0bef252671aace79a6ef6722cacec950f9",
+                "stub_sha256": "c29c599258d652d5c2355b2d89229d15bcd91d58ac04d5c4f3386bab17c78ed1",
+                "generated_at": "2026-10-23T07:59:26Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "2.5.4": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-amazon-payments-advanced.2.5.4.zip",
+                "source_zip_sha256": "debaf5ae4bbcca4f99dde3300bef5e1bc57959046e2b73a7c9255a2dfcc9ea27",
+                "stub_sha256": "783472fd56d0e52d19813e8457f9ddc3edf9d263fd2db6dc4e45428d90abb34b",
+                "generated_at": "2026-10-23T08:00:06Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "2.6.2": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-amazon-payments-advanced.2.6.2.zip",
+                "source_zip_sha256": "33ded31e6fbb5c85717c2971dc991fb56716462b6ab1480d4a1f59b9d99b20ea",
+                "stub_sha256": "33cb34118abb6e6b17281654f53eed32a78dfa95d45ef334adabc84419a5a7f4",
+                "generated_at": "2026-10-23T08:00:47Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-gateway-eway": {
+            "3.8.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-eway.3.8.0.zip",
+                "source_zip_sha256": "0c79b12b9cbc5f49344b50b1f431f3524524aca7f9a6e186fb6bf3b548087821",
+                "stub_sha256": "85e37a44a1ff113d7276e814d1ed6e153d0c18e60998628bda06e694a084815c",
+                "generated_at": "2026-10-23T08:03:00Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "3.9.3": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-eway.3.9.3.zip",
+                "source_zip_sha256": "732b9fcaae93e7435ca8ad97194bcfadbdc081e589f5608095beb1922e3baa2b",
+                "stub_sha256": "db304889f5668fdd21b794f4ee9b52896c587acd6cbc9dce0bf20cc441c0eae3",
+                "generated_at": "2026-10-23T08:03:47Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "4.0.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-eway.4.0.0.zip",
+                "source_zip_sha256": "30998997c2f860710cd55439e78fa505f10bdad011f20a14d2b16cee87238aac",
+                "stub_sha256": "5fbec719ffb22f9af30d06757aec879d06addefdf4f69b2a0eeac8d1121488cf",
+                "generated_at": "2026-10-23T08:04:28Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-gateway-gocardless": {
+            "2.9.10": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-gocardless.2.9.10.zip",
+                "source_zip_sha256": "e45baf485886f930134903a45b38590d10339127b99363b358a4818daf5131ce",
+                "stub_sha256": "f28e71baafac1faefba4dd5505a6d677a76b86b323e24e8851e86daa65dea886",
+                "generated_at": "2026-10-23T08:05:08Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "3.0.3": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-gocardless.3.0.3.zip",
+                "source_zip_sha256": "97e5cfcf252d9c6891011b54b09903429cfcfeaf03ae5a12b0a1fc058e6319de",
+                "stub_sha256": "4b80d5ac50b43ec1b6b9903bc03e70c249288dc22246e482450631e7e6d03599",
+                "generated_at": "2026-10-23T08:05:49Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-gateway-paypal-powered-by-braintree": {
+            "3.10.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-paypal-powered-by-braintree.3.10.0.zip",
+                "source_zip_sha256": "bd2fa39154116c43e6e1dbfc1086541e73c62982b29301d9d9eca9dc154ec5b9",
+                "stub_sha256": "114feaf0dd43aad55501f41c996075d0ee20641b6b88e3f7976ace9124999409",
+                "generated_at": "2026-10-23T08:06:32Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": [
+                    "skyverge-wc-plugin-framework/6.0.1"
+                ]
+            },
+            "3.11.2": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-paypal-powered-by-braintree.3.11.2.zip",
+                "source_zip_sha256": "bdf219e562d412a3f10580f983832e1688c798871a261100d0c99a64fc037de8",
+                "stub_sha256": "ad207eb59435e40cac6d28a25c8abef9df82da6fba7eece821004a337981fcce",
+                "generated_at": "2026-10-23T08:07:17Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": [
+                    "skyverge-wc-plugin-framework/6.2.4"
+                ]
+            },
+            "3.12.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-paypal-powered-by-braintree.3.12.1.zip",
+                "source_zip_sha256": "9a6970598a4699b1a17e81980d1ac576ab2d98da7e17096e5abde2f39cffbebf",
+                "stub_sha256": "886f041cc16bee73d8cb3a04cbe219547afd92a529569933054c4601733c3ad1",
+                "generated_at": "2026-10-23T08:08:01Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": [
+                    "skyverge-wc-plugin-framework/6.2.4"
+                ]
+            }
+        },
+        "woocommerce-gateway-stripe": {
+            "10.9.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-stripe.10.9.1.zip",
+                "source_zip_sha256": "638bd644d83830ffa86ee680a77f6ba427f3f9baca31dcde40218010d96d6875",
+                "stub_sha256": "b6aafa0704125403625aaf851b10fc5a2f863ee7a28cb13cbd30138e2900a66a",
+                "generated_at": "2026-10-23T08:08:46Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "11.0.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-stripe.11.0.1.zip",
+                "source_zip_sha256": "49359c5580bf4b2a62bd355f9a6bb46add3d09869f5dc82d3a28729172e93e9f",
+                "stub_sha256": "66379f41d23172800915c27bf9fac6ba48d61eec5cd203226673b9fdac05b416",
+                "generated_at": "2026-10-23T08:09:32Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "11.1.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-stripe.11.1.1.zip",
+                "source_zip_sha256": "420621d736a74d7a785f80b69aeed0cbe07f1a4810c013a2b86205423ebb994e",
+                "stub_sha256": "82a0b50f642bf31aa1a0cf356a743b062119c26ed5a0fb181f237d0cb416210a",
+                "generated_at": "2026-10-23T08:10:18Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-gift-cards": {
+            "2.9.1": {
+                "source_zip_sha256": "2c547228f5da41ffae94f7661a15894cd8ef03bfdfde39db2c4c4e902bf72a50",
+                "stub_sha256": "130d4d9d9cb696c811cc022aa1a831c06dbbc54926926403354850d2a35a0a12",
+                "generated_at": "2026-10-21T21:34:19Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-google-analytics-integration": {
+            "2.2.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-google-analytics-integration.2.2.1.zip",
+                "source_zip_sha256": "4031a78f8a5ea1de176213f28231eedf1746da33562680a1d52f4c952f6ad0d2",
+                "stub_sha256": "3fc070678bc61c97b52e55cd9e434c587ba223f6af8393de2f68c333c4d30cde",
+                "generated_at": "2026-10-23T08:11:04Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "2.3.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-google-analytics-integration.2.3.0.zip",
+                "source_zip_sha256": "dab0c4539319375258b4168386c870cf0943b67385793f6693c6809affa52d13",
+                "stub_sha256": "50aac9f6c6b797ed5cd8c4983c638f1ea2c0066b928b00ea629f0d0fa4e5ac6d",
+                "generated_at": "2026-10-23T08:11:48Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "2.4.4": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-google-analytics-integration.2.4.4.zip",
+                "source_zip_sha256": "b358078e61fae91fde91d75a6be7fca667c151935291b40d8aa0711464072597",
+                "stub_sha256": "5f8534f0f27e86c34bec14ff69c8500d7508dcaef81881ef1f0827c2381faaf3",
+                "generated_at": "2026-10-23T08:12:33Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-min-max-quantities": {
+            "3.0.0": {
+                "source_zip_sha256": "7cb2c5c8e88ac1d90a35bb0cf8897c6c1d17f7f1972bbd147ab44fde0af66d1c",
+                "stub_sha256": "a84ba2bee4f970f1abbad8575af048f34c2dc1b6af793fdc38aabdfc95b1aa84",
+                "generated_at": "2026-10-21T21:35:11Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "4.0.0": {
+                "source_zip_sha256": "67e72bf4413a8e6be4242a39b4293eb9a1fd249fde517750d34584415b272f62",
+                "stub_sha256": "4fc84382364660f37516eda41dc542812eeea66d5238afc41d359eb9362e0ff6",
+                "generated_at": "2026-10-23T03:08:28Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "4.1.0": {
+                "source_zip_sha256": "f69d3dc00a995454ff43e4d68551c126e42d5beee6f4115f243e2af13241d63e",
+                "stub_sha256": "290a1ba1d6e8086c2f2e5d36e074097dff4b3047728b15716504b28456a1c747",
+                "generated_at": "2026-10-23T03:08:57Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "4.2.0": {
+                "source_zip_sha256": "74cc58ecb20f94e169e809c90807cb6adf56c5c085e6e310f4d4c0f8c8eeb2e0",
+                "stub_sha256": "07bcb302e6a979fc8cd81184ea548ce9e8068215e5944308c7f85427f7aaad79",
+                "generated_at": "2026-10-23T03:09:26Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "4.3.0": {
+                "source_zip_sha256": "8c92cf4c37b8437904da6a015802874bd89896ac01fc08ab0b7d732d02730e6b",
+                "stub_sha256": "2101f332a89e1fc38f465aa9bf2d2d11a13c91c1591dfa37f22ccb9c7684b582",
+                "generated_at": "2026-10-23T03:09:54Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "5.0.0": {
+                "source_zip_sha256": "03218c56e4ac93441473601c1e28ff9ed39cd044ba436f3aa05e1b31dc7e6ea0",
+                "stub_sha256": "f3d081b3929de2a18bead35e53763df1fb46795d94e8f2867f4584e3491ac2c7",
+                "generated_at": "2026-10-23T03:10:23Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "5.1.0": {
+                "source_zip_sha256": "452ce8935d0f68de196b54fe1ca0110661cdf16f02d07e2f819f69550c23d257",
+                "stub_sha256": "5136c4dda6c32886d8c17a99b8f43490fdbe51c03288c70181d2b582e7d4b8cd",
+                "generated_at": "2026-10-23T03:10:51Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "5.2.0": {
+                "source_zip_sha256": "b18c90bf7290a0bf8dbe4556ed943e47cd9f593e9834ec6bd96902c5e8cdbb23",
+                "stub_sha256": "c6165dafd44bab4447e56936d1973b3438423d9b6d03e8b4517610fac32f2298",
+                "generated_at": "2026-10-23T03:11:20Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "5.2.15": {
+                "source_zip_sha256": "35bc329aa10f83ac29b0e75bac24eaccb6046e7682cccb2a41c4332e1238c3e4",
+                "stub_sha256": "78c578411c5c1dd96ac3a62d2688c69d15293def5d74e8469c9ba360b55a38c3",
+                "generated_at": "2026-10-21T21:35:42Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-order-barcodes": {
+            "2.1.2": {
+                "source_zip_sha256": "c7019d8cab19007b3e061089a13821b685bbe8aa4609851ac6e28153e5e1337b",
+                "stub_sha256": "c3627bf113b546f0931973297f856341ed1ed037299a408320d5ff2fe8350b84",
+                "generated_at": "2026-10-21T21:36:32Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-payfast-gateway": {
+            "1.5.9": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-payfast-gateway.1.5.9.zip",
+                "source_zip_sha256": "17ff89f2e94397c0a4ef674d5fee52477355e64205d07efd15d3b56f707cd75c",
+                "stub_sha256": "211b2f503cd54a39925b9243bab5ffcea8b724e3112ced89ecc7c7cacc4c8aa4",
+                "generated_at": "2026-10-23T08:13:17Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "1.6.10": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-payfast-gateway.1.6.10.zip",
+                "source_zip_sha256": "6593941413588d9a6fc976203713ad3301143e0c1a510d6e6d8fdeb4d58ee7ec",
+                "stub_sha256": "c79af828fecf4cf7e2a2e7d579872e01a27e3910e090761b7e7b7f594e74160a",
+                "generated_at": "2026-10-23T08:14:02Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "1.7.9": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-payfast-gateway.1.7.9.zip",
+                "source_zip_sha256": "d987f8e43186eb6c53ba59ce79585f193038af5c64e52925ca1a6991ae2520f3",
+                "stub_sha256": "d90bae632bb99bc61ff837fd34b16b0be21420742b31971c1ddb787e522705e1",
+                "generated_at": "2026-10-23T08:14:47Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-payments": {
+            "11.0.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-payments.11.0.1.zip",
+                "source_zip_sha256": "9bc254b45ce8e6e6ffa50c6c9834a85584be426eb062d691fdf0bc50c789dd5a",
+                "stub_sha256": "d2e3a72b78c8075d3652c0452e26686df6385bec74d75d923f42ba464696d092",
+                "generated_at": "2026-10-23T08:15:32Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "11.1.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-payments.11.1.0.zip",
+                "source_zip_sha256": "a7f91b0b23aa35b30c91ec65936379efa8b92cb71d8d5b0dd02004f828e564df",
+                "stub_sha256": "2b1e4d76042ccee8b2137482bf5b916482f01d783db9fad047939c6758ec795f",
+                "generated_at": "2026-10-23T08:16:21Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "11.2.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-payments.11.2.0.zip",
+                "source_zip_sha256": "c6a812b40c56cade1f9ec5be825888ec8f4822173118bece003cf6cc2e90a73d",
+                "stub_sha256": "fd769a64e821e8bee3e5c3e256df6334fa9d963abc3c1c7a24236c0a6c75406e",
+                "generated_at": "2026-10-23T08:17:10Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-paypal-payments": {
+            "4.0.4": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-paypal-payments.4.0.4.zip",
+                "source_zip_sha256": "d2d1100aee0c476dff72d8d989d90268ab0f568059b3abe5071d6fcb265f3837",
+                "stub_sha256": "9d2580aedbca8df491a8f109b317ee5b4bab5abb4a9853b596e11ef0696b1332",
+                "generated_at": "2026-10-23T08:17:59Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "4.1.3": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-paypal-payments.4.1.3.zip",
+                "source_zip_sha256": "179e6fa9ede40fb2b05a3ac06c08a47710536e554c171db6e4d1b777d94abb97",
+                "stub_sha256": "64dcf5f03015157bc94cacd3bae65454767834e9e62b76589e3782e62d88629b",
+                "generated_at": "2026-10-23T08:18:49Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "4.2.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-paypal-payments.4.2.0.zip",
+                "source_zip_sha256": "9d7e535b62a8b8b2fea9a68326ab685345c3b3647ee73770c4e27dce5e8df931",
+                "stub_sha256": "f4dd7e933daea372118fb1d5902a2d3d3dc8d0f67fb9caa9d21eee5ecf8e5de1",
+                "generated_at": "2026-10-23T08:19:39Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-points-and-rewards": {
+            "1.18.25": {
+                "source_zip_sha256": "8c61b5f4ea0133ae45b6056d6c37dec6c41312f3fddd1960bbc451c9ddd15953",
+                "stub_sha256": "eccf4568787a07bcf92a1dbb01050f28ababb6098f23999964af66beea59bcf9",
+                "generated_at": "2026-10-21T21:37:25Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-pre-orders": {
+            "2.3.8": {
+                "source_zip_sha256": "0fd17ec5ab5be122b581b7ac781ebe0fb31ad6b2403affcc068007b0cd74f176",
+                "stub_sha256": "82f928d34107587e449ce6314940c23468744a1f5db8689d53231782085e4a8a",
+                "generated_at": "2026-10-22T16:18:56Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-product-addons": {
+            "7.5.0": {
+                "source_zip_sha256": "7cb2c1c0069d3353a3b4e84966d7fa2e8279dec625c66d4b5b537eff0ea25f00",
+                "stub_sha256": "e55d5d0cff5e433e92f018d68ddb2ae8ec1d487766e660a8c7a89471bb07fda9",
+                "generated_at": "2026-10-22T16:25:42Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "7.6.0": {
+                "source_zip_sha256": "f6b35e558b109d1d8c08938b2dbfc172628eef62cfcf780123996e33d0d5e74c",
+                "stub_sha256": "ee87a30e3a973cead9613f267bf7f918cda03b3b12a4b54b8c1500c8c340a411",
+                "generated_at": "2026-10-22T16:26:06Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "7.7.0": {
+                "source_zip_sha256": "cb02356b966d1b3b339da7968df0eae3c0746c5b5069d2272136ea75159ec650",
+                "stub_sha256": "d6f10028f6cf5dc60f05eaa5b428002136863c4013477c5b60cc253d087b5551",
+                "generated_at": "2026-10-22T16:26:29Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "7.8.0": {
+                "source_zip_sha256": "3634a62780594b599b734e0f1c5cb29ecfc3c79a2234dee30a5f85a2c5e7a0cc",
+                "stub_sha256": "ad248ef9eca96c8552fbb4db549dedc3a7f143bd909b19beed9c3e8d7a3a3265",
+                "generated_at": "2026-10-22T16:26:53Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "7.9.0": {
+                "source_zip_sha256": "bf99c2225a4872d870c8b888a96efa0fc841bd682821834d55289a3c243040e6",
+                "stub_sha256": "c6c176f335c9abcce6e5f3bfb82c49d8daf1ce7ae380d936ba36f372872c5565",
+                "generated_at": "2026-10-22T16:27:16Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "8.0.0": {
+                "source_zip_sha256": "1ea2dcd7258592d29b52de964fde26b1cdb8798ea0b7f5db3810aa16a4048fc4",
+                "stub_sha256": "33ef9daf40a78eca8e4ca21c079e5a7e266e2dffb75bd4fd7b236a26030da6c0",
+                "generated_at": "2026-10-22T16:27:40Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "8.1.0": {
+                "source_zip_sha256": "57d1e26dfcb58073b7ac21351977030c2c18f8b3efbe78363d56d4e013a0d126",
+                "stub_sha256": "7e1c135f5fca9ab57598eec3b3ce2855e9c730b8433f360128a28d1d392a58ba",
+                "generated_at": "2026-10-22T16:28:04Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "8.2.0": {
+                "source_zip_sha256": "b0d3e273828960f611d36f578a3541c61032a757adc43f7495fdadf4fa4d8ff9",
+                "stub_sha256": "06bdeae22f7b77e7e51861e1f79954472d6d85f02669d8c45773cc1781f04ed9",
+                "generated_at": "2026-10-22T16:28:29Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "8.3.0": {
+                "source_zip_sha256": "bfd008c8c56ef78e1e9dfaa6a15bc3954318f599aaa0aa3643389b5f7181d8fa",
+                "stub_sha256": "4637ac00b3ffea2a322600cce14971d36e6627a68a6be970c488bb1086f5eeda",
+                "generated_at": "2026-10-22T16:28:53Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "8.4.0": {
+                "source_zip_sha256": "982ac945d34c9adc1b37ab69dd6ff34f76e9d75b818aaf111ee647eb5aea929b",
+                "stub_sha256": "f14d8eef546e1ffe02be9a490fb556c2b41a27f9ee3d1b7c63abb674031f7a6e",
+                "generated_at": "2026-10-22T16:29:17Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "8.4.5": {
+                "source_zip_sha256": "5c920a44dcd329a492e0637c58963948caf2bf09d0e55f3e76ce70bc249cc2bf",
+                "stub_sha256": "0b0f8387aaafa95d11cac3f218b9535ff89571b87528851e05018df1f33add28",
+                "generated_at": "2026-10-21T21:38:18Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-product-bundles": {
+            "6.22.0": {
+                "source_zip_sha256": "787f2abe19111cdb5bb67ee2a8b05e3da8130fb6afa4bb752ab2fb1084216c96",
+                "stub_sha256": "28a6343ae86e3ffc39d6a2044ccbab1a7dd782a77c1b1cc9f86bb2a268301779",
+                "generated_at": "2026-10-22T17:56:25Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "7.0.0": {
+                "source_zip_sha256": "ea3711ffffaea01139ae82da94de7bff4d86a95aece9b79668bc913a7f5d0ef7",
+                "stub_sha256": "c3525f150655e87ecac6c6ef0447bbdc7d7ee3936e3d50200a21cc32317fe752",
+                "generated_at": "2026-10-22T17:57:40Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "7.1.0": {
+                "source_zip_sha256": "a8ce3287fb44497985f0a77238d81e206ed94e79f12f95ccc08a8c25109896d9",
+                "stub_sha256": "eb936277d75d99bfa0ccacde845c20ed54622a34f6ff095cdfdbec579b26a5bb",
+                "generated_at": "2026-10-22T17:58:55Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "7.2.0": {
+                "source_zip_sha256": "7ed24e755b3ddeadd347bb8b79028e82ffadffae1736244b9ae26bc105523bce",
+                "stub_sha256": "5bd8930a2e26611f5cb2ebc49757c36907f2cd89652bfc37620fc6e07a4a150e",
+                "generated_at": "2026-10-22T18:00:14Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "8.0.0": {
+                "source_zip_sha256": "9594caad5bf88b9153b7bfe77a751b4a83756478269c0d68d73da47a119967f0",
+                "stub_sha256": "a213ab2a3addd4790579e4bf14dc9c6d13ec2b7849734b7fbfe4667d8773fd47",
+                "generated_at": "2026-10-22T18:01:29Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "8.1.0": {
+                "source_zip_sha256": "779632d16447733331367d6196dc8f1d0738f5718958eb7adeca43f6752dbeac",
+                "stub_sha256": "8e8c4cb3f37e5b6dd7b996b9ac0e006fee92a228b9cabe4478113e68cd10bcfa",
+                "generated_at": "2026-10-21T21:39:45Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "8.2.0": {
+                "source_zip_sha256": "7df629db22b33b5942fceb0b8f8149d153e0773d30cf57520b4043b90256da7a",
+                "stub_sha256": "73f42a0bd531f621c4faf6fe7027bbbc92648a31f5ece6d42cc261a39486c604",
+                "generated_at": "2026-10-21T21:40:31Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "8.3.0": {
+                "source_zip_sha256": "fad6a79cb0d185437c7abedb45742e0d5b7b6f5b3a0c29fa77f03d2eb01a2f20",
+                "stub_sha256": "aa720013d75b14e5a7ec45d58d030aaf930d18ad582c63ec98ab3889f5bd5cd1",
+                "generated_at": "2026-10-23T03:14:03Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "8.4.0": {
+                "source_zip_sha256": "dc01e88abbe278dfe3dbed8f69043d7e7e075f6a1353047a2b8ec8775953299d",
+                "stub_sha256": "6ec399274860dea351ca9b0c8245b558fe21c0eaa47a2f0c5c81da151a8dc694",
+                "generated_at": "2026-10-22T12:07:00Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "8.5.0": {
+                "source_zip_sha256": "26ed13ada75b696f4e1bec4535772ad7f3037d92b99d2c0135fc533ce4ed110b",
+                "stub_sha256": "72d05cc6e8f34eca689872695cd4421235cb62f38ac3725f66ab307cbd50f4bd",
+                "generated_at": "2026-10-22T12:08:22Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "8.5.16": {
+                "source_zip_sha256": "257e471cc36459f3b8ae78ea123f35267af3fbcfb4eeb4709f9c8a15b737f39f",
+                "stub_sha256": "6d62bf57a43ae1a087eb78e03aadd0ece50b6d961134fc515debca68ec730765",
+                "generated_at": "2026-10-21T21:41:21Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-product-csv-import-suite": {
+            "1.11.7": {
+                "source_zip_sha256": "a69c4a31292eecd5a31fbb8266c4fd96c61a671a820359d51530fa63ee9f2c5b",
+                "stub_sha256": "a793e3ea44d57b7ba823c39a7e5d329f7c081a9a0a97cd71a7bf372e1a0f7e64",
+                "generated_at": "2026-10-22T17:08:11Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-product-dependencies": {
+            "1.1.3": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-product-dependencies.1.1.3.zip",
+                "source_zip_sha256": "bd17d6b1630b6100930848da9213ff2ed03bb3d83195102e9a7c05927f698fd6",
+                "stub_sha256": "bca25cd5cd9cbce1eeb04d20831af9bdc084b64831af129ae6a74e557c43d798",
+                "generated_at": "2026-10-23T08:24:56Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "1.2.8": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-product-dependencies.1.2.8.zip",
+                "source_zip_sha256": "2df54cda5ecf5d830e6b09d5bf2716de8ecad9b0f1d0ba1033f39c19c46041f4",
+                "stub_sha256": "c18062fac1ed67d1f9e50474f12fbff54fa3beacc21a5c104c7793f649dc99ba",
+                "generated_at": "2026-10-23T08:25:39Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "2.0.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-product-dependencies.2.0.1.zip",
+                "source_zip_sha256": "4db5d29c65d5b54c433dbf9355cee7e0b6d98b750bf9fb6505fcdc3ee3b643b1",
+                "stub_sha256": "7a3834b4adaf2bf5e63ddda73aa697aa68604f71075d97def9959874a2cf3aad",
+                "generated_at": "2026-10-23T08:26:15Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-product-recommendations": {
+            "4.4.4": {
+                "source_zip_sha256": "8abf7935a4a3a0b9ed32d186537d70c25b5d7ff3d2ac3217d96561fdb4afd387",
+                "stub_sha256": "d766b1d3e938f27f56cc3b163130deab085e70b56f9438774468ccbad0042616",
+                "generated_at": "2026-10-22T17:12:19Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-product-vendors": {
+            "2.6.2": {
+                "source_zip_sha256": "25e62c23c86c5801e000ce18f49361809604f7264dc091535d8f344cdb198b10",
+                "stub_sha256": "47281c8ed8044e1c03530478d4fef0ccbf0cbe14fa4155a8450c8f42da822554",
+                "generated_at": "2026-10-22T17:13:10Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-services": {
+            "3.5.2": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-services.3.5.2.zip",
+                "source_zip_sha256": "784b403f305066eb4c7a88d8b316ac170319b6c47991cd830f3246bef2c6a5c1",
+                "stub_sha256": "22e480d9e32f42681c78c6e2bb0892ab9ecab6d1ce64fa161035ff8fed4b3fbb",
+                "generated_at": "2026-10-23T08:26:52Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "3.6.16": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-services.3.6.16.zip",
+                "source_zip_sha256": "cd0a2fb09f93b1c2f5f28e56fb870e3650ef558a7941a58f5ff088a9c14e7c0c",
+                "stub_sha256": "37f8b16b0a870c623a5896cb21c20c03ac8835596f98fb138d5db1fa25204653",
+                "generated_at": "2026-10-23T08:27:27Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "3.7.3": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-services.3.7.3.zip",
+                "source_zip_sha256": "7b19ffb9dd987c3ee479b1d4dea1111524aab2c3081e8896649feedc788b0b60",
+                "stub_sha256": "26848663e5ef00daaa569e1babff2f45ed89128a8d62fd8029d72127bf50766f",
+                "generated_at": "2026-10-23T08:28:03Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-shipment-tracking": {
+            "2.7.9": {
+                "source_zip_sha256": "390c53a03c2dfd4e7f300f19536310c863f93074edb7e88c9a16a35fdb801ec5",
+                "stub_sha256": "b97aa5dcd79c72c5404ba2b7898157963dea8b096376fc863dbb27ff7eb5cf53",
+                "generated_at": "2026-10-22T17:16:29Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-shipping": {
+            "2.2.9": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-shipping.2.2.9.zip",
+                "source_zip_sha256": "8764501c36da39dc241edcb5a7d4592d8d4b4b6207ac9131572534917e7a4be6",
+                "stub_sha256": "16536d40d552e2c77adf6a0af66044a67754b5f1a420d9b5390886a0c7262fbd",
+                "generated_at": "2026-10-23T08:28:40Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "2.3.16": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-shipping.2.3.16.zip",
+                "source_zip_sha256": "9363439cd67759d89d783d367ac5271f95fdb5343f0a92c79c60ab2d748dd98f",
+                "stub_sha256": "62132322b056ea6954ba908f84cf59f04f51801426b33b5774597b8cabb4d085",
+                "generated_at": "2026-10-23T08:29:19Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "2.4.3": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-shipping.2.4.3.zip",
+                "source_zip_sha256": "79661b9d5cf637375852944849522068ff9dd64515fd1652d025123d32245824",
+                "stub_sha256": "8db0e71d8a8e850424d0a5c83763397229451859369f392e0173d441ad5f1215",
+                "generated_at": "2026-10-23T08:29:57Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-shipping-australia-post": {
+            "2.8.10": {
+                "source_zip_sha256": "470928e1b075e4a2aaf7309764b8c6b19c29e672d0bd1d672dceb09a33136efc",
+                "stub_sha256": "0ebfe56c4129e504e9487eb80f42be0ddecefb47b7a506636689ccaa2f69eb74",
+                "generated_at": "2026-10-22T17:19:45Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-shipping-canada-post": {
+            "3.3.5": {
+                "source_zip_sha256": "b72dda102cf098d97650eba8937d4720d9f666ed10ea40426188d7f8688a8afd",
+                "stub_sha256": "e229ecbd63e16fa8e57db0b25e28c333176ae9d5d1e1d336ebef305b64d89645",
+                "generated_at": "2026-10-22T17:22:20Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-shipping-fedex": {
+            "4.8.3": {
+                "source_zip_sha256": "8608929adc04838f299389317cf68e34aad38b45f0332d2f2f93cdeab8eed1fd",
+                "stub_sha256": "995682ee81136b194d0fb39a501a78c610aebe72a5bd03d7739f1f16569037a2",
+                "generated_at": "2026-10-22T17:23:42Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-shipping-multiple-addresses": {
+            "4.4.6": {
+                "source_zip_sha256": "0472edd0e2e373ca2612e79f3655b3eaca5e976c9056cab64f4a3abc2e075991",
+                "stub_sha256": "aaa01306ba6110cb70db0b189b7280ded09079f212494e184e4da7bfadc92c23",
+                "generated_at": "2026-10-22T17:24:34Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-shipping-new-zealand-post": {
+            "5.1.2": {
+                "source_zip_sha256": "695be8b99c4edf3b4662fae2457e03a27d627e6224c8e31c5356d2cab11699f3",
+                "stub_sha256": "0fb2f74905fb4c465f8e66282b59ffd747b83e262f17d2a6856bb2192d448417",
+                "generated_at": "2026-10-22T17:26:35Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-shipping-purolator": {
+            "3.3.5": {
+                "source_zip_sha256": "c2ac51cb420bafcfc40b497b6b7c29b7d6934c17566e947eea8c817714671b5f",
+                "stub_sha256": "41e08d13ba377c871d271871982366da4225f491f1fddfe275441572199376e0",
+                "generated_at": "2026-10-22T17:27:29Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-shipping-royalmail": {
+            "4.1.1": {
+                "source_zip_sha256": "7bb4f2849245e435264b6f3b1b271e6cf2d94ba3f3e6795619ca501ffabb8f1a",
+                "stub_sha256": "1ec21621cfa70c53c0be540ed3902b302ec9be08f694f0d4671a939e9603d4a1",
+                "generated_at": "2026-10-22T17:28:42Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-shipping-stamps": {
+            "2.3.7": {
+                "source_zip_sha256": "809fcaa31e18c70b15921d80b3f5b5eceb9482066ffa9c480e283a8986ddc711",
+                "stub_sha256": "cff41e444d826dc08fdd36f5b2c27a3af20bf8dc314dc58e0a1d0e16269ea09b",
+                "generated_at": "2026-10-22T17:29:49Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-shipping-ups": {
+            "3.9.18": {
+                "source_zip_sha256": "b485e127d876b871f785adc3ceedc7145dc521732e0f6fb9bc11c94acb2ac130",
+                "stub_sha256": "a633cacd0a3b4ae824309916ed41a89b8ff0541a3f90c9782e3d283e62a1701f",
+                "generated_at": "2026-10-22T17:31:36Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-shipping-usps": {
+            "5.6.7": {
+                "source_zip_sha256": "2980f5490db06d63042ce9f8cd32e521dc964fdfe75c11a98e9263c2cef13ee9",
+                "stub_sha256": "2c49772a7f215cbfd705e8eaf4f0cf4528f3491e3783c726d1996b6b51c7deb2",
+                "generated_at": "2026-10-22T17:32:42Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-shipstation-integration": {
+            "5.2.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-shipstation-integration.5.2.0.zip",
+                "source_zip_sha256": "6f3246abb675700c73644e653a0da098c7945b725c8a39bd64d779de333c5b19",
+                "stub_sha256": "9e74a7c6422fa49f035594071176fc2ba6120791e4e2f1fd387db83caf5b8bec",
+                "generated_at": "2026-10-23T08:30:37Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "5.3.9": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-shipstation-integration.5.3.9.zip",
+                "source_zip_sha256": "2faa7ce067bca87eb72e2b30af830ad907214194ac5f7cc783c2aaff4764258d",
+                "stub_sha256": "9eda541f0bdcd92a79b41fc93cd0e4e0ee4f90cb2f277de9b6590d3351bb8a95",
+                "generated_at": "2026-10-23T08:31:16Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "5.4.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-shipstation-integration.5.4.0.zip",
+                "source_zip_sha256": "075c297b01ccbbc041c6d52ad9e6163ebacc4318bcc1e11687a567df726e7a08",
+                "stub_sha256": "0678984cb5aaad4967e911c6058ec61341b9f11d8caab1862c2ecd7f7551d551",
+                "generated_at": "2026-10-23T08:31:55Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-square": {
+            "5.3.3": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-square.5.3.3.zip",
+                "source_zip_sha256": "075d46ea258a97eec760db1c3fe2b9fcb6f912b9f05d1fbf42bee16e0c96b957",
+                "stub_sha256": "7ff5fa348d7e6dba51715353466f7df5d9e7704bb097dcb7d3e1a15cb7c2ddbd",
+                "generated_at": "2026-10-23T08:32:32Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "5.4.3": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-square.5.4.3.zip",
+                "source_zip_sha256": "9f49955377e37121d16067e3a63b109e759f59bee42d7583b2e1c9680837c6c4",
+                "stub_sha256": "7b3d32e91dccf84983c4a735bb3c6b76630ce8da37628be6ac861b0ee0df2357",
+                "generated_at": "2026-10-23T08:33:12Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "5.5.2": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-square.5.5.2.zip",
+                "source_zip_sha256": "861e45119b64732921615431df72c0160ba6a8fa16ade961b88b4691514c8834",
+                "stub_sha256": "1b6e4d9d499b40d2506262cf7f3a33fef74494df3d7a6cc20904997fc715996a",
+                "generated_at": "2026-10-23T08:33:51Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-subscriptions": {
+            "9.3.0": {
+                "source_zip_sha256": "8af6f9cf9b5f70f7539fcff12196fc293387eb770431de2f97af52c0a3354430",
+                "stub_sha256": "43f459ce82fd83c400c5f3b3a217f92f0bf0daf847221271beb189e1d175fc6e",
+                "generated_at": "2026-10-21T21:42:28Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-table-rate-shipping": {
+            "3.7.4": {
+                "source_zip_sha256": "31adb10d65177248335446a910b9d4d9fab17d81cdf00cc3892f4f84295e33a2",
+                "stub_sha256": "5183ca8f056203f4d424b1df9037df446747c20f82bc19b514b10a0441afdab2",
+                "generated_at": "2026-10-22T17:34:01Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "woocommerce-warranty": {
+            "2.7.14": {
+                "source_zip_sha256": "acfc235f3cc71876a58d91a220a5b66ff7c51538dd3ebf53b8e058522b46ebc3",
+                "stub_sha256": "c19eb24c9c6386983e2f84bca22d3f97cc008dc367150d4312e483226e4c2e3e",
+                "generated_at": "2026-10-22T17:35:01Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        },
+        "zettle-pos-integration": {
+            "1.5.9": {
+                "source_url": "https://downloads.wordpress.org/plugin/zettle-pos-integration.1.5.9.zip",
+                "source_zip_sha256": "79a8f133b34dd21f076c67d28132b738a58fa5428dcf39e186ea3f9896d53373",
+                "stub_sha256": "bee2547e271575838e90178cbd7f413e53aea8d29732d9e580ba8bf2e071b997",
+                "generated_at": "2026-10-23T08:34:29Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "1.6.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/zettle-pos-integration.1.6.1.zip",
+                "source_zip_sha256": "1f5950c2023b9e546103d2fadb35bbbdcebc5846bad01b7c628dd900f586ea88",
+                "stub_sha256": "864e8d411382407f32db9b8b676de278ca905015d98e4a4000fd3cbd2f061e0e",
+                "generated_at": "2026-10-23T08:35:10Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "2.0.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/zettle-pos-integration.2.0.1.zip",
+                "source_zip_sha256": "b08ac35ec3768da560f0f7221bb38249ae18b0162fd4278e8a549e4ec2bdb144",
+                "stub_sha256": "97c5f3b2d7a789646c00d0f010674b095348e055aa37ccff24fbdd9b167db32e",
+                "generated_at": "2026-10-23T08:35:50Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            }
+        }
+    },
+    "frameworks": {
+        "skyverge-wc-plugin-framework": {
+            "6.0.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-paypal-powered-by-braintree.3.10.0.zip",
+                "stub_sha256": "f66521a042bc26f213f4a8fb1bc88bf3e5644011ce7afed5ca753f5aa174e135",
+                "generated_at": "2026-10-23T08:06:32Z",
+                "generator": "php-stubs/generator v0.9.0"
+            },
+            "6.2.4": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-paypal-powered-by-braintree.3.11.2.zip",
+                "stub_sha256": "9620dc63fd1508f22891e2cdfa97b2737ae9b1716c6f3c4333d9e4a663f5af5e",
+                "generated_at": "2026-10-23T08:07:17Z",
+                "generator": "php-stubs/generator v0.9.0"
+            }
+        }
+    }
+}

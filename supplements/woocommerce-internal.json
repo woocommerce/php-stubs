@@ -1,0 +1,43 @@
+{
+    "_comment": "WooCommerce source files (relative to plugins/woocommerce) whose declarations php-stubs/woocommerce-stubs omits: it skips src/Internal and every path containing 'Api', which includes src/StoreApi. bin/supplement.sh generates supplements/woocommerce-internal/<wc-version>.stub from these files at that WooCommerce tag. Files whose declarations upstream already has at that version are skipped; a file upstream declares only partly fails generation. A file added in a later WooCommerce version goes in \"since\" with that version. Remove a file once no supported version needs it.",
+    "repository": "woocommerce/woocommerce",
+    "files": [
+        "src/Blocks/Assets/Api.php",
+        "src/Internal/AddressProvider/AbstractAutomatticAddressProvider.php",
+        "src/Internal/BatchProcessing/BatchProcessingController.php",
+        "src/Internal/BatchProcessing/BatchProcessorInterface.php",
+        "src/Internal/DataStores/Orders/OrdersTableDataStore.php",
+        "src/Internal/DataStores/StockNotifications/StockNotificationsDataStore.php",
+        "src/Internal/EmailEditor/BlockEmailRenderer.php",
+        "src/Internal/ProductFeed/Feed/FeedInterface.php",
+        "src/Internal/ProductFeed/Feed/FeedValidatorInterface.php",
+        "src/Internal/ProductFeed/Feed/ProductMapperInterface.php",
+        "src/Internal/ProductFeed/Integrations/IntegrationInterface.php",
+        "src/Internal/ProductFeed/Mapping/ProductShapeMapperInterface.php",
+        "src/Internal/StockNotifications/Config.php",
+        "src/Internal/StockNotifications/Enums/NotificationCancellationSource.php",
+        "src/Internal/StockNotifications/Enums/NotificationStatus.php",
+        "src/Internal/StockNotifications/Notification.php",
+        "src/Internal/StockNotifications/StockNotifications.php",
+        "src/Internal/Utilities/Users.php",
+        "src/StoreApi/Exceptions/InvalidCartException.php",
+        "src/StoreApi/Exceptions/RouteException.php",
+        "src/StoreApi/Formatters/FormatterInterface.php",
+        "src/StoreApi/Routes/RouteInterface.php",
+        "src/StoreApi/Routes/V1/AbstractCartRoute.php",
+        "src/StoreApi/Routes/V1/AbstractRoute.php",
+        "src/StoreApi/Schemas/ExtendSchema.php",
+        "src/StoreApi/Schemas/V1/AbstractSchema.php",
+        "src/StoreApi/Schemas/V1/CartItemSchema.php",
+        "src/StoreApi/Schemas/V1/CartSchema.php",
+        "src/StoreApi/Schemas/V1/ItemSchema.php",
+        "src/StoreApi/Schemas/V1/ProductSchema.php",
+        "src/StoreApi/StoreApi.php",
+        "src/StoreApi/Utilities/DraftOrderTrait.php",
+        "src/StoreApi/Utilities/ProductItemTrait.php",
+        "src/StoreApi/functions.php"
+    ],
+    "since": {
+        "src/Internal/ProductFeed/Mapping/ProductShapeMapperInterface.php": "11.0.0"
+    }
+}

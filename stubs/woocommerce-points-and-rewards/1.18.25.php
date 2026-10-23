@@ -1,0 +1,2559 @@
+<?php
+/**
+ * Generated stub declarations for woocommerce-points-and-rewards 1.18.25.
+ * @see https://github.com/woocommerce/all-plugins/tree/stubs
+ */
+
+/**
+ * # WooCommerce Core Actions Integration Class
+ *
+ * This class adds the WooCommerce core actions of product review and user
+ * account registration as point earning actions.  This also provides a sample
+ * integration for 3rd party plugins to follow to add their own custom point
+ * reward actions.
+ */
+class WC_Points_Rewards_Actions
+{
+    /**
+     * Initialize the WooCommerce core Points & Rewards integration class
+     *
+     * @since 1.0
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Adds the WooCommerce core actions integration settings
+     *
+     * @since 1.0
+     * @param array $settings the settings array
+     * @return array the settings array
+     */
+    public function points_rewards_action_settings($settings)
+    {
+    }
+    /**
+     * Provides an event description if the event type is one of 'product-review' or
+     * 'account-signup'
+     *
+     * @since 1.0
+     * @param string $event_description the event description
+     * @param string $event_type the event type
+     * @param object $event the event log object, or null
+     * @return string the event description
+     */
+    public function add_action_event_descriptions($event_description, $event_type, $event)
+    {
+    }
+    /**
+     * Determine if a reward point can be applied to a review.
+     *
+     * A reward point can be applied to a review only if:
+     * - reward points are enabled for review.
+     * - it is a review and not a comment.
+     * - it is the only approved review of the user for the product.
+     *
+     * @param WP_Comment|string|int $comment Comment to determine.
+     * @return bool
+     */
+    public function can_reward_review($comment = \null)
+    {
+    }
+    /**
+     * Add points to customer for posting a product review
+     *
+     * @since 1.0
+     *
+     * @param int        $comment_id The comment ID.
+     * @param int|string $approved   1 if the comment is approved, 0 if not, 'spam' if spam.
+     */
+    public function product_review_action($comment_id, $approved = 0)
+    {
+    }
+    /**
+     * Triggered when a comment is approved
+     *
+     * @param WP_Comment $comment Comment object.
+     */
+    public function product_review_approve_action($comment)
+    {
+    }
+    /**
+     * Reward points for a review.
+     *
+     * @param string $comment_id The comment ID as a numeric string.
+     * @param string $user_id    The user ID as a numeric string.
+     * @param int    $points     Number of points to award.
+     * @param mixed  $data       Arbitrary data associated with the log.
+     */
+    private function reward_points_for_review($comment_id, $user_id, $points, $data)
+    {
+    }
+    /**
+     * Triggered when a review is unapproved.
+     *
+     * @param string     $comment_id The comment ID as a numeric string.
+     * @param WP_Comment $comment    Comment object.
+     */
+    public function product_review_unapproved_action($comment_id, $comment)
+    {
+    }
+    /**
+     * Add points to customer for creating an account
+     *
+     * @since 1.0
+     */
+    public function create_account_action($user_id)
+    {
+    }
+}
+/**
+ * Admin class
+ *
+ * Load / saves admin settings
+ *
+ * @since 1.3.1
+ */
+class WC_Points_Rewards_Admin
+{
+    /** @var string settings page ID */
+    private $page_id;
+    /* @var \WC_Points_Rewards_Manage_Points_List_Table the manage points list table object */
+    private $manage_points_list_table;
+    /* @var \WC_Points_Rewards_Points_Log_List_Table The points log list table object */
+    private $points_log_list_table;
+    /**
+     * Setup admin class
+     *
+     * @since 1.0
+     */
+    public function __construct()
+    {
+    }
+    public function assets()
+    {
+    }
+    /**
+     * Verify that coupouns are enabled and render an annoying warning in the
+     * admin if they are not
+     *
+     * @since 1.0
+     */
+    public function verify_coupons_enabled()
+    {
+    }
+    /**
+     * Get screen id.
+     *
+     * @since 1.7.42
+     */
+    public function get_screen_id()
+    {
+    }
+    /**
+     * Add settings/export screen ID to the list of pages for WC to load its JS on
+     *
+     * @since 1.0
+     * @param array $screen_ids
+     * @return array
+     */
+    public function load_wc_scripts($screen_ids)
+    {
+    }
+    /** 'Points & Rewards' sub-menu methods ******************************************************/
+    /**
+     * Add 'Points & Rewards' sub-menu link under 'WooCommerce' top level menu
+     *
+     * @since 1.0
+     */
+    public function add_menu_link()
+    {
+    }
+    /**
+     * Use WooCommerce Admin pages to display the WooCommerce Admin header
+     * and to load WooCommerce CSS and JS files.
+     *
+     * Reference: https://developer.woocommerce.com/extension-developer-guide/working-with-woocommerce-admin-pages/
+     *
+     * @since 1.7.42
+     */
+    public function wc_admin_connect_points_rewards_pages()
+    {
+    }
+    /**
+     * Save our list table options
+     *
+     * @since 1.0
+     * @param string $status unknown.
+     * @param string $option the option name.
+     * @param mixed $value the option value.
+     * @return mixed
+     */
+    public function set_list_table_options($status, $option, $value)
+    {
+    }
+    /**
+     * Add list table Screen Options
+     *
+     * @since 1.0
+     */
+    public function add_list_table_options()
+    {
+    }
+    /**
+     * Loads the list tables so the columns can be hidden/shown from
+     * the page Screen Options dropdown (this must be done prior to Screen Options
+     * being rendered)
+     *
+     * @since 1.0
+     */
+    public function load_list_tables()
+    {
+    }
+    /**
+     * Returns the list table columns so they can be managed from the screen
+     * options pulldown.  Normally this would happen automatically based on the
+     * screen id, but since we have two distinct list tables sharing one screen
+     * we had to generate unique id's in the two list table constructors, which
+     * means that the core manage_{screen_id}_columns filters don't get called,
+     * so we hook on the screen-based filter and then call our two custom-screen
+     * based filters to get the columns based on the current tab.
+     *
+     * Unfortunately the settings still seem to be saved to the common screen id
+     * so hiding a column in one list table hides a column of the same name in
+     * the other
+     *
+     * @since 1.0
+     * @param $columns array array of column definitions
+     * @return array of column definitions
+     */
+    public function manage_columns($columns)
+    {
+    }
+    /**
+     * Show Points & Rewards Manage/Log page content
+     *
+     * @since 1.0
+     */
+    public function show_sub_menu_page()
+    {
+    }
+    /**
+     * Show the Points & Rewards > Manage tab content
+     *
+     * @since 1.0
+     */
+    private function show_manage_tab()
+    {
+    }
+    /**
+     * Show the Points & Rewards > Log tab content
+     *
+     * @since 1.0
+     */
+    private function show_log_tab()
+    {
+    }
+    /**
+     * Show the Points & Rewards > Settings tab content
+     *
+     * @since 1.4.2
+     */
+    private function show_settings_tab()
+    {
+    }
+    /**
+     * Gets the manage points list table object
+     *
+     * @since 1.0
+     * @return \WC_Points_Rewards_Manage_Points_List_Table the points & rewards manage points list table object
+     */
+    private function get_manage_points_list_table()
+    {
+    }
+    /**
+     * Gets the points log list table object
+     *
+     * @since 1.0
+     * @return \WC_Points_Rewards_Points_Log_List_Table the points & rewards points log list table object
+     */
+    private function get_points_log_list_table()
+    {
+    }
+    /**
+     * Render the 'Points & Rewards' settings page
+     *
+     * @since 1.0
+     */
+    public function render_settings()
+    {
+    }
+    /**
+     * Save the 'Points & Rewards' settings page
+     *
+     * @since 1.0
+     */
+    public function save_settings()
+    {
+    }
+    /**
+     * Filters the save custom field type functions so they get sanitized correctly
+     */
+    public function save_custom_field_types()
+    {
+    }
+    /**
+     * Returns settings array for use by render/save/install default settings methods
+     *
+     * @since 1.0
+     * @return array settings
+     */
+    public static function get_settings()
+    {
+    }
+    /**
+     * Render the Earn Points/Redeem Points conversion ratio section
+     *
+     * @since 1.0
+     * @param array $field associative array of field parameters
+     */
+    public function render_conversion_ratio_field($field)
+    {
+    }
+    /**
+     * Render a singular-plural text field
+     *
+     * @since 0.1
+     * @param array $field associative array of field parameters
+     */
+    public function render_singular_plural_field($field)
+    {
+    }
+    /**
+     * Save the points expiry field
+     *
+     * @since 1.4.2
+     *
+     * @param  string $value  Option value.
+     * @param  array  $option Option name.
+     * @return string
+     */
+    public function save_points_expiry($value, $option)
+    {
+    }
+    /**
+     * Save the Earn Points/Redeem Points Conversion Ratio field
+     *
+     * @since 1.0
+     *
+     * @param  string $value  Option value.
+     * @param  array  $option Option name.
+     * @return string
+     */
+    public function save_conversion_ratio_field($value, $option)
+    {
+    }
+    /**
+     * Clears all transients that saves variation high/low points.
+     *
+     * @since 1.6.42
+     */
+    public function clear_all_transients()
+    {
+    }
+    /**
+     * Save the singular-plural text fields
+     *
+     * @since 0.1
+     * @param  string $value  Option value.
+     * @param  array  $option Option name.
+     * @return string
+     */
+    public function save_singular_plural_field($value, $option)
+    {
+    }
+    /**
+     * Render the 'Points Expry' section
+     *
+     * @since 1.4.2
+     * @param array $field associative array of field parameters
+     */
+    public function render_points_expiry($field)
+    {
+    }
+    /**
+     * Render the 'Apply Points to all previous orders' section
+     *
+     * @since 1.0
+     * @param array $field associative array of field parameters
+     */
+    public function render_apply_points_section($field)
+    {
+    }
+    /**
+     * Handles any points & rewards setting page actions.  The only available
+     * action is to apply points to previous orders, useful when the plugin
+     * is first installed
+     *
+     * @since 1.0
+     */
+    public function handle_settings_actions()
+    {
+    }
+    /**
+     * Render the points earned / redeemed on the Edit Order totals section
+     *
+     * @since 1.0
+     * @param int $order_id the WC_Order ID
+     */
+    public function render_points_earned_redeemed_info($order_id)
+    {
+    }
+    /**
+     * Render the points modifier field on the create/edit coupon page
+     *
+     * TODO: an even better action implementation would be ajax calls with a progress or activity indicator
+     *
+     * @since 1.0
+     */
+    public function render_coupon_points_modifier_field()
+    {
+    }
+    /**
+     * Save the points modifier field on the create/edit coupon page
+     *
+     * @since 1.0
+     * @param int $post_id the coupon post ID
+     */
+    public function save_coupon_points_modifier_field($post_id)
+    {
+    }
+    /**
+     * Go through variations and store the max and min points.
+     *
+     * @since 1.0.0
+     * @version 1.6.5
+     * @param object $product In < WC3.0 this is the variation ID.
+     * @param array $children In WC3.0+ this is not passed.
+     */
+    public function variable_product_sync($product, $children = array())
+    {
+    }
+    /**
+     * Reset points tool
+     * @param  array $tools
+     * @return array
+     */
+    public function woocommerce_debug_tools($tools)
+    {
+    }
+    /**
+     * Clear all points and the logs
+     */
+    public function reset_points_rewards()
+    {
+    }
+    /**
+     * Remove all custom points and rewards messages settings.
+     */
+    public function remove_points_rewards_messages()
+    {
+    }
+}
+/**
+ * Class for integrating with WooCommerce Blocks
+ *
+ * @package WC-Points-Rewards/Classes
+ * @since   1.7.0
+ */
+class WC_Points_Rewards_Integration implements \Automattic\WooCommerce\Blocks\Integrations\IntegrationInterface
+{
+    /**
+     * The name of the integration.
+     *
+     * @return string
+     */
+    public function get_name()
+    {
+    }
+    /**
+     * When called invokes any initialization/setup for the integration.
+     *
+     */
+    public function initialize()
+    {
+    }
+    /**
+     * Returns an array of script handles to enqueue in the frontend context.
+     *
+     * @return string[]
+     */
+    public function get_script_handles()
+    {
+    }
+    /**
+     * Returns an array of script handles to enqueue in the editor context.
+     *
+     * @return string[]
+     */
+    public function get_editor_script_handles()
+    {
+    }
+    /**
+     * An array of key, value pairs of data made available to the block on the client side.
+     *
+     * @return array
+     */
+    public function get_script_data()
+    {
+    }
+    /**
+     * Get the file modified time as a cache buster if we're in dev mode.
+     *
+     * @param string $file Local path to the file.
+     * @return string The cache buster value to use for the given file.
+     */
+    protected function get_file_version($file)
+    {
+    }
+}
+/**
+ * Cart / Checkout class
+ *
+ * Adds earn/redeem messages to the cart / checkout page and calculates the discounts available
+ *
+ * @since 1.0
+ */
+class WC_Points_Rewards_Cart_Checkout
+{
+    /**
+     * Add cart/checkout related hooks / filters
+     *
+     * @since 1.0
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Make the label for the coupon look nicer
+     * @param  string $label
+     * @return string
+     */
+    public function coupon_label($label)
+    {
+    }
+    /**
+     * Ensure points are applied before tax, last
+     */
+    public function points_last()
+    {
+    }
+    /**
+     * Redisplays the redeem and earn messages after a discount has been updated.
+     *
+     * @param string $coupon_code Coupon code which is removed.
+     */
+    public function discount_updated($coupon_code)
+    {
+    }
+    /**
+     * Redisplays the redeem and earn messages after a discount has been removed.
+     * Handles edge case where WC Subscriptions is installed and removes coupons from recurring products
+     * on all asynchronous requests
+     *
+     * @since 1.7.10
+     * @param string $coupon_code Coupon code which is removed.
+     */
+    public function coupon_removed($coupon_code)
+    {
+    }
+    /**
+     * Redeem the available points by generating and applying a discount code on the cart page
+     *
+     * @since 1.0
+     */
+    public function maybe_apply_discount()
+    {
+    }
+    /**
+     * @return bool True if the discount has already been applied to the cart.
+     *
+     * @since 1.7.0
+     */
+    public static function is_discount_applied()
+    {
+    }
+    /**
+     * Redeem the available points by generating and applying a discount code via AJAX on the checkout page
+     *
+     * @since 1.0
+     */
+    public function ajax_maybe_apply_discount()
+    {
+    }
+    /**
+     * If the request is from the rest API, we shouldn't show the success messages in the Cart block.
+     * @param string $message The message that will be shown to the user if the points are applied outside of the REST API.
+     * @param integer $message_code The code indicating success/failure.
+     * @param \WC_Coupon $coupon The coupon that was added.
+     *
+     * @return string The message that will be shown to the user if the points are applied outside of the REST API.
+     *
+     * @since 1.7.0
+     */
+    public static function hide_success_message_for_rest_requests($message, $message_code, $coupon)
+    {
+    }
+    /**
+     * Applies a coupon indicating a points redemption. This method is used by WooCommerce Blocks, via the REST API.
+     *
+     * @param array $args The arguments containing the number of points the user wants to redeem.
+     *
+     * @return void
+     *
+     * @since 1.7.0
+     */
+    public static function rest_apply_discount($args)
+    {
+    }
+    /**
+     * Generate the error message when the redeemed points don't reach the set minimum.
+     *
+     * @param int $discount_amount The points discount submitted.
+     *
+     * @return string|null Error message or null if no error.
+     *
+     * @since 1.7.3
+     */
+    private static function generate_below_minimum_discount_message($discount_amount)
+    {
+    }
+    /**
+     * Adds the corresponding error notice if the discount amount doesn't reach the set minimum.
+     *
+     * @param int $discount_amount The points discount submitted.
+     *
+     * @return bool true if the notice was added, false otherwise.
+     *
+     * @since 1.7.3
+     */
+    private static function queue_below_minimum_discount_notice($discount_amount)
+    {
+    }
+    /**
+     * Generate the message that will be displayed showing how many points the customer will receive for completing their purchase.
+     *
+     * @return string the message that will be displayed showing how many points the customer will receive for completing their purchase.
+     *
+     * @since 1.7.0
+     */
+    public function generate_earn_points_message()
+    {
+    }
+    /**
+     * Renders a message above the cart displaying how many points the customer will receive for completing their purchase
+     *
+     * @since 1.0
+     */
+    public function render_earn_points_message()
+    {
+    }
+    /**
+     * Renders a message on the thank you / order received page that tells the customer how many points they earned and
+     * how many they have total
+     * @param int $order_id
+     */
+    public function render_thank_you_message($order_id)
+    {
+    }
+    /**
+     * Returns the number of exact points earned for an order
+     * @param  int $order_id
+     * @return int
+     */
+    public function get_points_earned_for_order_received($order_id)
+    {
+    }
+    /**
+     * Determines if the users cart is fully discounted.
+     *
+     * @since 1.6.10
+     *
+     * @return boolean
+     */
+    public function is_fully_discounted()
+    {
+    }
+    /**
+     * Generates the message to shoppers telling them how many points htey can redeem.
+     *
+     * @return string The message displayed to shoppers telling them how many points they can redeem.
+     * @since 1.7.0
+     */
+    public function generate_redeem_points_message()
+    {
+    }
+    /**
+     * Renders a message and button above the cart displaying the points available to redeem for a discount
+     *
+     * @since 1.0
+     */
+    public function render_redeem_points_message()
+    {
+    }
+    /**
+     * Renders the redeem message and button at the end of the checkout form.
+     *
+     * @return void
+     */
+    public function maybe_render_redeem_points_message_after_checkout_form()
+    {
+    }
+    /**
+     * Add AJAX submit for applying the discount on the checkout page footer.
+     *
+     * @return void
+     */
+    public function render_apply_discount_javascript()
+    {
+    }
+    /**
+     * Add javascript to footer.
+     *
+     * @return void
+     */
+    public function render_discount_javascript()
+    {
+    }
+    /**
+     * Add the maxiumum amount of redeemable points to the cart page.
+     */
+    public function cart_max_points()
+    {
+    }
+    /**
+     * Returns the max amount of points that can be applied to the cart.
+     *
+     * @return integer The maximum number of points that can be applied to the cart.
+     * @since 1.7.0
+     */
+    public function calculate_cart_max_points()
+    {
+    }
+    /**
+     * Returns the amount of points earned for the purchase, calculated by getting the points earned for each individual
+     * product purchase multiplied by the quantity being ordered
+     *
+     * @since 1.0
+     */
+    private function get_points_earned_for_purchase()
+    {
+    }
+    /**
+     * Returns the maximum possible discount available given the total amount of points the customer has
+     *
+     * @since 1.0.0
+     * @version 1.6.5
+     * @param bool   $applying                  To indicate if this method is called during application of the points.
+     * @param float  $existing_discount_amounts Total amount for existing discount for items in cart.
+     * @param bool   $for_display               Whether to generate discount amount for message display purposes or for the actual discount.
+     * @param string $code                      Coupon code, used to check if this coupon was already applied in the process.
+     */
+    public static function get_discount_for_redeeming_points($applying = \false, $existing_discount_amounts = \null, $for_display = \false, $code = \null)
+    {
+    }
+    /**
+     * Calculate the discount for a single cart item.
+     *
+     * @since 1.6.41
+     *
+     * @param array $item        The cart item.
+     * @param bool  $for_display Whether to generate discount amount for message display purposes or for the actual discount.
+     *
+     * @return int
+     */
+    private static function get_discount_for_cart_item($item, $for_display)
+    {
+    }
+    /**
+     * Calculate the maximum points discount when it's set to a percentage by multiplying the percentage times the cart's
+     * price
+     *
+     * @since 1.0
+     * @param string $percentage the percentage to multiply the price by
+     * @return float the maximum discount after adjusting for the percentage
+     */
+    private static function calculate_discount_modifier($percentage)
+    {
+    }
+}
+/**
+ * Discount class
+ *
+ * Handles generating the coupon code and data that allows the user to redeem their points for a discount
+ *
+ * @since 1.6.0
+ */
+class WC_Points_Rewards_Discount
+{
+    /**
+     * Add coupon-related filters to help generate the custom coupon
+     *
+     * @since 1.6.0
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Add or remove callbacks to/from the hooks.
+     *
+     * @since 1.6.5
+     * @version 1.6.5
+     *
+     * @param string $verb What operation to perform (either 'add' or 'remove').
+     */
+    protected function hooks($verb)
+    {
+    }
+    /**
+     * Generate the coupon data required for the discount
+     *
+     * @deprecated 1.6.0
+     * @since 1.0
+     * @param array  $data the coupon data
+     * @param string $code the coupon code
+     * @return array the custom coupon data
+     */
+    public function get_discount_data($data, $code)
+    {
+    }
+    /**
+     * Change the "Coupon applied successfully" message to "Discount Applied Successfully"
+     *
+     * @since 1.6.0
+     * @param string $message the message text
+     * @param string $message_code the message code
+     * @param object $coupon the WC_Coupon instance
+     * @return string the modified messages
+     */
+    public function get_discount_applied_message($message, $message_code, $coupon)
+    {
+    }
+    /**
+     * Returns items to apply coupons.
+     *
+     * @param array     $items_to_apply Array of items to apply the coupon to.
+     * @param WC_Coupon $coupon The coupon object.
+     *
+     * @since 1.7.51
+     * @return array
+     */
+    public function get_items_to_apply($items_to_apply, $coupon)
+    {
+    }
+    /**
+     * Generates a unique discount code tied to the current user ID and timestamp
+     *
+     * @since 1.6.0
+     */
+    public static function generate_discount_code()
+    {
+    }
+    /**
+     * Returns the unique discount code generated for the applied discount if set
+     *
+     * @since 1.6.0
+     */
+    public static function get_discount_code()
+    {
+    }
+    /**
+     * Returns a list of product IDs that are excluded from the discount.
+     *
+     * @since 1.7.51
+     * @return array
+     */
+    public function get_excluded_product_ids()
+    {
+    }
+}
+/**
+ * WooCommerce Points and Rewards Extend Store API.
+ *
+ * A class to extend the store public API with points and rewards related data.
+ *
+ * @package WC-Points-Rewards/Classes
+ * @since 1.7.0
+ */
+class WC_Points_Rewards_Extend_Store_Endpoint
+{
+    /**
+     * Stores Rest Extending instance.
+     *
+     * @var \Automattic\WooCommerce\Blocks\Domain\Services\ExtendRestApi
+     */
+    private static $extend;
+    /**
+     * Plugin Identifier, unique to each plugin.
+     *
+     * @var string
+     */
+    const IDENTIFIER = 'points-and-rewards';
+    /**
+     * Bootstraps the class and hooks required data.
+     *
+     */
+    public static function init()
+    {
+    }
+    /**
+     * Registers the actual data into each endpoint.
+     *
+     */
+    public static function extend_store()
+    {
+    }
+    /**
+     * Register points and reward data into cart endpoint.
+     *
+     * @return array Registered data or empty array if condition is not satisfied.
+     *
+     */
+    public static function extend_cart_data()
+    {
+    }
+    /**
+     * Register points and rewards schema into cart endpoint.
+     *
+     * @return array Registered schema.
+     *
+     */
+    public static function extend_cart_schema()
+    {
+    }
+}
+/**
+ * Shared list table sorting functionality.
+ */
+trait WC_Points_Rewards_List_Table_Sorting
+{
+    /**
+     * Gets the requested orderby value, falling back to the table default.
+     *
+     * @return string
+     */
+    private function get_current_orderby()
+    {
+    }
+    /**
+     * Gets the requested sort direction, defaulting to descending.
+     *
+     * @return string
+     */
+    private function get_current_order()
+    {
+    }
+}
+/**
+ * Points and Rewards Manage Points List Table class
+ *
+ * Extends WP_List_Table to display customer reward points
+ *
+ * @since 1.0
+ * @extends \WP_List_Table
+ */
+class WC_Points_Rewards_Manage_Points_List_Table extends \WP_List_Table
+{
+    use \WC_Points_Rewards_List_Table_Sorting;
+    /**
+     * Default field used to sort the list table.
+     *
+     * @var string
+     */
+    protected $default_orderby = 'points';
+    /**
+     * Setup list table
+     *
+     * @see WP_List_Table::__construct()
+     * @since 1.0
+     * @return \WC_Points_Rewards_Manage_Points_List_Table
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Gets the bulk action available for user points: update
+     *
+     * @see WP_List_Table::get_bulk_actions()
+     * @since 1.0
+     * @return array associative array of action_slug => action_title
+     */
+    public function get_bulk_actions()
+    {
+    }
+    /**
+     * Returns the column slugs and titles
+     *
+     * @see WP_List_Table::get_columns()
+     * @since 1.0
+     * @return array of column slug => title
+     */
+    public function get_columns()
+    {
+    }
+    /**
+     * Returns the sortable columns and initial direction
+     *
+     * @see WP_List_Table::get_sortable_columns()
+     * @since 1.0
+     * @return array of sortable column slug => array( 'orderby', boolean )
+     *         where true indicates the initial sort is descending
+     */
+    public function get_sortable_columns()
+    {
+    }
+    /**
+     * Get content for the special checkbox column
+     *
+     * @see WP_List_Table::single_row_columns()
+     * @since 1.0
+     * @param object $row one row (item) in the table
+     * @return string the checkbox column content
+     */
+    public function column_cb($row)
+    {
+    }
+    /**
+     * Get column content, this is called once per column, per row item ($user_points)
+     * returns the content to be rendered within that cell.
+     *
+     * @see WP_List_Table::single_row_columns()
+     * @since 1.0
+     * @param object $user_points one row (item) in the table
+     * @param string $column_name the column slug
+     * @return string the column content
+     */
+    public function column_default($user_points, $column_name)
+    {
+    }
+    /**
+     * Get the current action selected from the bulk actions dropdown, verifying
+     * that it's a valid action to perform
+     *
+     * @see WP_List_Table::current_action()
+     * @since 1.0
+     * @return string|bool The action name or False if no action was selected
+     */
+    public function current_action()
+    {
+    }
+    /**
+     * Handle actions for both individual items and bulk update
+     *
+     * @since 1.0
+     */
+    public function process_actions()
+    {
+    }
+    /**
+     * Output any messages from the bulk action handling
+     *
+     * @since 1.0
+     */
+    public function render_messages()
+    {
+    }
+    /**
+     * Generates queries to get our list table items.
+     */
+    private function get_items()
+    {
+    }
+    /**
+     * Modify the user query to add points from a custom table.
+     *
+     * @param WP_User_Query $query User query.
+     * @since 1.6.28
+     */
+    public function user_query_points($query)
+    {
+    }
+    /**
+     * Prepare the list of user points items for display
+     *
+     * @see WP_List_Table::prepare_items()
+     * @since 1.0
+     */
+    public function prepare_items()
+    {
+    }
+    /**
+     * Adds in any query arguments based on the current filters
+     *
+     * @since 1.0
+     * @param array $args associative array of WP_Query arguments used to query and populate the list table
+     * @return array associative array of WP_Query arguments used to query and populate the list table
+     */
+    private function add_filter_args($args)
+    {
+    }
+    /**
+     * The text to display when there are no user pointss
+     *
+     * @see WP_List_Table::no_items()
+     * @since 1.0
+     */
+    public function no_items()
+    {
+    }
+    /**
+     * Extra controls to be displayed between bulk actions and pagination, which
+     * includes our Filters: Customers
+     *
+     * @see WP_List_Table::extra_tablenav();
+     * @since 1.0
+     * @param string $which The placement, one of 'top' or 'bottom'.
+     */
+    public function extra_tablenav($which)
+    {
+    }
+}
+/**
+ * # Manager Class
+ *
+ * ## Points Increase/Reduce Algorithm
+ *
+ * For simplicity we reduce points from the oldest records while increasing
+ * points in a brand new record.  This means that some minor gaming of the
+ * system could be possible if points expiration were supported: for instance a
+ * customer with soon-to-expire points could place a new order to earn points,
+ * then cancel it to cycle out their old points, thus artifically increasing the
+ * life of their points.  Trying to account for this would add a significant
+ * amount of complexity (maybe) and in any event expiring points aren't supported
+ * for version 1.0 and so this algorithm could be revisited when/if that feature
+ * is implemented.
+ *
+ * ## Potential User Points Table Cleanup
+ *
+ * Technically, as soon as a user_points record reaches a balance of zero it
+ * can be removed from this table as it no longer has any real value.  The log
+ * record will still exist, and granted it will point to a missing record, but
+ * this would help the user_points table from growing at the nearly the same
+ * speed as the log table.
+ *
+ * ## User Points Query Implementation
+ *
+ * For better or for worse I decided to make use of the very limited
+ * WP_User_Query class to pull the user points records.  This allowed me on the
+ * one hand to write a very efficient query to pull only the current page of
+ * user records, rather than pulling all user records and sorting in memory.
+ * The drawbacks: I had to do my best to ensure that all customers have the
+ * wc_user_points meta (initializing to 0), and we're quite limited to the
+ * amount of searching possible (currently search is disabled, though it seems
+ * like it would be nice search over billing email or user display name or
+ * something).
+ *
+ * @since 1.0
+ */
+class WC_Points_Rewards_Manager
+{
+    /** @var int records the number of users found during the get_user_points() method */
+    public static $found_users;
+    /**
+     * Returns the description to display for the given event type
+     *
+     * @since 1.0
+     * @param string $event_type the event type
+     * @param object $event optional event log object
+     * @return string the description for $event_type
+     */
+    public static function event_type_description($event_type, $event = \null)
+    {
+    }
+    /**
+     * Sets the points balance for the user identified by $user_id.
+     *
+     * When increasing the points balance the expiry date of newly added points will be based on today.
+     * When decreasing points expiry dates are not changed. The oldest points are decreased first.
+     *
+     * @since 1.0
+     * @param int $user_id user identifier
+     * @param int $points_balance the new points balance
+     * @param string $event_type the event type slug
+     * @return boolean true if successfully updated, false otherwise
+     */
+    public static function set_points_balance($user_id, $points_balance, $event_type)
+    {
+    }
+    /**
+     * Adds points to the balance for the user identified by $user_id
+     *
+     * @since 1.0
+     *
+     * @param int    $user_id    The user identifier.
+     * @param int    $points     The points to add.
+     * @param string $event_type The type of event responsible.
+     * @param mixed  $data       Optional arbitrary data to associate with the log for this action.
+     * @param int    $order_id   Optional order identifier, if this action is associated with a particular order.
+     *
+     * @return boolean true If the points are successfully added to the user's balance.
+     */
+    public static function increase_points($user_id, $points, $event_type, $data = \null, $order_id = \null)
+    {
+    }
+    /**
+     * Reduces the points balance for the user identified by $user_id
+     *
+     * @since 1.0
+     *
+     * @param int    $user_id    The user identifier.
+     * @param int    $points     The points to reduce, ie 75.
+     * @param string $event_type The type of event responsible.
+     * @param mixed  $data       Optional arbitrary data to associate with the log for this action.
+     * @param int    $order_id   Optional order identifier, if this action is associated with a particular order.
+     *
+     * @return boolean true If the points are successfully reduced from the user's balance.
+     */
+    public static function decrease_points($user_id, $points, $event_type, $data = \null, $order_id = \null)
+    {
+    }
+    /**
+     * Deletes the user points record associated with $user_id, but leaves the
+     * points log records intact
+     *
+     * @since 1.0
+     * @param $user_id int the user id to delete all user points records for
+     */
+    public static function delete_user_points($user_id)
+    {
+    }
+    /**
+     * Returns the current points balance for the identified user
+     *
+     * @since 1.0
+     * @param int $user_id the user identifier
+     * @return int the point balance for the user
+     */
+    public static function get_users_points($user_id)
+    {
+    }
+    public static function get_users_points_value($user_id)
+    {
+    }
+    /**
+     * Returns all user points records
+     *
+     * @since 1.0
+     * @param $args array arguments for the user query
+     * @return array of user_points objects with user_id and points_balance fields
+     */
+    public static function get_all_users_points($args)
+    {
+    }
+    /**
+     * Returns the total user points records as found by the most recent call
+     * to get_user_points()
+     *
+     * @since 1.0
+     * @return int the total user points records found
+     */
+    public static function get_found_user_points()
+    {
+    }
+    /**
+     * Calculate the points earned for a purchase based on the given amount. This uses the ratio set in the admin settings
+     * (e.g. earn 10 points for every $1 spent).
+     *
+     * @since 1.0
+     * @param string|float $amount The amount to calculate the points earned for.
+     *
+     * @return int The points earned.
+     */
+    public static function calculate_points($amount)
+    {
+    }
+    /**
+     * Calculate the value of the points earned for a purchase based on the given amount. This uses the ratio set in the
+     * admin settings (e.g. For every 100 points get a $1 discount). The points value is formatted to 2 decimal places.
+     *
+     * @since 1.0
+     * @param int $amount the amount of points to calculate the monetary value for
+     * @return float the monetary value of the points
+     */
+    public static function calculate_points_value($amount)
+    {
+    }
+    /**
+     * Calculate the amount of points required to redeem for a given discount amount. This uses the ratio set in the
+     * admin settings (e.g. For every 100 points get a $1 discount). The points value ceil up to the nearest whole
+     * integer, so $1.01 discount requires 2 points
+     *
+     * @since 1.0
+     * @param float $discount_amount the discount amount to calculate the amount of points required to redeem
+     * @return int
+     */
+    public static function calculate_points_for_discount($discount_amount)
+    {
+    }
+    /**
+     * Calculate how much coupons affect points
+     *
+     * @since 1.6.16
+     * @param int   $points That will be modified by coupons.
+     * @param array $coupons Array of coupons that can affect the points.
+     *
+     * @return int $points Points after coupons modification.
+     */
+    public static function calculate_points_modification_from_coupons($points, $coupons)
+    {
+    }
+    /**
+     * Round the points using merchant selected method.
+     *
+     * @since 1.6.16
+     * @param float $points That will be rounded.
+     *
+     * @return int $points Points after rounding.
+     */
+    public static function round_the_points($points)
+    {
+    }
+}
+/**
+ * Order class
+ *
+ * Handle adding points earned upon checkout & deducting points redeemed for discounts
+ *
+ * @since 1.0
+ */
+class WC_Points_Rewards_Order
+{
+    /**
+     * Add hooks/filters
+     *
+     * @since 1.0
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Conditionally updates points.
+     *
+     * @since 1.6.0
+     * @version 1.6.7
+     * @param int $order_id
+     */
+    public function maybe_update_points($order_id)
+    {
+    }
+    /**
+     * Add the points earned for purchase to the customer's account upon successful payment
+     *
+     * @since 1.0
+     * @param object|int $order the WC_Order object or order ID
+     *
+     * @return bool True if points redeemed, false if not.
+     */
+    public function add_points_earned($order)
+    {
+    }
+    /**
+     * Returns the amount of points earned for the purchase, calculated by getting the points earned for each individual
+     * product purchase multiplied by the quantity being ordered
+     *
+     * @since 1.0
+     * @param WC_Order $order
+     * @return int
+     */
+    private function get_points_earned_for_purchase($order)
+    {
+    }
+    /**
+     * Logs the possible points and amount for redemption.
+     * This is needed because some orders will be in pending or on-hold
+     * before it gets processed.
+     *
+     * @since 1.6.1
+     * @version 1.6.1
+     * @param int $order_id Order ID.
+     */
+    public function log_redemption_points($order_id)
+    {
+    }
+    /**
+     * Deducts the points redeemed for a discount when the order is processed at checkout. Note that points are deducted
+     * immediately upon checkout processing to protect against abuse.
+     *
+     * @since 1.0
+     * @param int $order_id the WC_Order ID
+     */
+    public function maybe_deduct_redeemed_points($order_id)
+    {
+    }
+    /**
+     * Get the discount amount associated with the given code.
+     *
+     * @since 1.6.22
+     * @param string $discount_code The unique discount code generated for the applied discount.
+     * @param float  $max_discount The maximum discount available.
+     * @return float The discount amount for the coupon.
+     */
+    public function get_discount_from_code($discount_code, $max_discount = \null)
+    {
+    }
+    /**
+     * Handle an order that is cancelled or refunded by:
+     *
+     * 1) Removing any points earned for the order
+     *
+     * 2) Crediting points redeemed for a discount back to the customer's account if the order that they redeemed the points
+     * for a discount on is cancelled or refunded
+     *
+     * @since 1.0
+     * @param int $order_id the WC_Order ID
+     */
+    public function handle_cancelled_refunded_order($order_id)
+    {
+    }
+    /**
+     * Handle an order that is cancelled or refunded by:
+     *
+     * 1) Removing any points earned for the order
+     *
+     * 2) Crediting points redeemed for a discount back to the customer's account if the order that they redeemed the points
+     * for a discount on is cancelled or refunded
+     *
+     * @since 1.0
+     * @param int $order_id  WC_Order ID
+     * @param int $refund_id WC_Order_Refund ID
+     */
+    public function handle_partially_refunded_order($order_id, $refund_id)
+    {
+    }
+    /**
+     * Exclude any points and rewards metadata from being passed onto renewal order.
+     *
+     * @since  1.7.20
+     * @param  array $order_meta Metadata that we want to filter.
+     * @return array Filtered renewal order metadata.
+     */
+    public function exclude_meta_from_renewal_order($order_meta)
+    {
+    }
+}
+/**
+ * Points Log List Table class
+ *
+ * Extends WP_List_Table to display points history and related information
+ *
+ * @since 1.0
+ * @extends \WP_List_Table
+ */
+class WC_Points_Rewards_Points_Log_List_Table extends \WP_List_Table
+{
+    use \WC_Points_Rewards_List_Table_Sorting;
+    /**
+     * Default field used to sort the list table.
+     *
+     * @var string
+     */
+    protected $default_orderby = 'date';
+    /**
+     * Setup list table
+     *
+     * @see WP_List_Table::__construct()
+     * @since 1.0
+     * @return \WC_Points_Rewards_Points_Log_List_Table
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Returns the column slugs and titles
+     *
+     * @see WP_List_Table::get_columns()
+     * @since 1.0
+     * @return array of column slug => title
+     */
+    public function get_columns()
+    {
+    }
+    /**
+     * Returns the sortable columns and initial direction
+     *
+     * @see WP_List_Table::get_sortable_columns()
+     * @since 1.0
+     * @return array of sortable column slug => array( orderby, boolean )
+     *         where true indicates the initial sort is descending
+     */
+    public function get_sortable_columns()
+    {
+    }
+    /**
+     * Get column content, this is called once per column, per row item ($order)
+     * returns the content to be rendered within that cell.
+     *
+     * @see WP_List_Table::single_row_columns()
+     * @since 1.0
+     * @param object $log_entry one row (item) in the table
+     * @param string $column_name the column slug
+     * @return string the column content
+     */
+    public function column_default($log_entry, $column_name)
+    {
+    }
+    /**
+     * Prepare the list of points history items for display
+     *
+     * @see WP_List_Table::prepare_items()
+     * @since 1.0
+     */
+    public function prepare_items()
+    {
+    }
+    /**
+     * Adds in any query arguments based on the current filters
+     *
+     * @since 1.0
+     * @param array $args associative array of WP_Query arguments used to query and populate the list table
+     * @return array associative array of WP_Query arguments used to query and populate the list table
+     */
+    private function add_filter_args($args)
+    {
+    }
+    /**
+     * The text to display when there are no point log entries
+     *
+     * @see WP_List_Table::no_items()
+     * @since 1.0
+     */
+    public function no_items()
+    {
+    }
+    /**
+     * Extra controls to be displayed before pagination, which
+     * includes our Filters: Customers, Event Types, Event Dates
+     *
+     * @see WP_List_Table::extra_tablenav();
+     * @since 1.0
+     * @param string $which The placement, one of 'top' or 'bottom'.
+     */
+    public function extra_tablenav($which)
+    {
+    }
+    /**
+     * Display a monthly dropdown for filtering items by availability date
+     *
+     * @since 1.0
+     */
+    private function render_dates_dropdown()
+    {
+    }
+}
+/**
+ * Points Log Class
+ *
+ * Access class for the Points Log
+ *
+ * @since 1.0
+ */
+class WC_Points_Rewards_Points_Log
+{
+    /** @var int count of rows found from the query function */
+    public static $found_rows = 0;
+    /**
+     * Adds an entry to the points log table
+     *
+     * @since 1.0
+     * @param array $args the log entry arguments:
+     * + `user_id`        - int required customer identifier
+     * + `points`         - int required the points change, ie 10, -75, etc
+     * + `event_type`     - string required the event type slug
+     * + `user_points_id` - int optional user_points identifier, if this log entry is associated with a user points record
+     * + `order_id`       - int optional order identifier, if this log entry is associated with an order
+     * + `data`           - mixed optional data to associate with this event
+     * + `timestamp`      - string optional event timestamp in mysql format.  Defaults to the current time.
+     * @return boolean true if the record is created, false otherwise
+     */
+    public static function add_log_entry($args)
+    {
+    }
+    /**
+     * Gets point log entries based on $args
+     *
+     * @since 1.0
+     * @param array $args the query arguments
+     * @return array of log entry objects
+     */
+    public static function get_points_log_entries($args)
+    {
+    }
+    /**
+     * Returns all event types and their counts
+     *
+     * @since 1.0
+     * @return array of event types
+     */
+    public static function get_event_types()
+    {
+    }
+    /**
+     * Query for point log entries based on $args
+     *
+     * @since 1.0
+     * @param array $args the query arguments
+     * @return array of log entry objects
+     */
+    public static function query($args)
+    {
+    }
+}
+class WC_Points_Rewards_Privacy extends \WC_Abstract_Privacy
+{
+    /**
+     * Constructor
+     *
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Register the name of the privacy.
+     */
+    public function register_name()
+    {
+    }
+    /**
+     * Gets the message of the privacy to display.
+     *
+     */
+    public function get_privacy_message()
+    {
+    }
+}
+trait ProductEditorStringsTrait
+{
+    public function get_point_description()
+    {
+    }
+    public function get_max_discount_description()
+    {
+    }
+}
+/**
+ * Product Admin class
+ *
+ * Load / saves product admin settings
+ *
+ * @since 1.0
+ */
+class WC_Points_Rewards_Product_Admin
+{
+    use \ProductEditorStringsTrait;
+    /**
+     * Add hooks / filters
+     *
+     * @since 1.0
+     * @version 1.6.11
+     */
+    public function __construct()
+    {
+    }
+    /** Simple Product methods ******************************************************/
+    /**
+     * Render simple product points earned / maximum discount fields
+     *
+     * @since 1.0
+     * @version 1.6.11
+     */
+    public function render_simple_product_fields()
+    {
+    }
+    /**
+     * Save the simple product points earned / maximum discount fields
+     *
+     * @since 1.0
+     *
+     * @param int $post_id Post ID.
+     */
+    public function save_simple_product_fields($post_id)
+    {
+    }
+    /** Variable Product methods ******************************************************/
+    /**
+     * Add points earned / maximum discount to variable products under the 'Variations' tab after the shipping class dropdown
+     *
+     * @since 1.0
+     *
+     * @param int     $loop           Position in the loop.
+     * @param array   $variation_data Variation data.
+     * @param WP_Post $variation      Post data.
+     */
+    public function render_variable_product_fields($loop, $variation_data, $variation)
+    {
+    }
+    /**
+     * Save the variable product points earned / maximum discount fields
+     *
+     * @since 1.0
+     *
+     * @param int $variation_id The variation post ID.
+     */
+    public function save_variable_product_fields($variation_id)
+    {
+    }
+    /**
+     * Renders the 'Points Earned' bulk edit action on the product admin Variations tab.
+     * There is core JS code that automatically handles these bulk edits.
+     *
+     * @since 1.0
+     */
+    public function add_variable_product_bulk_edit_points_action()
+    {
+    }
+    public function add_admin_bulk_action_script()
+    {
+    }
+    /** Product Bulk Edit methods ******************************************************/
+    /**
+     * Add a 'Points Earned' bulk edit field, this is displayed on the Products list page
+     * when one or more products is selected, and the Edit Bulk Action is applied
+     *
+     * @since 1.0
+     */
+    public function add_points_field_bulk_edit()
+    {
+    }
+    /**
+     * Save the 'Points Earned' bulk edit field
+     *
+     * @since 1.0
+     *
+     * @param WC_Product $product Product object.
+     */
+    public function save_points_field_bulk_edit($product)
+    {
+    }
+    /** Product Category methods ******************************************************/
+    /**
+     * Add the points earned / maximum discount fields to the add product category page
+     *
+     * @since 1.0
+     */
+    public function render_product_category_fields()
+    {
+    }
+    /**
+     * Add the points earned / maximum discount fields to the view/edit product category page
+     *
+     * @since 1.0
+     * @param object $term the term object
+     */
+    public function render_edit_product_category_fields($term)
+    {
+    }
+    /**
+     * Return the points field HTML for the product category page
+     *
+     * @since 1.0
+     * @param string $points points earned for the category, if available
+     * @param string $max_discount the maximum points discount for the category, if set
+     */
+    private function get_product_category_fields_html($points = '', $max_discount = '')
+    {
+    }
+    /**
+     * Save the points earned / maximum discount fields
+     *
+     * @since 1.0
+     * @param int $term_id term ID being saved
+     */
+    public function save_product_category_points_field($term_id)
+    {
+    }
+    /**
+     * Clears all transients that saves variation high/low points.
+     *
+     * @since 1.6.5
+     * @version 1.6.5
+     */
+    public function clear_all_transients()
+    {
+    }
+    /**
+     * Add a 'Points Earned' column header to the product category list table
+     *
+     * @since 1.0
+     * @param array $columns associative array of column id to title
+     * @return array
+     */
+    public function add_product_category_list_table_points_column_header($columns)
+    {
+    }
+    /**
+     * Add the 'Points Earned' column content to the product category list table
+     *
+     * @since 1.0
+     * @param array  $columns column content
+     * @param string $column column ID
+     * @param int    $term_id the product category term ID
+     * @return array
+     */
+    public function add_product_category_list_table_points_column($columns, $column, $term_id)
+    {
+    }
+}
+/**
+ * Product Block editor class
+ *
+ * Implements the product block editor fields for points earned and maximum discount.
+ *
+ * @since 1.8.3
+ */
+class WC_Points_Rewards_Product_Block_Editor
+{
+    use \ProductEditorStringsTrait;
+    /**
+     * Add hooks / filters
+     *
+     * @since 1.8.3
+     * @version 1.6.11
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Render simple product points earned / maximum discount fields
+     *
+     * @since 1.8.3
+     * @version 1.6.11
+     *
+     * @param \Automattic\WooCommerce\Admin\BlockTemplates\BlockInterface $product_pricing_block BlockInterface instance for pricing block.
+     */
+    public function add_block_editor_fields(\Automattic\WooCommerce\Admin\BlockTemplates\BlockInterface $product_pricing_block)
+    {
+    }
+}
+/**
+ * Product class
+ *
+ * Handle messages for the single product page, and calculations for how many points are earned for a product purchase,
+ * along with the discount available for a specific product
+ *
+ * @since 1.0
+ */
+class WC_Points_Rewards_Product
+{
+    /**
+     * Add product-related hooks / filters
+     *
+     * @since 1.0
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Add "Earn X Points when you purchase" message to the single product page for simple products
+     *
+     * @since 1.0
+     */
+    public function render_product_message()
+    {
+    }
+    /**
+     * Add a message about the points to the product summary
+     *
+     * @since 1.2.6
+     */
+    public function add_variation_message_to_product_summary()
+    {
+    }
+    /**
+     * Get the variation with the highest points and return the points value
+     *
+     * @since 1.2.6
+     */
+    public function get_highest_points_variation($variations, $product_id)
+    {
+    }
+    /**
+     * Create the "Earn up to X" message
+     *
+     * @since 1.2.6
+     *
+     * @param float $points The number of points that can be earned.
+     *
+     * @return string The <p> element with the "Earn up to X" message.
+     */
+    public function create_variation_message_to_product_summary($points)
+    {
+    }
+    /**
+     * Create the "Earn more than X" message
+     *
+     * @since 1.2.6
+     */
+    public function create_at_least_message_to_product_summary($points)
+    {
+    }
+    /**
+     * Add "Earn X Points when you purchase" message to the single product page
+     * for variable products
+     *
+     * @param array      $data
+     * @param WC_Product $product
+     * @param WC_Product $variation
+     *
+     * @return array
+     */
+    public function render_available_variation_message($data, $product, $variation)
+    {
+    }
+    /**
+     * Add "Earn X Points when you purchase" message to the single product page for variable products
+     *
+     * @since 1.0
+     */
+    public function render_variation_message($price_html, $product)
+    {
+    }
+    /**
+     * Replace product page message variables :
+     *
+     * {points} - the points earned for purchasing the product
+     * {points_value} - the monetary value of the points earned
+     * {points_label} - the label used for points
+     *
+     * @since 1.0
+     * @param string $message the message set in the admin settings
+     * @param object $product the product
+     * @return string the message with variables replaced
+     */
+    private function replace_message_variables($message, $product)
+    {
+    }
+    /**
+     * Return the points earned when purchasing a product. If points are set at both the product and category level,
+     * the product points are used. If points are not set at the product or category level, the points are calculated
+     * using the default points per currency and the price of the product
+     *
+     * @since 1.0
+     * @param object $product the product to get the points earned for
+     * @return int the points earned
+     */
+    public static function get_points_earned_for_product_purchase($product, $order = \null, $context = 'view')
+    {
+    }
+    /**
+     * Return the points earned at the product level if set. If a percentage multiplier is set (e.g. 200%), the points are
+     * calculated based on the price of the product then multiplied by the percentage
+     *
+     * @since 1.0
+     * @param object $product the product to get the points earned for
+     * @return int the points earned
+     */
+    public static function get_product_points($product, $order = \null)
+    {
+    }
+    /**
+     * Return the points earned at the category level if set. If a percentage multiplier is set (e.g. 200%), the points are
+     * calculated based on the price of the product then multiplied by the percentage
+     *
+     * @since 1.0
+     * @param object $product the product to get the points earned for
+     * @return int the points earned
+     */
+    public static function get_category_points($product, $order = \null)
+    {
+    }
+    /**
+     * Calculate the points earned when a product or category is set to a percentage. This modifies the default points
+     * earned based on the global "Earn Points Conversion Rate" setting and products price by the given $percentage.
+     * e.g. a 200% multiplier will change 5 points to 10.
+     *
+     * @since 1.0
+     * @param string $percentage the percentage to multiply the default points earned by
+     * @param object $product the product to get the points earned for
+     * @return int the points earned after adjusting for the multiplier
+     */
+    private static function calculate_points_multiplier($percentage, $product)
+    {
+    }
+    /**
+     * Return the maximum discount available for redeeming points. If a max discount is set at both the product and
+     * category level, the product max discount is used. A global max discount can be set which is used as a fallback if
+     * no other max discounts are set
+     *
+     * @since 1.0
+     * @param object $product the product to get the maximum discount for
+     * @return float|string the maximum discount or an empty string which means a maximum discount is not set for the given product
+     */
+    public static function get_maximum_points_discount_for_product($product)
+    {
+    }
+    /**
+     * Return the maximum point discount at the product level if set. If a percentage multiplier is set (e.g. 35%),
+     * the maximum discount is equal to the product's price times the percentage
+     *
+     * @since 1.0
+     * @param object $product the product to get the maximum discount for
+     * @return float|string the maximum discount
+     */
+    private static function get_product_max_discount($product)
+    {
+    }
+    /**
+     * Return the maximum points discount at the category level if set. If a percentage multiplier is set (e.g. 35%),
+     * the maximum discount is equal to the product's price times the percentage
+     *
+     * @since 1.0
+     * @param object $product the product to get the maximum discount for
+     * @return float|string the maximum discount
+     */
+    private static function get_category_max_discount($product)
+    {
+    }
+    /**
+     * Calculate the maximum points discount when it's set to a percentage by multiplying the percentage times the product's
+     * price
+     *
+     * @since 1.0
+     * @param string $percentage the percentage to multiply the price by
+     * @param object $product the product to get the maximum discount for
+     * @return float the maximum discount after adjusting for the percentage
+     */
+    private static function calculate_discount_modifier($percentage, $product)
+    {
+    }
+    /**
+     * Get highest point variation transient name
+     *
+     * @since 1.2.6
+     */
+    public function transient_highest_point_variation($product_id)
+    {
+    }
+    /**
+     * Get lowest point variation transient name
+     *
+     * @since 1.4.1
+     */
+    public function transient_lowest_point_variation($product_id)
+    {
+    }
+    /**
+     * Delete transients
+     *
+     * @since 1.2.6
+     */
+    public function delete_transients($product_id)
+    {
+    }
+    /**
+     * Check if order is renewal in case Subscriptions is enabled.
+     *
+     * @param WC_Order $order
+     *
+     * @return bool
+     */
+    protected static function is_order_renewal($order)
+    {
+    }
+}
+/**
+ * # WordPress Admin Message Handler Class
+ *
+ * This class provides a reusable WordPress admin messaging facility for setting
+ * and displaying messages and error messages across admin page requests without
+ * resorting to passing the messages as query vars.
+ *
+ * ## Usage
+ *
+ * To use simple instantiate the class then set one or more messages:
+ *
+ * `
+ * $admin_message_handler = new WP_Admin_Message_Handler( __FILE__ );
+ * $admin_message_handler->add_message( 'Hello World!' );
+ * `
+ *
+ * Then show the messages wherever you need, either with the built-in method
+ * or by writing your own:
+ *
+ * `$admin_message_handler->show_messages();`
+ *
+ * @version 1.0.1
+ */
+class WP_Admin_Message_Handler
+{
+    /** Transient message prefix */
+    const MESSAGE_TRANSIENT_PREFIX = '_wp_admin_message_';
+    /** The message id GET name */
+    const MESSAGE_ID_GET_NAME = 'wpamhid';
+    /** @var string unique message identifier, defaults to __FILE__ unless otherwise set */
+    private $message_id;
+    /** @var array array of messages */
+    private $messages = array();
+    /** @var array array of error messages */
+    private $errors = array();
+    /**
+     * Construct and initialize the admin message handler class
+     *
+     * @since 1.0
+     * @param string $message_id optional message id.  Best practice is to set
+     *        this to a unique identifier based on the client plugin, such as __FILE__
+     */
+    public function __construct($message_id = \null)
+    {
+    }
+    /**
+     * Persist messages
+     *
+     * @since 1.0
+     * @return boolean true if any messages were set, false otherwise
+     */
+    public function set_messages()
+    {
+    }
+    /**
+     * Loads messages
+     *
+     * @since 1.0
+     */
+    public function load_messages()
+    {
+    }
+    /**
+     * Clear messages and errors
+     *
+     * @since 1.0
+     * @param string $id the messages identifier
+     */
+    public function clear_messages($id)
+    {
+    }
+    /**
+     * Add an error message.
+     *
+     * @since 1.0
+     * @param string $error error message
+     */
+    public function add_error($error)
+    {
+    }
+    /**
+     * Add a message.
+     *
+     * @since 1.0
+     * @param string $message the message to add
+     */
+    public function add_message($message)
+    {
+    }
+    /**
+     * Get error count.
+     *
+     * @since 1.0
+     * @return int error message count
+     */
+    public function error_count()
+    {
+    }
+    /**
+     * Get message count.
+     *
+     * @since 1.0
+     * @return int message count
+     */
+    public function message_count()
+    {
+    }
+    /**
+     * Get error messages
+     *
+     * @since 1.0
+     * @return array of error message strings
+     */
+    public function get_errors()
+    {
+    }
+    /**
+     * Get an error message
+     *
+     * @since 1.0
+     * @param int $index the error index
+     * @return string the error message
+     */
+    public function get_error($index)
+    {
+    }
+    /**
+     * Get messages
+     *
+     * @since 1.0
+     * @return array of message strings
+     */
+    public function get_messages()
+    {
+    }
+    /**
+     * Get a message
+     *
+     * @since 1.0
+     * @param int $index the message index
+     * @return string the message
+     */
+    public function get_message($index)
+    {
+    }
+    /**
+     * Render the errors and messages.
+     *
+     * @since 1.0
+     */
+    public function show_messages()
+    {
+    }
+    /**
+     * Redirection hook which persists messages into session data.
+     *
+     * @since 1.0
+     * @param string $location the URL to redirect to
+     * @param int    $status the http status
+     * @return string the URL to redirect to
+     */
+    public function redirect($location, $status)
+    {
+    }
+    /**
+     * Generate a unique id to identify the messages
+     *
+     * @since 1.0
+     * @return string unique identifier
+     */
+    private function get_message_id()
+    {
+    }
+}
+class WC_Points_Rewards
+{
+    /** plugin version number */
+    const VERSION = \WC_POINTS_REWARDS_VERSION;
+    /**
+     * The single instance of the class.
+     *
+     * @var $_instance
+     * @since 1.6.32
+     */
+    protected static $_instance = \null;
+    /** @var string the plugin path */
+    private $plugin_path;
+    /** @var string the plugin file */
+    public static $plugin_file = __FILE__;
+    /** @var string the plugin url */
+    private $plugin_url;
+    /** @var \WC_Logger instance */
+    private $logger;
+    /** @var \WC_Points_Rewards_Admin admin class */
+    private $admin;
+    /** @var \WC_Points_Rewards_Admin product admin class */
+    private $product_admin;
+    /** @var WP_Admin_Message_Handler admin message handler class */
+    public $admin_message_handler;
+    /** @var string the user points log database tablename */
+    public $user_points_log_db_tablename;
+    /** @var string the user points database tablename */
+    public $user_points_db_tablename;
+    /** @var WC_Points_Rewards_Actions the core actions integration */
+    public $actions;
+    /** @var string the endpoint page to use for frontend */
+    public $endpoint = \WC_POINTS_REWARDS_ENDPOINT;
+    /** @var WC_Points_Rewards_Product product class */
+    private $product;
+    /** @var WC_Points_Rewards_Cart_Checkout the cart/checkout class */
+    private $cart;
+    /** @var WC_Points_Rewards_Order  the order class */
+    private $order;
+    /** @var WC_Points_Rewards_Discount the discount class */
+    private $discount;
+    /**
+     * Initializes the plugin
+     *
+     * @since 1.0
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * __get method for backward compatibility.
+     *
+     * @param $key string property name
+     * @return mixed
+     * @since 1.7.35
+     */
+    public function __get($key)
+    {
+    }
+    /**
+     * Set up the Blocks integration class
+     *
+     * @since 1.7.0
+     */
+    public static function setup_blocks_integration()
+    {
+    }
+    /**
+     * Register new endpoint to use inside My Account page.
+     *
+     * @since 1.6.3
+     *
+     * @see https://developer.wordpress.org/reference/functions/add_rewrite_endpoint/
+     */
+    public function add_endpoints()
+    {
+    }
+    /**
+     * Main Instance.
+     *
+     * Ensures only one instance is loaded or can be loaded.
+     *
+     * @since 1.6.32
+     * @return WC_Points_Rewards
+     */
+    public static function instance()
+    {
+    }
+    /**
+     * Insert the new endpoint into the My Account menu.
+     *
+     * @since 1.6.3
+     *
+     * @param array $menu_items
+     * @return array
+     */
+    public function add_menu_items($menu_items)
+    {
+    }
+    /**
+     * Deletes the user points for the deleted user identified by $user_id
+     *
+     * @since 1.0
+     * @param int $user_id the identifier of the user being deleted
+     */
+    public function delete_user_points($user_id)
+    {
+    }
+    /**
+     * Include required files
+     *
+     * @since 1.0
+     */
+    public function includes()
+    {
+    }
+    /**
+     * Getter returns properties
+     *
+     * @param string $property The property to get.
+     * @return mixed
+     *
+     * @since 1.7.35
+     */
+    public function get(string $property)
+    {
+    }
+    /**
+     * Include required admin files
+     *
+     * @since 1.0
+     */
+    private function admin_includes()
+    {
+    }
+    /**
+     * Function used to init WooCommerce Points & Rewards template functions,
+     * making them pluggable by plugins and themes.
+     *
+     * @since 1.0
+     */
+    public function include_template_functions()
+    {
+    }
+    /** Admin methods ******************************************************/
+    /**
+     * Return the plugin action links.  This will only be called if the plugin
+     * is active.
+     *
+     * @since 1.0
+     * @param array $actions associative array of action names to anchor tags
+     * @return array associative array of plugin action links
+     */
+    public function add_plugin_configure_link($actions)
+    {
+    }
+    /** Helper methods ******************************************************/
+    /**
+     * Returns the points label, singular or plural form, based on $count
+     *
+     * @since 0.1
+     * @param int $count the count
+     * @return string the points label
+     */
+    public function get_points_label($count)
+    {
+    }
+    /**
+     * Gets the absolute plugin path without a trailing slash, e.g.
+     * /path/to/wp-content/plugins/plugin-directory
+     *
+     * @since 1.0
+     * @return string plugin path
+     */
+    public function get_plugin_path()
+    {
+    }
+    /**
+     * Gets the plugin url without a trailing slash
+     *
+     * @since 1.0
+     * @return string the plugin url
+     */
+    public function get_plugin_url()
+    {
+    }
+    /**
+     * Log errors / messages to WooCommerce error log (/wp-content/woocommerce/logs/)
+     *
+     * @since 1.0
+     * @param string $message
+     */
+    public function log($message)
+    {
+    }
+    /** Lifecycle methods ******************************************************/
+    /**
+     * Run every time. Used since the activation hook is not executed when updating a plugin
+     *
+     * @since 1.0
+     * @since 1.6.15 Update versioning at the beginning.
+     */
+    private function install()
+    {
+    }
+    /**
+     * Perform any version-related changes. Changes to custom db tables are handled by the migrate() method
+     *
+     * @since 1.0
+     * @param int $installed_version the currently installed version of the plugin
+     */
+    private function upgrade($installed_version)
+    {
+    }
+    public function wc_points_rewards_expire_points_remove_schedule()
+    {
+    }
+    /**
+     * Perform updates to custom db tables using dbDelta()
+     *
+     * @since 1.0
+     */
+    private function migrate($installed_version)
+    {
+    }
+    /**
+     * Returns the WordPress DB collation clause used when creating tables
+     *
+     * @since 1.0
+     * @return string db collation clause
+     */
+    private function get_db_collation()
+    {
+    }
+    /**
+     * Checks to see if the WooCommerce checkout or cart block is present on the page
+     *
+     * @todo This is a temporary implementation to check for the presence of WooCommerce blocks on the page
+     *   until WooCommerce Blocks gets something we can register with to avoid the need to perform this check.
+     *
+     * @returns bool True if either of the blocks are present on the page.
+     * @since 1.7.0
+     */
+    public static function is_woocommerce_block_present()
+    {
+    }
+    /**
+     * Checks if WooCommerce Subscriptions functionality is available via the WC Subscriptions plugin or via the WC Payments built in subscriptions feature.
+     *
+     * @since 1.7.35
+     * @return boolean Whether WC Subscriptions is active.
+     */
+    public static function is_wc_subscriptions_present()
+    {
+    }
+    /**
+     * Function expire_points()
+     * If a value is set for points expiry, then expire points based on expiry period
+     *
+     * @since 1.4.2
+     * @return string db collation clause
+     */
+    public function expire_points()
+    {
+    }
+    /**
+     * Initializes the extension once activated plugins have loaded.
+     *
+     * @since 1.6.32
+     * @return Object Instance of extension.
+     */
+    public static function woocommerce_points_and_rewards_plugins_loaded()
+    {
+    }
+    /**
+     * Initializes the extension after WordPress has finished loading.
+     *
+     * @since 1.8.11
+     */
+    public static function woocommerce_points_and_rewards_init()
+    {
+    }
+    public static function init()
+    {
+    }
+}
+/**
+ * Schedule the daily points expiry event.
+ * Erase any existing event(s) and reschedule the next one.
+ */
+function wc_points_rewards_expire_points_schedule()
+{
+}
+/**
+ * Activation
+ *
+ * @since 1.6.3
+ *
+ */
+function wc_points_rewards_activate()
+{
+}
+/**
+ * Register new endpoint to use inside My Account page.
+ *
+ * @since 1.6.3
+ *
+ * @see https://developer.wordpress.org/reference/functions/add_rewrite_endpoint/
+ */
+function wc_points_rewards_add_endpoints()
+{
+}
+\define('WC_POINTS_REWARDS_VERSION', '1.18.25');
+// WRCS: DEFINED_VERSION.
+\define('WC_POINTS_REWARDS_ENDPOINT', 'points-and-rewards');
+/**
+ * The main plugin function to get the main plugin instance.
+ *
+ * @return WC_Points_Rewards
+ */
+function wc_points_rewards()
+{
+}
