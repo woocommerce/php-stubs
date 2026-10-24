@@ -624,6 +624,16 @@
                 "frameworks": [
                     "skyverge-wc-plugin-framework/6.2.4"
                 ]
+            },
+            "3.12.2": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-paypal-powered-by-braintree.3.12.2.zip",
+                "source_zip_sha256": "75277377f4489350cc1dd224404a0d05e3a7fec2961de847dd9b36e17e637938",
+                "stub_sha256": "2696eafa20044794d322d25f76753ddef58d3cacefec845f1c1f2adf3e8a2f3c",
+                "generated_at": "2026-10-24T03:04:06Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": [
+                    "skyverge-wc-plugin-framework/6.2.4"
+                ]
             }
         },
         "woocommerce-gateway-stripe": {
