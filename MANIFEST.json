@@ -801,24 +801,24 @@
             "11.0.1": {
                 "source_url": "https://downloads.wordpress.org/plugin/woocommerce-payments.11.0.1.zip",
                 "source_zip_sha256": "9bc254b45ce8e6e6ffa50c6c9834a85584be426eb062d691fdf0bc50c789dd5a",
-                "stub_sha256": "1724ff225ab8cac28059769d9e9ac22c1f2fc7a5428e3a3c8027a62b7a4c0748",
-                "generated_at": "2026-10-23T08:15:32Z",
+                "stub_sha256": "6ff6964e40229a8f77befd4921dab80873f5eda265d357f0a78ffb49bf1a3700",
+                "generated_at": "2026-10-24T04:52:52Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
             "11.1.0": {
                 "source_url": "https://downloads.wordpress.org/plugin/woocommerce-payments.11.1.0.zip",
                 "source_zip_sha256": "a7f91b0b23aa35b30c91ec65936379efa8b92cb71d8d5b0dd02004f828e564df",
-                "stub_sha256": "32159600a235b5c858b849595ac07cfd27552ffaf0955f35f6652ce1f062cf75",
-                "generated_at": "2026-10-23T08:16:21Z",
+                "stub_sha256": "d0912cca509e838a7af9f9933195bdfa341d91250023b10c52b4c52a6365fe98",
+                "generated_at": "2026-10-24T04:53:18Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
             "11.2.0": {
                 "source_url": "https://downloads.wordpress.org/plugin/woocommerce-payments.11.2.0.zip",
                 "source_zip_sha256": "c6a812b40c56cade1f9ec5be825888ec8f4822173118bece003cf6cc2e90a73d",
-                "stub_sha256": "18fcc7a9dff0ee51252e496c35cd484bcf22ca35f035ce8e7976256906ecb2ab",
-                "generated_at": "2026-10-23T08:17:10Z",
+                "stub_sha256": "108601c020f8b42b08395ad2ab5eeb29abf5ecedd7ccb7d5fe6145dbe11b5afc",
+                "generated_at": "2026-10-24T04:53:41Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }

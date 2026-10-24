@@ -44545,3 +44545,6 @@ namespace {
     {
     }
 }
+namespace {
+    \define('WCPAY_VERSION_NUMBER', '11.2.0');
+}
