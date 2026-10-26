@@ -105,6 +105,16 @@
                 "frameworks": []
             }
         },
+        "gtm-kit": {
+            "2.23.0": {
+                "source_zip_sha256": "fd5325f502a7ede1297da7e3a3e4912e416a4b6ca4dddf33d76aea579908e9c5",
+                "stub_sha256": "e9120c85cf000e1628eee48768b1c7946f0033f16e7903a10da32b143bd6ea76",
+                "generated_at": "2026-10-26T20:22:47Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": [],
+                "public": true
+            }
+        },
         "mailpoet": {
             "5.41.0": {
                 "source_url": "https://downloads.wordpress.org/plugin/mailpoet.5.41.0.zip",
