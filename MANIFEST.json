@@ -1200,6 +1200,13 @@
                 "generated_at": "2026-10-22T17:28:42Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "4.1.2": {
+                "source_zip_sha256": "f969419bb30519b9cf34e2695236d6347352f01efbc7f92184661145aa78b380",
+                "stub_sha256": "fee89c23e55968f50718708582f235cc5945d765c0ba1accfb6645ec9eb3ca3f",
+                "generated_at": "2026-10-26T10:15:41Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-shipping-stamps": {
