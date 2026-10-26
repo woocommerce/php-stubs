@@ -1198,6 +1198,13 @@
                 "generated_at": "2026-10-22T17:27:29Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "3.3.6": {
+                "source_zip_sha256": "0f85e65acb073cec8645fc1253ebb8da56247d1a3e093e5c31d1d9e5bd13803c",
+                "stub_sha256": "6f9506b6794be9cc14f25567e33c993ef6c9d91ccf476791d27afd58556ea3e8",
+                "generated_at": "2026-10-26T12:13:18Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-shipping-royalmail": {
