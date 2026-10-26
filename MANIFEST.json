@@ -522,6 +522,13 @@
                 "generated_at": "2026-10-22T17:06:37Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "3.2.2": {
+                "source_zip_sha256": "0d847e2af03038d0063e587e77ebf606c0b41192f42864b955a2f016a2e4676e",
+                "stub_sha256": "ca8b91f0169d99eabedbb79a8e779565897e04998f287e25c36ebab672f8e797",
+                "generated_at": "2026-10-26T10:46:24Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-gateway-amazon-payments-advanced": {
