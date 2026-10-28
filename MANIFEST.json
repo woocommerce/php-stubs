@@ -139,6 +139,14 @@
                 "generated_at": "2026-10-23T07:39:03Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "5.44.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/mailpoet.5.44.0.zip",
+                "source_zip_sha256": "3cefb65f6d2e466687b408175d0a7883b76f40a97a9643b07c8eb38aec39ade2",
+                "stub_sha256": "8a12f2293264d29f15721af9b7aa44d426c0b00f229e64d4a42034f3c3ef5072",
+                "generated_at": "2026-10-28T03:04:09Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "paypal-payment-buttons": {
