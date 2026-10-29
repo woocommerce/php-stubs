@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-product-addons 8.4.5.
+ * Generated stub declarations for woocommerce-product-addons 8.4.6.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -222,7 +222,7 @@ class WC_PAO_List_Table extends \WP_List_Table
  * Product Add-Ons admin notices handling.
  *
  * @class    WC_PAO_Admin_Notices
- * @version  8.4.5
+ * @version  8.4.6
  */
 class WC_PAO_Admin_Notices
 {
@@ -267,9 +267,10 @@ class WC_PAO_Admin_Notices
     /**
      * Add a notice/error.
      *
-     * @param  string  $text
-     * @param  mixed   $args
-     * @param  boolean $save_notice
+     * @param  string       $text
+     * @param  array|string $args Additional arguments for the notice.
+     * @param  boolean      $save_notice
+     * @phpstan-param array{type: string, dismiss_class?: string, unique_context?: string}|string $args
      * @return void
      */
     public static function add_notice($text, $args, $save_notice = \false)
@@ -382,8 +383,9 @@ class WC_PAO_Admin_Notices
      *
      * @since  6.0.0
      *
-     * @param  string $text
-     * @param  mixed  $args
+     * @param  string       $text
+     * @param  array|string $args Additional arguments for the notice.
+     * @phpstan-param array{type: string, dismiss_class?: string, unique_context?: string}|string $args
      * @return void
      */
     public static function add_dismissible_notice($text, $args)
@@ -774,7 +776,7 @@ class WC_Product_Addons_Privacy extends \WC_Abstract_Privacy
  * WooCommerce core Product Exporter support.
  *
  * @class    WC_Product_Addons_Product_Export
- * @version  8.4.5
+ * @version  8.4.6
  */
 class WC_Product_Addons_Product_Export
 {
@@ -793,7 +795,7 @@ class WC_Product_Addons_Product_Export
      * @param  WC_Meta_Data $meta
      * @param  WC_Product   $product
      * @param  array        $row
-     * @return string        $meta_value
+     * @return mixed         $meta_value
      */
     public static function export_product_addons($meta_value, $meta, $product, $row)
     {
@@ -927,7 +929,7 @@ class WC_Product_Add_Ons_Groups_Controller extends \WP_REST_Controller
 /**
  * Extends the store public API with add-ons related data.
  *
- * @version 8.4.5
+ * @version 8.4.6
  */
 class WC_Product_Addons_Store_API
 {
@@ -1046,7 +1048,7 @@ class WC_Product_Addons_Store_API
      * @param  mixed                $response Result to send to the client, as filtered by other callbacks.
      * @param  array<string, mixed> $server   Route handler used for the request.
      * @param  WP_REST_Request      $request  Request used to generate the response.
-     * @return WP_REST_Response|WP_Error
+     * @return mixed
      */
     public static function filter_cart_item_data($response, $server, $request)
     {
@@ -1231,7 +1233,7 @@ abstract class WC_Product_Addons_Api_V2_Abstract_Group
  *
  * @package Automattic\WooCommerce\ProductAddons
  * @since 6.9.0
- * @version 8.4.5
+ * @version 8.4.6
  */
 /**
  * Controller class.
@@ -1363,7 +1365,7 @@ class WC_Product_Addons_Api_V2_Controller extends \WP_REST_Controller
      *
      * `id` can come from the query string or body as well as the URL, so it may be any
      * string or an array. A numeric value is cast as PHP would coerce it for the
-     * constructor, so a negative ID still reaches it and gets its 404.
+     * constructor, and a negative ID is left for the caller to reject.
      *
      * @since 8.4.5
      *
@@ -1578,7 +1580,7 @@ class WC_Product_Addons_Api_V2_Product_Rest_Api
     /**
      * Custom REST API product field names, indicating support for getting/updating.
      *
-     * @var array
+     * @var array<string, list<string>>
      */
     private static $product_fields = array('exclude_global_add_ons' => array('get', 'update'), 'addons' => array('get', 'update'));
     /**
@@ -2008,7 +2010,7 @@ class WC_Product_Addons_Ability_Output
  * WC_Product_Addons_Cart_Ajax class
  *
  * @class    WC_Product_Addons_Cart_Ajax
- * @version  8.4.5
+ * @version  8.4.6
  */
 class WC_Product_Addons_Cart_Ajax
 {
@@ -2059,7 +2061,7 @@ class WC_Product_Addons_Cart_Ajax
  * WC_Product_Addons_Cart class.
  *
  * @class    WC_Product_Addons_Cart
- * @version  8.4.5
+ * @version  8.4.6
  */
 class WC_Product_Addons_Cart
 {
@@ -2072,7 +2074,7 @@ class WC_Product_Addons_Cart
     /**
      * Server-known existing file values keyed by add-on field name.
      *
-     * @var array
+     * @var array<string>
      */
     private $trusted_file_values = array();
     /**
@@ -2443,7 +2445,7 @@ class WC_Product_Addons_Cart
  * 3rd-party Extensions Compatibility.
  *
  * @class    WC_PAO_Compatibility
- * @version  8.4.5
+ * @version  8.4.6
  */
 class WC_PAO_Compatibility
 {
@@ -3686,7 +3688,7 @@ class WC_Product_Addons_Product_Add_Ons_Ability implements \Automattic\WooCommer
  * Product Add-Ons Tracker.
  *
  * @class    WC_PAO_Tracker
- * @version  8.4.5
+ * @version  8.4.6
  */
 class WC_PAO_Tracker
 {
@@ -4001,7 +4003,7 @@ class WC_Product_Addons_Upload_Limits
  * Functions for WC core back-compatibility.
  *
  * @class    WC_PAO_Core_Compatibility
- * @version  8.4.5
+ * @version  8.4.6
  */
 class WC_PAO_Core_Compatibility
 {
@@ -4041,7 +4043,7 @@ class WC_PAO_Core_Compatibility
      *
      * @since 6.8.2
      *
-     * @var array
+     * @var WP_REST_Request[]
      */
     private static $requests = array();
     /**
@@ -4105,7 +4107,7 @@ class WC_PAO_Core_Compatibility
     /**
      * Helper method to get the version of the currently installed WooCommerce.
      *
-     * @return string
+     * @return string|null
      */
     private static function get_wc_version()
     {
@@ -4246,6 +4248,75 @@ class WC_Product_Addons_Blocks_Compatibility
     }
 }
 /**
+ * Memberships Compatibility: member discounts apply to the product price, not to add-on fees.
+ *
+ * @version 8.4.6
+ */
+class WC_Product_Addons_Memberships_Compatibility
+{
+    /**
+     * Cart item products that already include the member discount.
+     *
+     * @var SplObjectStorage<WC_Product, mixed>
+     */
+    private static $excluded_products;
+    /**
+     * Init.
+     *
+     * @return void
+     */
+    public static function init()
+    {
+    }
+    /**
+     * Recalculates the add-on fees of a cart item on top of its member price.
+     *
+     * Memberships would otherwise discount the sum of the product price and its add-on fees.
+     *
+     * @since 8.4.6
+     *
+     * @param  array<string, mixed> $cart_item Cart item data.
+     * @return array<string, mixed>
+     */
+    public static function apply_member_discount($cart_item)
+    {
+    }
+    /**
+     * Applies member discounts to cart items restored before Memberships started discounting.
+     *
+     * @since 8.4.6
+     *
+     * @return void
+     */
+    public static function apply_member_discount_to_restored_cart()
+    {
+    }
+    /**
+     * Excludes discounted cart item products and add-on price clones from member discounts.
+     *
+     * @since 8.4.6
+     *
+     * @param  bool  $excluded Whether the product is excluded from member discounts.
+     * @param  mixed $product  Product object, post object or ID.
+     * @return bool
+     */
+    public static function exclude_product($excluded, $product = \null)
+    {
+    }
+    /**
+     * Add-on fees are not discounted by Memberships.
+     *
+     * @since 8.4.6
+     *
+     * @param  mixed $cloned_product Product clone priced at the add-on price, or an earlier filter's value.
+     * @param  mixed $product Original cart item product.
+     * @return mixed
+     */
+    public static function exclude_addon_clone($cloned_product, $product = \null)
+    {
+    }
+}
+/**
  * Name Your Price Compatibility.
  *
  * @version 7.0.3
@@ -4354,7 +4425,7 @@ class WC_Product_Addons_Subscriptions_Compatibility
 /**
  * WooPayments Compatibility.
  *
- * @version 8.4.5
+ * @version 8.4.6
  */
 class WC_Product_Addons_WC_Payments_Compatibility
 {
@@ -4364,6 +4435,17 @@ class WC_Product_Addons_WC_Payments_Compatibility
      * @return void
      */
     public static function init()
+    {
+    }
+    /**
+     * Restore the store currency before WooPayments' AJAX filters convert a measured shopper price.
+     *
+     * @internal
+     * @since 8.4.6
+     * @param float $price Shopper-currency amount.
+     * @return float
+     */
+    public static function get_store_currency_price($price)
     {
     }
     /**
@@ -5587,4 +5669,4 @@ function woocommerce_product_addons_deactivation()
 function woocommerce_product_addons_init()
 {
 }
-\define('WC_PRODUCT_ADDONS_VERSION', '8.4.5');
+\define('WC_PRODUCT_ADDONS_VERSION', '8.4.6');

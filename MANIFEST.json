@@ -985,10 +985,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "8.4.5": {
-                "source_zip_sha256": "5c920a44dcd329a492e0637c58963948caf2bf09d0e55f3e76ce70bc249cc2bf",
-                "stub_sha256": "8253f5ad2b8bad05896be057f5474eb032c0e0187d8d10ea7615397f8c25c0d9",
-                "generated_at": "2026-10-23T21:01:22Z",
+            "8.4.6": {
+                "source_zip_sha256": "44573ffd4c5be9e4b16e1d11725373c3c190009d18fc55c21cd36f5989ab5ff6",
+                "stub_sha256": "b39322f7e7f4c33c852bc8ecf7fa831e256f2c8a893e5be4b1c8e835b18ace7f",
+                "generated_at": "2026-10-29T09:39:09Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
