@@ -529,6 +529,13 @@
                 "generated_at": "2026-10-22T17:05:38Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "1.2.41": {
+                "source_zip_sha256": "90fb2cc7f2ee2e9c4d4f7ce6f1160d4c39d8021254e62853df5f2abf7e5ce7ae",
+                "stub_sha256": "512770753b02a28cd3b4ecb1d09f0d229a53a2420673fef56c61bec5991e91e5",
+                "generated_at": "2026-10-29T09:13:37Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-deposits": {
