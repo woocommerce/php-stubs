@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-product-bundles 8.5.16.
+ * Generated stub declarations for woocommerce-product-bundles 8.5.17.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -8,7 +8,7 @@
  * Admin Reports Class for syncing the lookup table.
  *
  * @class    WC_PB_Admin_Analytics_Sync
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_Admin_Analytics_Sync
 {
@@ -292,7 +292,7 @@ abstract class WC_PB_Analytics_Data_Store extends \Automattic\WooCommerce\Admin\
 /**
  * WC_PB_Analytics_Revenue_Data_Store class.
  *
- * @version 8.5.16
+ * @version 8.5.17
  */
 class WC_PB_Analytics_Revenue_Data_Store extends \WC_PB_Analytics_Data_Store
 {
@@ -538,7 +538,7 @@ class WC_PB_Analytics_Revenue_REST_Controller extends \WC_REST_Reports_Controlle
 /**
  * WC_PB_Analytics_Revenue_Stats_Data_Store class.
  *
- * @version 8.5.16
+ * @version 8.5.17
  */
 class WC_PB_Analytics_Revenue_Stats_Data_Store extends \WC_PB_Analytics_Revenue_Data_Store
 {
@@ -631,7 +631,7 @@ class WC_PB_Analytics_Revenue_Stats_Query extends \Automattic\WooCommerce\Admin\
 /**
  * WC_PB_Analytics_Revenue_Stats_REST_Controller class.
  *
- * @version 8.5.16
+ * @version 8.5.17
  */
 class WC_PB_Analytics_Revenue_Stats_REST_Controller extends \WC_REST_Reports_Controller
 {
@@ -701,7 +701,7 @@ class WC_PB_Analytics_Revenue_Stats_REST_Controller extends \WC_REST_Reports_Con
 /**
  * WC_PB_REST_Reports_Bundles_Data_Store class.
  *
- * @version 8.5.16
+ * @version 8.5.17
  */
 class WC_PB_Analytics_Stock_Data_Store extends \WC_PB_Analytics_Data_Store
 {
@@ -1083,7 +1083,7 @@ class WC_PB_Admin_Ajax
  * Admin notices handling.
  *
  * @class    WC_PB_Admin_Notices
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_Admin_Notices
 {
@@ -1134,9 +1134,10 @@ class WC_PB_Admin_Notices
     /**
      * Add a notice/error.
      *
-     * @param string  $text        The notice text.
-     * @param mixed   $args        The notice type or an array of arguments.
-     * @param boolean $save_notice Whether to save the notice for the next request.
+     * @param string       $text        The notice text.
+     * @param array|string $args        The notice type or an array of arguments.
+     * @param boolean      $save_notice Whether to save the notice for the next request.
+     * @phpstan-param array{type: string, dismiss_class?: string, unique_context?: string, save_notice?: bool}|string $args
      * @return void
      */
     public static function add_notice($text, $args, $save_notice = \false)
@@ -1239,8 +1240,9 @@ class WC_PB_Admin_Notices
     /**
      * Add a dimissible notice/error.
      *
-     * @param string $text The notice text.
-     * @param mixed  $args The notice type or an array of arguments.
+     * @param string       $text The notice text.
+     * @param array|string $args The notice type or an array of arguments.
+     * @phpstan-param array{type: string, dismiss_class?: string, unique_context?: string, save_notice?: bool}|string $args
      *
      * @since  5.8.0
      * @return void
@@ -1709,7 +1711,7 @@ class WC_PB_Admin
  * WooCommerce core Product Exporter support.
  *
  * @class    WC_PB_Product_Export
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_Product_Export
 {
@@ -1963,7 +1965,7 @@ class WC_PB_Product_Import
  * Product meta-box data for the 'Bundle' type.
  *
  * @class    WC_PB_Meta_Box_Product_Data
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_Meta_Box_Product_Data
 {
@@ -2178,8 +2180,9 @@ class WC_PB_Meta_Box_Product_Data
     /**
      * Add admin notices.
      *
-     * @param  string $content Notice content.
-     * @param  mixed  $args   Notice arguments.
+     * @param  string       $content Notice content.
+     * @param  array|string $args   Notice arguments.
+     * @phpstan-param array{type: string, dismiss_class?: string, unique_context?: string, save_notice?: bool}|string $args
      * @return void
      */
     public static function add_admin_notice($content, $args)
@@ -2201,7 +2204,7 @@ class WC_PB_Meta_Box_Product_Data
  *
  * Handles reporting of bundles with an "Insufficient stock" status.
  *
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_Report_Insufficient_Stock extends \WC_Report_Stock
 {
@@ -2506,7 +2509,7 @@ class WC_PB_REST_API
 /**
  * Extends the store public API with bundle related data for each bundle parent and child item.
  *
- * @version 8.5.16
+ * @version 8.5.17
  */
 class WC_PB_Store_API
 {
@@ -2560,6 +2563,17 @@ class WC_PB_Store_API
      * @return void
      */
     public static function extend_store()
+    {
+    }
+    /**
+     * Declare bundled children to core's cart quantity display.
+     *
+     * @since 8.5.17
+     * @param mixed $parent_item_key Parent key from earlier callbacks.
+     * @param mixed $cart_item Cart item supplied to the filter.
+     * @return mixed
+     */
+    public static function filter_cart_item_parent_key($parent_item_key, $cart_item)
     {
     }
     /**
@@ -2851,7 +2865,7 @@ class WC_PB_Checkout_Blocks_Integration implements \Automattic\WooCommerce\Block
  * The bundled item class is a product container that initializes and holds pricing, availability and variation/attribute-related data for a bundled product.
  *
  * @class    WC_Bundled_Item
- * @version  8.5.16
+ * @version  8.5.17
  *
  * @property-read int|null $item_id Bundled item ID, same as get_id().
  */
@@ -3077,7 +3091,7 @@ class WC_Bundled_Item
     /**
      * Raw min prices used in the min/max bundle price calculation.
      *
-     * @var string
+     * @var string|int|float|null
      */
     public $min_price;
     /**
@@ -3089,7 +3103,7 @@ class WC_Bundled_Item
     /**
      * Raw min regular prices used in the min/max bundle price calculation.
      *
-     * @var string
+     * @var string|int|float|null
      */
     public $min_regular_price;
     /**
@@ -3487,6 +3501,7 @@ class WC_Bundled_Item
     /**
      * Bundled item exists status.
      *
+     * @phpstan-assert-if-true WC_Product $this->product
      * @return boolean
      */
     public function exists()
@@ -3741,8 +3756,8 @@ class WC_Bundled_Item
     /**
      * Filter variable product children to exclude filtered out variations and improve the performance of 'WC_Product_Variable::get_available_variations()'.
      *
-     * @param  array               $children     Array of variation IDs.
-     * @param  WC_Product_Variable $bundled_product The variable product.
+     * @param  array      $children     Array of variation IDs.
+     * @param  WC_Product $bundled_product The variable product.
      * @return array
      */
     public function filter_children($children, $bundled_product)
@@ -3887,7 +3902,7 @@ class WC_Bundled_Item
      *
      * @param  string $type 'min' or 'max'.
      * @param  array  $args Additional arguments.
-     * @return int|string
+     * @return ($type is 'min' ? int : int|string)
      */
     public function get_quantity($type = 'min', $args = array())
     {
@@ -4673,7 +4688,7 @@ class WC_PB_Bundled_Item_Formatters
  * Product Bundle cart functions and filters.
  *
  * @class    WC_PB_Cart
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_Cart
 {
@@ -5446,7 +5461,7 @@ class WC_PB_Coupon
  * Uses https://github.com/A5hleyRich/wp-background-processing to handle tasks in the background.
  *
  * @class    WC_PB_DB_Sync_Task_Runner
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_DB_Sync_Task_Runner extends \WC_Background_Process
 {
@@ -6470,7 +6485,7 @@ class WC_PB_Display
  * Product Bundle Helper Functions.
  *
  * @class    WC_PB_Helpers
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_Helpers
 {
@@ -6484,7 +6499,7 @@ class WC_PB_Helpers
      * Whether a product may be included in a public response.
      *
      * @since 8.5.13
-     * @param int $product_id Product ID.
+     * @param int|null $product_id Product ID.
      * @return bool
      */
     public static function can_read_product($product_id)
@@ -6665,7 +6680,7 @@ class WC_PB_Helpers
  * Handles installation and updating tasks.
  *
  * @class    WC_PB_Install
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_Install
 {
@@ -6674,7 +6689,7 @@ class WC_PB_Install
      *
      * @var array<string, string[]>
      */
-    private static $db_updates = array('3.0.0' => array('wc_pb_update_300', 'wc_pb_update_300_db_version'), '5.0.0' => array('wc_pb_update_500_main', 'wc_pb_update_500_delete_unused_meta', 'wc_pb_update_500_db_version'), '5.1.0' => array('wc_pb_update_510_main', 'wc_pb_update_510_delete_unused_meta', 'wc_pb_update_510_db_version'), '8.5.16' => array('wc_pb_update_8516_refund_analytics', 'wc_pb_update_8516_db_version'));
+    private static $db_updates = array('3.0.0' => array('wc_pb_update_300', 'wc_pb_update_300_db_version'), '5.0.0' => array('wc_pb_update_500_main', 'wc_pb_update_500_delete_unused_meta', 'wc_pb_update_500_db_version'), '5.1.0' => array('wc_pb_update_510_main', 'wc_pb_update_510_delete_unused_meta', 'wc_pb_update_510_db_version'), '8.5.16' => array('wc_pb_update_8516_refund_analytics', 'wc_pb_update_8516_db_version'), '8.5.17' => array('wc_pb_update_8517_stock_sync', 'wc_pb_update_8517_db_version'));
     /**
      * Whether install() ran in this request.
      *
@@ -7011,7 +7026,7 @@ class WC_PB_Install
      *
      * @param   mixed $links Plugin meta links.
      * @param   mixed $file Plugin base file.
-     * @return  array
+     * @return  mixed
      */
     public static function plugin_row_meta($links, $file)
     {
@@ -8196,7 +8211,7 @@ class WC_PB_Stock_Manager_Item
  * Used to create and store a product_id / variation_id representation of a product collection based on the included items' inventory requirements.
  *
  * @class    WC_PB_Stock_Manager
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_Stock_Manager
 {
@@ -8215,7 +8230,7 @@ class WC_PB_Stock_Manager
     /**
      * Constructor.
      *
-     * @param boolean|WC_Product $product Product object.
+     * @param WC_Product|false $product Product object.
      */
     public function __construct($product = \false)
     {
@@ -8395,7 +8410,7 @@ class WC_PB_Stock_Notifications
  * Product Bundles Tracker.
  *
  * @class    WC_PB_Tracker
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_Tracker
 {
@@ -8528,6 +8543,7 @@ class WC_PB_Tracker
      * @throws Exception If an invalid key is passed.
      * @param  string $key  Reusable data key.
      * @return mixed
+     * @phpstan-return ($key is 'product_bundles_count'|'product_bundles_assembled_count'|'product_bundles_virtual_count'|'products_bundle_sells_count' ? int : ($key is 'product_bundles_ids'|'product_bundles_assembled_ids'|'product_bundles_virtual_ids' ? int[] : mixed))
      */
     private static function get_reusable_data($key = '')
     {
@@ -9862,7 +9878,7 @@ class WC_PB_CLI_Sync_Stock
  * Allows DB updates via WP-CLI.
  *
  * @class    WC_PB_CLI
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_CLI_Update
 {
@@ -9887,7 +9903,7 @@ class WC_PB_CLI_Update
  * Handles compatibility with other WC extensions.
  *
  * @class    WC_PB_Compatibility
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_Compatibility
 {
@@ -9912,13 +9928,13 @@ class WC_PB_Compatibility
     /**
      * Bundle prefix
      *
-     * @var string
+     * @var string|false
      */
     public static $bundle_prefix = '';
     /**
      * Compatible product
      *
-     * @var string
+     * @var WC_Product|false|string
      */
     public static $compat_product = '';
     /**
@@ -10097,8 +10113,8 @@ class WC_PB_Compatibility
     /**
      * Tells if an order item is a subscription, provided that Subs is installed.
      *
-     * @param  WC_Order      $order Order.
-     * @param  WC_Order_Item $item Order.
+     * @param  WC_Order                           $order Order.
+     * @param  WC_Order_Item|array<string, mixed> $item Order item, or a legacy order item array.
      * @return boolean
      */
     public function is_item_subscription($order, $item)
@@ -10167,7 +10183,7 @@ class WC_PB_Compatibility
  * Functions for WC core back-compatibility.
  *
  * @class    WC_PB_Core_Compatibility
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_Core_Compatibility
 {
@@ -10280,7 +10296,7 @@ class WC_PB_Core_Compatibility
      *
      * @since  4.7.6
      *
-     * @return string
+     * @return string|null
      */
     private static function get_wc_version()
     {
@@ -10434,7 +10450,7 @@ class WC_PB_Core_Compatibility
 /**
  * Product Addons Compatibility.
  *
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_Addons_Compatibility
 {
@@ -10778,9 +10794,9 @@ class WC_PB_Addons_Compatibility
     /**
      * The bundle should be editable if it or any enabled items have add-ons.
      *
-     * @param  boolean           $editable Whether the bundle is editable.
-     * @param  WC_Product_Bundle $bundle  The bundle product.
-     * @param  array             $cart_item The cart item.
+     * @param  boolean                   $editable Whether the bundle is editable.
+     * @param  WC_Product_Bundle         $bundle  The bundle product.
+     * @param  array|WC_Order_Item|false $cart_item The cart item, the order item, or false -- unused.
      * @return boolean
      */
     public static function addon_bundle_editable_in_cart($editable, $bundle, $cart_item)
@@ -10867,7 +10883,7 @@ class WC_PB_AutomateWoo_Compatibility
 /**
  * WooCommerce Blocks Compatibility.
  *
- * @version 8.5.16
+ * @version 8.5.17
  */
 class WC_PB_Blocks_Compatibility
 {
@@ -10879,11 +10895,35 @@ class WC_PB_Blocks_Compatibility
     public static function init()
     {
     }
+    /**
+     * Flag product block queries, so that their stock filter can be adjusted in 'pre_get_posts'.
+     *
+     * @since 8.5.17
+     *
+     * @param  mixed $query Query arguments.
+     * @return mixed
+     */
+    public static function mark_product_query($query)
+    {
+    }
+    /**
+     * Exclude bundles with insufficient stock from product block queries that are filtered by stock status, but not by 'outofstock'.
+     * Bundles keep their own '_stock_status' meta; child availability is stored separately.
+     * Runs on 'pre_get_posts', as filter blocks strip the stock meta query from these arguments to count products.
+     *
+     * @since 8.5.17
+     *
+     * @param mixed $wp_query Query.
+     * @return void
+     */
+    public static function filter_in_stock_products($wp_query)
+    {
+    }
 }
 /**
  * Cost of Goods Compatibility.
  *
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_COG_Compatibility
 {
@@ -10922,7 +10962,7 @@ class WC_PB_COG_Compatibility
 /**
  * Composite Products Compatibility.
  *
- * @version 8.5.16
+ * @version 8.5.17
  */
 class WC_PB_CP_Compatibility
 {
@@ -11447,7 +11487,7 @@ class WC_PB_CP_Compatibility
 /**
  * Elementor compatibility.
  *
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_Elementor_Compatibility
 {
@@ -11632,7 +11672,7 @@ class WC_PB_Give_Products_Compatibility
 /**
  * Memberships Integration: Discounts inheritance.
  *
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_Members_Compatibility
 {
@@ -11725,8 +11765,8 @@ class WC_PB_Members_Compatibility
     /**
      * Prevent Memberships from applying member discounts to bundled products -- membership discounts are inherited.
      *
-     * @param  boolean    $exclude Whether to exclude the product from member discounts.
-     * @param  WC_Product $product The product.
+     * @param  boolean                $exclude Whether to exclude the product from member discounts.
+     * @param  int|WP_Post|WC_Product $product The product object, ID or post object.
      * @return boolean
      */
     public static function exclude_bundled_product_from_member_discounts($exclude, $product)
@@ -11933,7 +11973,7 @@ class WC_PB_Min_Max_Compatibility
 /**
  * NYP Compatibility.
  *
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_NYP_Compatibility
 {
@@ -12077,9 +12117,9 @@ class WC_PB_NYP_Compatibility
     /**
      * Sets a unique prefix for unique NYP products. The prefix is set and re-set globally before validating and adding to cart.
      *
-     * @param  string  $prefix
-     * @param  int     $product_id
-     * @return string
+     * @param  string|false $prefix - The prefix.
+     * @param  int          $product_id - The product ID.
+     * @return string|false
      * @deprecated 6.2.2
      */
     public static function nyp_cart_prefix($prefix, $product_id)
@@ -12153,7 +12193,7 @@ class WC_PB_PayPal_Compatibility
 /**
  * Print Invoices & Packing Lists Integration.
  *
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_PIP_Compatibility
 {
@@ -12288,10 +12328,10 @@ class WC_PB_PIP_Compatibility
     /**
      * Add 'bundled-product' class to pip row classes.
      *
-     * @param  array      $classes Array of classes.
-     * @param  WC_Product $product Product object.
-     * @param  array      $item Order item.
-     * @param  string     $type Document type.
+     * @param  array                 $classes Array of classes.
+     * @param  WC_Product            $product Product object.
+     * @param  WC_Order_Item_Product $item Order item.
+     * @param  string                $type Document type.
      * @return array
      */
     public static function bundled_item_class($classes, $product, $item, $type)
@@ -12324,9 +12364,9 @@ class WC_PB_PIP_Compatibility
     /**
      * Prevent bundled order items from being sorted/categorized.
      *
-     * @param  boolean  $uncategorize Whether to uncategorize the item.
-     * @param  array    $order_item Order item.
-     * @param  WC_Order $order Order object.
+     * @param  boolean               $uncategorize Whether to uncategorize the item.
+     * @param  WC_Order_Item_Product $order_item Order item.
+     * @param  WC_Order              $order Order object.
      * @return boolean
      */
     public static function group_bundled_items_as_uncategorized($uncategorize, $order_item, $order)
@@ -12344,7 +12384,7 @@ class WC_PB_PIP_Compatibility
 /**
  * Points and Rewards Compatibility.
  *
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_PnR_Compatibility
 {
@@ -12414,7 +12454,7 @@ class WC_PB_PnR_Compatibility
      * @see points_rewards_remove_price_html_messages
      *
      * @param  string $message - Message.
-     * @return string
+     * @return string|false
      */
     public static function return_empty_message($message)
     {
@@ -12432,7 +12472,7 @@ class WC_PB_PnR_Compatibility
     /**
      * True if the bundle has fixed product- or category-level points.
      *
-     * @param  WC_Product_Bundle $bundle - Bundle product.
+     * @param  WC_Product $bundle - Bundle product.
      * @return boolean
      */
     private static function has_fixed_points($bundle)
@@ -12927,7 +12967,7 @@ class WC_PB_WP_IE_Compatibility
  * Could be modified to extend WC_Data in the future. For now, all required functionality is self-contained to maintain WC back-compat.
  *
  * @class    WC_Bundled_Item_Data
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_Bundled_Item_Data
 {
@@ -12943,13 +12983,13 @@ class WC_Bundled_Item_Data
      *
      * @var array
      */
-    protected $meta_data = array('quantity_min' => 1, 'quantity_max' => 1, 'quantity_default' => 1, 'priced_individually' => 'no', 'shipped_individually' => 'no', 'override_title' => 'no', 'title' => '', 'override_description' => 'no', 'description' => '', 'optional' => 'no', 'hide_thumbnail' => 'no', 'discount' => \null, 'override_variations' => 'no', 'override_default_variation_attributes' => 'no', 'allowed_variations' => \null, 'default_variation_attributes' => \null, 'single_product_visibility' => 'visible', 'cart_visibility' => 'visible', 'order_visibility' => 'visible', 'single_product_price_visibility' => 'visible', 'cart_price_visibility' => 'visible', 'order_price_visibility' => 'visible', 'disable_addons' => 'no', 'stock_status' => \null, 'max_stock' => \null);
+    protected $meta_data = array('quantity_min' => 1, 'quantity_max' => 1, 'quantity_default' => 1, 'priced_individually' => 'no', 'shipped_individually' => 'no', 'override_title' => 'no', 'title' => '', 'override_description' => 'no', 'description' => '', 'optional' => 'no', 'hide_thumbnail' => 'no', 'discount' => \null, 'override_variations' => 'no', 'override_default_variation_attributes' => 'no', 'allowed_variations' => \null, 'default_variation_attributes' => \null, 'single_product_visibility' => 'visible', 'cart_visibility' => 'visible', 'order_visibility' => 'visible', 'single_product_price_visibility' => 'visible', 'cart_price_visibility' => 'visible', 'order_price_visibility' => 'visible', 'disable_addons' => 'no', 'stock_status' => \null, 'max_stock' => \null, 'max_variation_stock' => \null);
     /**
      * Sanitization function to apply to known meta values on the way in - @see sanitize_meta_value().
      *
      * @var array<string, string>
      */
-    protected $meta_data_type_fn = array('quantity_min' => 'absint', 'quantity_max' => 'absint_if_not_empty', 'quantity_default' => 'absint', 'priced_individually' => 'yes_or_no', 'shipped_individually' => 'yes_or_no', 'override_title' => 'yes_or_no', 'title' => 'strval', 'override_description' => 'yes_or_no', 'description' => 'strval', 'optional' => 'yes_or_no', 'hide_thumbnail' => 'yes_or_no', 'discount' => 'format_decimal_if_not_empty', 'override_variations' => 'yes_or_no', 'override_default_variation_attributes' => 'yes_or_no', 'allowed_variations' => 'maybe_unserialize', 'default_variation_attributes' => 'maybe_unserialize', 'single_product_visibility' => 'visible_or_hidden', 'cart_visibility' => 'visible_or_hidden', 'order_visibility' => 'visible_or_hidden', 'single_product_price_visibility' => 'visible_or_hidden', 'cart_price_visibility' => 'visible_or_hidden', 'order_price_visibility' => 'visible_or_hidden', 'disable_addons' => 'yes_or_no', 'stock_status' => 'strval', 'max_stock' => 'absint_if_not_empty');
+    protected $meta_data_type_fn = array('quantity_min' => 'absint', 'quantity_max' => 'absint_if_not_empty', 'quantity_default' => 'absint', 'priced_individually' => 'yes_or_no', 'shipped_individually' => 'yes_or_no', 'override_title' => 'yes_or_no', 'title' => 'strval', 'override_description' => 'yes_or_no', 'description' => 'strval', 'optional' => 'yes_or_no', 'hide_thumbnail' => 'yes_or_no', 'discount' => 'format_decimal_if_not_empty', 'override_variations' => 'yes_or_no', 'override_default_variation_attributes' => 'yes_or_no', 'allowed_variations' => 'maybe_unserialize', 'default_variation_attributes' => 'maybe_unserialize', 'single_product_visibility' => 'visible_or_hidden', 'cart_visibility' => 'visible_or_hidden', 'order_visibility' => 'visible_or_hidden', 'single_product_price_visibility' => 'visible_or_hidden', 'cart_price_visibility' => 'visible_or_hidden', 'order_price_visibility' => 'visible_or_hidden', 'disable_addons' => 'yes_or_no', 'stock_status' => 'strval', 'max_stock' => 'absint_if_not_empty', 'max_variation_stock' => 'absint_if_not_empty');
     /**
      * Change data to JSON format.
      *
@@ -13282,7 +13322,7 @@ class WC_PB_Data
  * Product Bundles DB API for manipulating bundled item data in the database.
  *
  * @class    WC_PB_DB
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_DB
 {
@@ -14381,7 +14421,7 @@ class WC_PB_MMI_Display
  * Product-related functions and filters.
  *
  * @class    WC_PB_MMI_Product
- * @version  8.5.16
+ * @version  8.5.17
  */
 class WC_PB_MMI_Product
 {
@@ -14515,7 +14555,7 @@ class WC_PB_MMI_Product
  * Main plugin class.
  *
  * @class    WC_Bundles
- * @version  8.5.16
+ * @version  8.5.17
  *
  * @property-read WC_PB_Compatibility $compatibility
  * @property-read WC_PB_Modules       $modules
@@ -14530,7 +14570,7 @@ class WC_Bundles
      *
      * @var string
      */
-    public $version = '8.5.16';
+    public $version = '8.5.17';
     /**
      * Minimum WooCommerce version required.
      *
@@ -15347,6 +15387,24 @@ function wc_pb_update_8516_db_version()
 {
 }
 /**
+ * Mark cached bundle stock for recalculation by the existing batched sync task.
+ *
+ * @since 8.5.17
+ * @return void
+ */
+function wc_pb_update_8517_stock_sync()
+{
+}
+/**
+ * Complete the bundle stock cache update.
+ *
+ * @since 8.5.17
+ * @return void
+ */
+function wc_pb_update_8517_db_version()
+{
+}
+/**
  * Returns the main instance of WC_Bundles to prevent the need to use globals.
  *
  * @since  4.11.4
@@ -15355,4 +15413,4 @@ function wc_pb_update_8516_db_version()
 function WC_PB()
 {
 }
-\define('WC_PB_VERSION', '8.5.16');
+\define('WC_PB_VERSION', '8.5.17');

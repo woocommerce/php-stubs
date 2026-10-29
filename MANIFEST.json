@@ -1071,10 +1071,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "8.5.16": {
-                "source_zip_sha256": "257e471cc36459f3b8ae78ea123f35267af3fbcfb4eeb4709f9c8a15b737f39f",
-                "stub_sha256": "2f478c5371b347f2cf9a811e1cb72f9a13d731a23f6340dc3557656ceb40c275",
-                "generated_at": "2026-10-21T21:41:21Z",
+            "8.5.17": {
+                "source_zip_sha256": "a71ad2483e32f4a49057fdb30be9f5ea06be02af0f49347f124a4d8d187be948",
+                "stub_sha256": "4310ed03cff59a3f2e1b3ce0f8b02d955b30891c213e69c4bfb22d51b215e9f9",
+                "generated_at": "2026-10-29T09:54:45Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
