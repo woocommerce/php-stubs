@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-bookings 3.12.1.
+ * Generated stub declarations for woocommerce-bookings 3.13.0.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -416,7 +416,7 @@ namespace {
      *
      * Handles booking admin functionality.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_Admin
     {
@@ -592,6 +592,19 @@ namespace {
         {
         }
         /**
+         * Get the admin dropdown options of booking products, each followed by its published resources.
+         *
+         * Reads post titles instead of loading every product, which ran large stores out of memory.
+         *
+         * @since 3.13.0
+         *
+         * @param bool $include_resources Whether to list each product's resources below it.
+         * @return string[] Labels keyed by product or resource ID.
+         */
+        public static function get_booking_product_filters($include_resources = \true)
+        {
+        }
+        /**
          * Get booking product resources.
          *
          * @return array
@@ -699,7 +712,7 @@ namespace {
      *
      * Handles AJAX callbacks for bookings.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_Ajax
     {
@@ -861,7 +874,7 @@ namespace {
     /**
      * WC_Bookings_Calendar.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_Calendar
     {
@@ -902,11 +915,33 @@ namespace {
          */
         private $colours;
         /**
+         * Month view rows held by multi-day bookings, keyed by booking ID.
+         *
+         * @var array<int, int|null>
+         */
+        private $month_rows = array();
+        /**
          * Output the calendar view.
          *
          * @return void
          */
         public function output()
+        {
+        }
+        /**
+         * Get the calendar events in a date range, ordering same-time bookings by product.
+         *
+         * Bookings that share a start and end time sit side by side. Each such group follows the shop's
+         * product order (menu order, then name); every other event keeps its place.
+         *
+         * @since 3.13.0
+         *
+         * @param int   $start_time     Range start timestamp.
+         * @param int   $end_time       Range end timestamp.
+         * @param int[] $booking_filter Product and resource IDs to include, or none for all.
+         * @return array<int, WC_Booking|WC_Global_Availability> Bookings and Google Calendar events.
+         */
+        protected function get_calendar_events($start_time, $end_time, $booking_filter)
         {
         }
         /**
@@ -1046,9 +1081,9 @@ namespace {
          *
          * @version 3.8.0
          *
-         * @param WC_Booking $booking
-         * @param integer    $check_date Timestamp during day to be checked. Defaults to $_REQUEST['calendar_day'] or current day.
-         * @param bool       $apply_ended_guard Whether to skip events that ended at or before the start of the viewed day (midnight). True for single-day views; the schedule view passes false so past-but-in-month bookings remain listed.
+         * @param WC_Booking|WC_Global_Availability $event             Booking or global availability rule to describe.
+         * @param integer                           $check_date        Timestamp during day to be checked. Defaults to $_REQUEST['calendar_day'] or current day.
+         * @param bool                              $apply_ended_guard Whether to skip events that ended at or before the start of the viewed day (midnight). True for single-day views; the schedule view passes false so past-but-in-month bookings remain listed.
          * @return array|null
          */
         protected function get_booking_data($event, $check_date = \null, $apply_ended_guard = \true)
@@ -1107,7 +1142,7 @@ namespace {
      *
      * Handles custom post type for bookings.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_CPT
     {
@@ -1127,7 +1162,7 @@ namespace {
          * Remove edit from the bulk actions.
          *
          * @param mixed $actions
-         * @return array
+         * @return mixed The received bulk actions, without the edit action.
          */
         public function bulk_actions($actions)
         {
@@ -1208,7 +1243,7 @@ namespace {
          *
          * @access public
          * @param mixed $vars
-         * @return array
+         * @return mixed The received query variables, with the booking column ordering applied.
          */
         public function custom_columns_orderby($vars)
         {
@@ -1264,7 +1299,7 @@ namespace {
      *
      * Handles the create new bookings page functionality.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_Create
     {
@@ -1435,7 +1470,7 @@ namespace {
     /**
      * WC_Bookings_Details_Meta_Box.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_Details_Meta_Box
     {
@@ -1671,7 +1706,7 @@ namespace {
     /**
      * Adds the Bookings welcome note to the WooCommerce Admin inbox.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_Inbox_Notice
     {
@@ -1698,7 +1733,7 @@ namespace {
      *
      * Handles admin menu functionality for bookings.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_Menus
     {
@@ -2454,7 +2489,7 @@ namespace {
     /**
      * Booking tools
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_Tools
     {
@@ -3397,7 +3432,7 @@ namespace {
      * a TZ-less wall clock interpreted as destination-site-local. Bare numeric epochs
      * are rejected. The mapping step lets users adapt arbitrary CSVs to those internal ids.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_CSV_Importer extends \WC_Bookings_Importer
     {
@@ -3753,7 +3788,7 @@ namespace {
     /**
      * This class adds actions to track usage of WooCommerce Bookings Global Availability.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_Global_Availability_Tracking
     {
@@ -4293,7 +4328,7 @@ namespace {
     /**
      * REST API Products categories controller class.
      *
-     * @version 3.11.0
+     * @version 3.13.0
      */
     class WC_Bookings_REST_Products_Categories_Controller extends \WC_REST_Product_Categories_Controller
     {
@@ -4412,7 +4447,7 @@ namespace {
     /**
      * REST API Products controller class.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_REST_Products_Controller extends \WC_REST_Products_Controller
     {
@@ -4652,7 +4687,7 @@ namespace {
     /**
      * REST API Resources controller class.
      *
-     * @version 3.9.0
+     * @version 3.13.0
      */
     class WC_Bookings_REST_Resources_Controller extends \WC_Bookings_REST_CRUD_Controller
     {
@@ -4978,7 +5013,7 @@ namespace {
     /**
      * REST API Products controller class.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_REST_Booking_V2_Controller extends \WC_Bookings_REST_CRUD_Controller
     {
@@ -6409,7 +6444,7 @@ namespace WooCommerce\Bookings\Blocks {
      * Bookings Gateway method integration
      *
      * @since 0.1
-     * @version 3.12.1
+     * @version 3.13.0
      */
     final class Bookings_Gateway extends \Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType
     {
@@ -6493,7 +6528,7 @@ namespace {
     /**
      * Compatibility base class for the booking product type.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Product_Booking_Compatibility extends \WC_Product
     {
@@ -6501,7 +6536,7 @@ namespace {
     /**
      * Class for the booking product type.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Product_Booking extends \WC_Product_Booking_Compatibility
     {
@@ -8113,7 +8148,7 @@ namespace {
          * @param  int     $end_date   End timestamp.
          * @param  string  $resource_id
          * @param  integer $qty being booked
-         * @return bool|WP_Error if no blocks available, or int count of bookings that can be made, or array of available resources
+         * @return array<int, int>|int|bool|WP_Error False if no blocks available, or int count of bookings that can be made, or array of available resources
          */
         public function get_available_bookings($start_date, $end_date, $resource_id = '', $qty = 1)
         {
@@ -8333,6 +8368,8 @@ namespace {
     }
     /**
      * Picker class
+     *
+     * @version 3.13.0
      */
     abstract class WC_Booking_Form_Picker
     {
@@ -8351,6 +8388,17 @@ namespace {
          * @return string
          */
         protected function get_min_date()
+        {
+        }
+        /**
+         * Get a product's min date in date picker format.
+         *
+         * @since 3.13.0
+         *
+         * @param WC_Product_Booking $product Bookable product.
+         * @return string
+         */
+        public static function get_min_date_js($product)
         {
         }
         /**
@@ -8499,7 +8547,7 @@ namespace {
     /**
      * Booking form class
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Booking_Form
     {
@@ -8731,7 +8779,7 @@ namespace {
      *
      * Handles cart management for bookings.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Booking_Cart_Manager
     {
@@ -8795,7 +8843,7 @@ namespace {
          * @param mixed $passed Boolean passed carry value.
          * @param mixed $product_id Product ID.
          * @param mixed $qty Quantity.
-         * @return bool
+         * @return mixed The received validation result, or false when the booking is not valid.
          */
         public function validate_add_cart_item($passed, $product_id, $qty)
         {
@@ -8883,7 +8931,7 @@ namespace {
          * Adjust the price of the booking product based on booking properties
          *
          * @param mixed $cart_item
-         * @return array cart item
+         * @return mixed The received cart item, with the booking cost applied to booking items.
          *
          * @version  1.10.5
          */
@@ -8896,7 +8944,7 @@ namespace {
          * @param mixed $cart_item
          * @param mixed $values
          * @param mixed $cart_item_key Cart item key.
-         * @return array cart item
+         * @return mixed The received cart item, with the session booking data restored for booking items.
          */
         public function get_cart_item_from_session($cart_item, $values, $cart_item_key)
         {
@@ -8982,7 +9030,7 @@ namespace {
          *
          * @param mixed $cart_item_meta Cart item meta.
          * @param mixed $product_id Product ID.
-         * @return array $cart_item_meta
+         * @return mixed The received cart item data, with the booking data added for booking products.
          */
         public function add_cart_item_data($cart_item_meta, $product_id)
         {
@@ -9011,10 +9059,12 @@ namespace {
          *
          * @since 3.11.0
          *
+         * @template T
+         *
          * @param WC_Product_Booking $product  Booking product.
          * @param array              $data     Booking data.
-         * @param callable           $callback Operation executed while holding the lock.
-         * @return mixed
+         * @param callable(): T      $callback Operation executed while holding the lock.
+         * @return T
          * @throws WC_Data_Exception When the reservation lock cannot be acquired.
          */
         public function with_reservation_lock($product, $data, $callback)
@@ -9023,9 +9073,11 @@ namespace {
         /**
          * Run an operation while a booking cannot be deleted or linked elsewhere.
          *
-         * @param int      $booking_id Booking ID.
-         * @param callable $callback   Operation executed while holding the lock.
-         * @return mixed
+         * @template T
+         *
+         * @param int           $booking_id Booking ID.
+         * @param callable(): T $callback   Operation executed while holding the lock.
+         * @return T
          * @throws WC_Data_Exception When the lock cannot be acquired.
          */
         private function with_booking_transition_lock($booking_id, $callback)
@@ -9034,9 +9086,11 @@ namespace {
         /**
          * Run an operation while holding each named database lock.
          *
-         * @param string[] $lock_names Database lock names.
-         * @param callable $callback   Operation executed while holding the locks.
-         * @return mixed
+         * @template T
+         *
+         * @param string[]      $lock_names Database lock names.
+         * @param callable(): T $callback   Operation executed while holding the locks.
+         * @return T
          * @throws WC_Data_Exception When a lock cannot be acquired.
          */
         private function with_lock_names($lock_names, $callback)
@@ -9097,7 +9151,7 @@ namespace {
          *
          * @param mixed $other_data
          * @param mixed $cart_item
-         * @return array meta
+         * @return mixed The received item data, with the booking rows added for booking items.
          */
         public function get_item_data($other_data, $cart_item)
         {
@@ -9633,7 +9687,7 @@ namespace {
     /**
      * Compatibility class for WooCommerce Orders
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Booking_Order_Compat
     {
@@ -9670,7 +9724,7 @@ namespace {
          *
          * @param int $order_id Order ID.
          *
-         * @return bool Type of the order.
+         * @return bool Whether the order was restored.
          */
         public static function untrash_post($order_id)
         {
@@ -9681,7 +9735,7 @@ namespace {
      *
      * Handles order status transitions and keeps bookings in sync.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Booking_Order_Manager
     {
@@ -9691,6 +9745,12 @@ namespace {
          * @var int[]
          */
         private static $syncing_ids = array();
+        /**
+         * Existing order lines whose booking price is being edited.
+         *
+         * @var array<int, bool>
+         */
+        private $edited_price_items = array();
         /**
          * Instance.
          *
@@ -10053,6 +10113,26 @@ namespace {
         {
         }
         /**
+         * Track actual line price edits, so unrelated order saves preserve the initial booking cost.
+         *
+         * @since 3.13.0
+         * @param WC_Order_Item $item Order item being saved.
+         * @return void
+         */
+        public function track_booking_cost_edit($item)
+        {
+        }
+        /**
+         * Sync a booking after its own order line's edited subtotal or tax is persisted.
+         *
+         * @since 3.13.0
+         * @param WC_Order_Item $item Saved order item.
+         * @return void
+         */
+        public function sync_booking_costs($item)
+        {
+        }
+        /**
          * Resolve WooCommerce Analytics customer ID before a booking is saved.
          *
          * Handles all scenarios: new bookings, customer_id changes (direct or
@@ -10352,7 +10432,7 @@ namespace {
      * Helper cache class.
      *
      * @since 1.15.0
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_Cache
     {
@@ -10406,8 +10486,10 @@ namespace {
          *
          * @since 3.11.0
          *
-         * @param callable $callback Operation that must read current booking data.
-         * @return mixed
+         * @template T
+         *
+         * @param callable(): T $callback Operation that must read current booking data.
+         * @return T
          */
         public static function without_cache_reads($callback)
         {
@@ -10447,6 +10529,22 @@ namespace {
          * @return void
          */
         public static function register_booking_slots_transient($bookable_product_ids, $transient_name)
+        {
+        }
+        /**
+         * Get the slot-cache version of a product.
+         *
+         * @internal
+         *
+         * `book_ts_` / `book_st_` names include it, so refreshing it on a flush makes the product's cached
+         * slots unreachable even when concurrent requests dropped them from the shared registry.
+         *
+         * @since 3.13.0
+         *
+         * @param int $bookable_product_id Product ID, or zero for the global invalidation version.
+         * @return string
+         */
+        public static function get_booking_slots_version($bookable_product_id)
         {
         }
         /**
@@ -10577,7 +10675,7 @@ namespace {
     /**
      * WC_Bookings_Controller class.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_Controller
     {
@@ -10694,6 +10792,8 @@ namespace {
          * Depending on the data returned from it we set:
          * Fully booked days     - for those dates that there are no more slot available
          * Partially booked days - for those dates that there are some slots available
+         *
+         * Optional arguments 7 (source) and 8 (visitor IANA timezone) are read via func_get_args().
          *
          * @since   1.8.0
          * @version 3.8.0
@@ -10830,7 +10930,7 @@ namespace {
      * Class that handles all cost calculations.
      *
      * @since 1.15.0
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_Cost_Calculation
     {
@@ -10903,13 +11003,31 @@ namespace {
         {
         }
         /**
+         * Apply a cost rule and scale the resource cost by multiply and divide rules.
+         *
+         * Resource costs are added after all rules, so other operations keep ignoring them.
+         * A multiply rule saved with a blank amount leaves the resource cost alone.
+         *
+         * @since 3.13.0
+         *
+         * @param  float           $base          Cost before the rule.
+         * @param  float           $resource_cost Resource cost, updated by reference.
+         * @param  string          $multiplier    Rule operation.
+         * @param  float|string    $cost          Rule amount, as saved on the rule.
+         * @param  int|string|null $rule_key      Base cost rule key, applied once per booking. Null for block costs.
+         * @return float
+         */
+        private static function apply_cost_with_resource($base, &$resource_cost, $multiplier, $cost, $rule_key = \null)
+        {
+        }
+        /**
          * Apply base cost.
          *
          * @since 1.15.0
          * @param  float $base
          * @param  string $multiplier
          * @param  float $cost
-         * @param  string $rule_key Cost to apply the rule to - used for * and /
+         * @param  int|string $rule_key Cost to apply the rule to - used for * and /.
          * @return float
          */
         public static function apply_base_cost($base, $multiplier, $cost, $rule_key = '')
@@ -11056,7 +11174,7 @@ namespace {
     /**
      * Google Calendar Connection.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_Google_Calendar_Connection extends \WC_Settings_API
     {
@@ -11527,6 +11645,8 @@ namespace {
          * as it takes some time to init the service, so only init when necessary.
          *
          * @return void
+         *
+         * @phpstan-assert \Automattic\WooCommerce\Bookings\Vendor\Google\Service\Calendar $this->service
          */
         protected function maybe_init_service()
         {
@@ -12191,7 +12311,7 @@ namespace {
      *
      * Initializes bookings functionality.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_Init
     {
@@ -12420,7 +12540,7 @@ namespace {
      *
      * Handles the activation/installation of the plugin.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_Install
     {
@@ -12797,7 +12917,7 @@ namespace {
     /**
      * Bookings WC ajax callbacks.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_WC_Ajax
     {
@@ -12916,7 +13036,7 @@ namespace {
     /**
      * Class that parses and returns rules for bookable products.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Product_Booking_Rule_Manager
     {
@@ -13008,7 +13128,7 @@ namespace {
          * @param  string $from_time
          * @param  string $to_time
          * @param  mixed  $value
-         * @return array
+         * @return array|null Null when the date range is empty or inverted.
          */
         private static function get_time_range_for_custom_date($from_date, $to_date, $from_time, $to_time, $value)
         {
@@ -13026,7 +13146,7 @@ namespace {
          * @param  string $from_time
          * @param  string $to_time
          * @param  mixed  $value
-         * @return array
+         * @return array|null Null when the date range is empty or inverted.
          */
         private static function get_time_range_for_custom_datetime($from_date, $to_date, $from_time, $to_time, $value)
         {
@@ -13118,6 +13238,7 @@ namespace {
          * will override prior rule minutes in the order given.
          *
          * @since 1.9.14 moved from WC_Product_Booking.
+         * @since 3.13.0 Accepts an optional fourth argument: the selected resource ID, without changing override signatures.
          *
          * @param array $rules
          * @param int $check_date
@@ -13688,7 +13809,7 @@ namespace {
      * Functions related to WC core backwards compatibility.
      *
      * @class    WC_Bookings_Core_Compatibility
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_Core_Compatibility
     {
@@ -13779,7 +13900,7 @@ namespace {
         /**
          * Helper method to get the version of the currently installed WooCommerce.
          *
-         * @return string
+         * @return string|null Null when WooCommerce has not defined its version.
          */
         public static function get_wc_version()
         {
@@ -13878,7 +13999,7 @@ namespace {
     /**
      * Main model class for all bookings.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Booking extends \WC_Bookings_Data
     {
@@ -13939,7 +14060,7 @@ namespace {
          *
          * @since  1.15.13
          *
-         * @return integer Booking start timestamp.
+         * @return integer|null Booking start timestamp, or null until it is cached.
          */
         public function get_start_cached()
         {
@@ -13953,7 +14074,7 @@ namespace {
          *
          * @since  1.15.13
          *
-         * @return integer Booking end timestamp.
+         * @return integer|null Booking end timestamp, or null until it is cached.
          */
         public function get_end_cached()
         {
@@ -15737,7 +15858,7 @@ namespace {
      * WC Booking Data Store: Stored in CPT.
      *
      * @todo When 2.6 support is dropped, implement WC_Object_Data_Store_Interface
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Booking_Data_Store extends \WC_Data_Store_WP
     {
@@ -16094,7 +16215,7 @@ namespace {
     /**
      * WC Global Availability Data Store: Stored in Custom table.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      * @todo When 2.6 support is dropped, implement WC_Object_Data_Store_Interface
      */
     class WC_Global_Availability_Data_Store extends \WC_Data_Store_WP
@@ -16739,14 +16860,38 @@ namespace {
      *
      * An email sent to the user when a booking is confirmed.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Email_Booking_Confirmed extends \WC_Email
     {
         /**
+         * Constructor defaults, used to preserve direct property customizations.
+         *
+         * @var array<string, string>
+         */
+        private $booking_default_text = array();
+        /**
          * Constructor
          */
         public function __construct()
+        {
+        }
+        /**
+         * Translate the default subject when it is read in the email locale.
+         *
+         * @since 3.13.0
+         * @return string
+         */
+        public function get_default_subject()
+        {
+        }
+        /**
+         * Translate the default heading when it is read in the email locale.
+         *
+         * @since 3.13.0
+         * @return string
+         */
+        public function get_default_heading()
         {
         }
         /**
@@ -17113,7 +17258,7 @@ namespace {
      *
      * Handles integration with WooCommerce Product Addons.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_Addons
     {
@@ -17180,7 +17325,7 @@ namespace {
          *
          * @param mixed $bool      Whether to adjust the price.
          * @param mixed $cart_item Cart item.
-         * @return bool
+         * @return mixed The received value, or false for booking products.
          */
         public function adjust_price($bool, $cart_item)
         {
@@ -17214,7 +17359,7 @@ namespace {
     /**
      * Deposits integration class.
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings_Deposits
     {
@@ -17372,7 +17517,7 @@ namespace {
     /**
      * WC Bookings class
      *
-     * @version 3.12.1
+     * @version 3.13.0
      */
     class WC_Bookings
     {
@@ -17544,8 +17689,10 @@ namespace {
      * Whether the current visitor may view a booking product's public availability or price.
      *
      * @since 3.11.0
-     * @param WC_Product|false $product Product to check.
+     * @param WC_Product|false|null $product Product to check, or the failed lookup result.
      * @return bool
+     *
+     * @phpstan-assert-if-true WC_Product_Booking $product
      */
     function wc_bookings_current_user_can_view_product($product)
     {
@@ -17625,8 +17772,13 @@ namespace {
     /**
      * Returns true if the product is a booking product, false if not
      *
-     * @param WC_Product $product The product to check.
+     * Anything that is not a WC_Product, including the false/null results of a failed
+     * product lookup, is a non-booking product.
+     *
+     * @param mixed $product The product to check.
      * @return bool
+     *
+     * @phpstan-assert-if-true WC_Product_Booking $product
      */
     function is_wc_booking_product($product)
     {
@@ -18301,7 +18453,7 @@ namespace {
     }
     \define('WC_BOOKINGS_ABSPATH', \dirname(__FILE__) . '/');
     \define('WC_BOOKINGS_ACTIVATION_NOTICE_KEY', 'woocommerce_bookings_show_activation_notice');
-    \define('WC_BOOKINGS_VERSION', '3.12.1');
+    \define('WC_BOOKINGS_VERSION', '3.13.0');
     // WRCS: DEFINED_VERSION.
     \define('WC_BOOKINGS_DB_VERSION', '1.14.7');
     \define('WC_BOOKINGS_TEMPLATE_PATH', \untrailingslashit(\plugin_dir_path(__FILE__)) . '/templates/');
