@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-composite-products 11.2.1.
+ * Generated stub declarations for woocommerce-composite-products 11.2.2.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -8,7 +8,7 @@
  * Admin Reports Class for syncing the lookup table.
  *
  * @class    WC_CP_Admin_Analytics_Sync
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_Admin_Analytics_Sync
 {
@@ -284,7 +284,7 @@ abstract class WC_CP_Analytics_Data_Store extends \Automattic\WooCommerce\Admin\
 /**
  * WC_CP_Analytics_Revenue_Data_Store class.
  *
- * @version 11.2.1
+ * @version 11.2.2
  */
 class WC_CP_Analytics_Revenue_Data_Store extends \WC_CP_Analytics_Data_Store
 {
@@ -520,7 +520,7 @@ class WC_CP_Analytics_Revenue_REST_Controller extends \WC_REST_Reports_Controlle
 /**
  * WC_CP_Analytics_Revenue_Stats_Data_Store class.
  *
- * @version 11.2.1
+ * @version 11.2.2
  */
 class WC_CP_Analytics_Revenue_Stats_Data_Store extends \WC_CP_Analytics_Revenue_Data_Store
 {
@@ -613,7 +613,7 @@ class WC_CP_Analytics_Revenue_Stats_Query extends \Automattic\WooCommerce\Admin\
 /**
  * WC_CP_Analytics_Revenue_Stats_REST_Controller class.
  *
- * @version 11.2.1
+ * @version 11.2.2
  */
 class WC_CP_Analytics_Revenue_Stats_REST_Controller extends \WC_REST_Reports_Controller
 {
@@ -904,7 +904,7 @@ class WC_CP_Admin_Ajax
  * Composite Products admin notices handling.
  *
  * @class    WC_CP_Admin_Notices
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_Admin_Notices
 {
@@ -955,9 +955,10 @@ class WC_CP_Admin_Notices
     /**
      * Add a notice/error.
      *
-     * @param  string  $text
-     * @param  mixed   $args
-     * @param  boolean $save_notice
+     * @param  string       $text
+     * @param  array|string $args Additional arguments for the notice.
+     * @param  boolean      $save_notice
+     * @phpstan-param array{type: string, dismiss_class?: string, unique_context?: string}|string $args
      * @return void
      */
     public static function add_notice($text, $args, $save_notice = \false)
@@ -1062,8 +1063,9 @@ class WC_CP_Admin_Notices
      *
      * @since  3.14.0
      *
-     * @param  string $text
-     * @param  mixed  $args
+     * @param  string       $text
+     * @param  array|string $args Additional arguments for the notice.
+     * @phpstan-param array{type: string, dismiss_class?: string, unique_context?: string}|string $args
      * @return void
      */
     public static function add_dismissible_notice($text, $args)
@@ -1170,7 +1172,7 @@ class WC_CP_Admin_Notices
  * Composite Products edit-order functions and filters.
  *
  * @class    WC_CP_Admin_Order
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_Admin_Order
 {
@@ -1227,9 +1229,9 @@ class WC_CP_Admin_Order
     /**
      * Display "Configure/Edit" button next to configurable composite container items in the edit-order screen.
      *
-     * @param  int           $item_id Order item ID.
-     * @param  WC_Order_Item $item Order item.
-     * @param  $product  WC_Product
+     * @param  int                   $item_id Order item ID.
+     * @param  WC_Order_Item         $item Order item.
+     * @param  WC_Product|false|null $product Product of the order item, or null for shipping items.
      * @return void
      */
     public static function display_edit_button($item_id, $item, $product)
@@ -1274,7 +1276,7 @@ class WC_CP_Admin_Post_Types
  * Return configured admin restrictions.
  *
  * @class    WC_CP_Admin_Restrictions
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_Admin_Restrictions
 {
@@ -1676,7 +1678,7 @@ class WC_CP_Admin
  * WooCommerce core Product Exporter support.
  *
  * @class    WC_CP_Product_Export
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_Product_Export
 {
@@ -1702,7 +1704,7 @@ class WC_CP_Product_Export
      *
      * @param  mixed      $value
      * @param  WC_Product $product
-     * @return string      $value
+     * @return mixed       $value
      */
     public static function export_components($value, $product)
     {
@@ -1712,7 +1714,7 @@ class WC_CP_Product_Export
      *
      * @param  mixed      $value
      * @param  WC_Product $product
-     * @return string      $value
+     * @return mixed       $value
      */
     public static function export_scenarios($value, $product)
     {
@@ -2660,7 +2662,7 @@ class WC_CP_Meta_Box_Product_Data
  * Add custom REST API fields.
  *
  * @class    WC_CP_REST_API
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_REST_API
 {
@@ -2735,7 +2737,7 @@ class WC_CP_REST_API
      * @param  array           $response
      * @param  string          $field_name
      * @param  WP_REST_Request $request
-     * @return array
+     * @return array|bool|string|null
      */
     public static function get_product_field_value($response, $field_name, $request)
     {
@@ -2758,7 +2760,7 @@ class WC_CP_REST_API
      *
      * @param  string     $key
      * @param  WC_Product $product
-     * @return array
+     * @return ($key is 'composite_components'|'composite_scenarios' ? array : ($key is 'composite_virtual'|'composite_editable_in_cart' ? bool : ($key is 'composite_layout'|'composite_add_to_cart_form_location'|'composite_sold_individually_context'|'composite_shop_price_calc' ? string : null)))
      */
     public static function get_product_field($key, $product)
     {
@@ -2951,7 +2953,7 @@ class WC_CP_REST_API
 /**
  * Extends the store public API with composite related data for each composite parent and child item.
  *
- * @version 11.2.1
+ * @version 11.2.2
  */
 class WC_CP_Store_API
 {
@@ -3145,7 +3147,7 @@ class WC_CP_Store_API
      * @param  mixed                $response Result to send to the client.
      * @param  array<string, mixed> $server Route handler used for the request.
      * @param  WP_REST_Request      $request Request used to generate the response.
-     * @return WP_REST_Response|WP_Error
+     * @return mixed
      */
     public static function filter_cart_item_data($response, $server, $request)
     {
@@ -3950,7 +3952,7 @@ class WC_CP_Background_Updater extends \WC_CP_Background_Process
  * Composite products cart API and hooks.
  *
  * @class    WC_CP_Cart
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_Cart
 {
@@ -3967,6 +3969,12 @@ class WC_CP_Cart
      * @var string|null
      */
     protected $removing_container_key = \null;
+    /**
+     * Cart snapshots and blocked state for composited item removals, keyed by cart item key.
+     *
+     * @var array<string, array{cart: array<mixed>, blocked: bool}>
+     */
+    protected $cart_item_removals = array();
     /**
      * The single instance of the class.
      *
@@ -4485,6 +4493,39 @@ class WC_CP_Cart
     {
     }
     /**
+     * Keep live product objects before extension callbacks remove descendants.
+     *
+     * @since 11.2.2
+     * @param string  $cart_item_key Cart item key.
+     * @param WC_Cart $cart          Cart instance.
+     * @return void
+     */
+    public function snapshot_composited_cart_item_removal($cart_item_key, $cart)
+    {
+    }
+    /**
+     * Undo a blocked mandatory composited cart item removal.
+     *
+     * @since  11.2.2
+     *
+     * @param  string  $cart_item_key Removed cart item key.
+     * @param  WC_Cart $cart          Cart instance.
+     * @return void
+     */
+    public function restore_blocked_cart_item_removal($cart_item_key, $cart)
+    {
+    }
+    /**
+     * Notice shown when a mandatory composited cart item cannot be removed.
+     *
+     * @since  11.2.2
+     *
+     * @return string
+     */
+    private function get_mandatory_composited_cart_item_notice()
+    {
+    }
+    /**
      * Restore child cart items with parent.
      *
      * @param  string  $cart_item_key
@@ -4522,7 +4563,7 @@ class WC_CP_Cart
  * Maintains component view state.
  *
  * @class    WC_CP_Component_View
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_Component_View
 {
@@ -4562,6 +4603,8 @@ class WC_CP_Component_View
     }
     /**
      * True if the component view has been set.
+     *
+     * @phpstan-assert-if-true WC_CP_Query $this->query
      *
      * @return boolean
      */
@@ -5323,7 +5366,7 @@ class WC_CP_Component implements \ArrayAccess
  * Composite Products Coupon functions and filters.
  *
  * @class    WC_CP_Coupon
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_Coupon
 {
@@ -5355,7 +5398,7 @@ class WC_CP_Coupon
  * Composite Products display functions and filters.
  *
  * @class    WC_CP_Display
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_Display
 {
@@ -5377,6 +5420,13 @@ class WC_CP_Display
      * @var bool|null
      */
     private $display_cart_prices_incl_tax;
+    /**
+     * Product whose notice was prepared before template rendering.
+     *
+     * @since 11.2.2
+     * @var int
+     */
+    private $price_calc_notice_product_id = 0;
     /**
      * The single instance of the class.
      *
@@ -6117,7 +6167,7 @@ class WC_CP_Array implements \ArrayAccess
  * Handles installation and updating tasks. Not much to see here, folks!
  *
  * @class    WC_CP_Install
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_Install
 {
@@ -6168,6 +6218,16 @@ class WC_CP_Install
      * @return void
      */
     public static function init_background_updater()
+    {
+    }
+    /**
+     * Get the background updater, creating it when read before the 'init' hook has run.
+     *
+     * @since  11.2.2
+     *
+     * @return WC_CP_Background_Updater
+     */
+    private static function get_background_updater()
     {
     }
     /**
@@ -6406,7 +6466,7 @@ class WC_CP_Install
      *
      * @param   mixed $links
      * @param   mixed $file
-     * @return  array
+     * @return  mixed
      */
     public static function plugin_row_meta($links, $file)
     {
@@ -6815,7 +6875,7 @@ class WC_CP_Order
  * Uses https://github.com/A5hleyRich/wp-background-processing to handle tasks in the background.
  *
  * @class    WC_CP_Price_Calc_Task_Runner
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_Price_Calc_Task_Runner extends \WC_CP_Background_Process
 {
@@ -7054,7 +7114,7 @@ class WC_CP_Product_Data
  * Composited Product wrapper class.
  *
  * @class    WC_CP_Product
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_Product
 {
@@ -7187,6 +7247,8 @@ class WC_CP_Product
     /**
      * True if the composited product is a valid product.
      *
+     * @phpstan-assert-if-true WC_Product $this->product
+     *
      * @return boolean
      */
     public function exists()
@@ -7212,7 +7274,7 @@ class WC_CP_Product
     /**
      * Get the composite product.
      *
-     * @return WC_Product_Composite|false
+     * @return WC_Product_Composite|null
      */
     public function get_composite()
     {
@@ -7236,7 +7298,7 @@ class WC_CP_Product
     /**
      * Get raw component data.
      *
-     * @return array|false
+     * @return array|false|null
      */
     public function get_component_data()
     {
@@ -7287,7 +7349,7 @@ class WC_CP_Product
     /**
      * True if the composited product is priced individually.
      *
-     * @return boolean
+     * @return bool|null
      */
     public function is_priced_individually()
     {
@@ -7641,7 +7703,7 @@ class WC_CP_Product
  * API functions to support product modifications when contained in Composites.
  *
  * @class    WC_CP_Products
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_Products
 {
@@ -7693,8 +7755,8 @@ class WC_CP_Products
      *
      * @since  6.0.0
      *
-     * @param  WC_Product|WC_Bundled_Item $product
-     * @param  string                     $context
+     * @param  WC_Product $product Product.
+     * @param  string     $context
      * @return boolean
      */
     public static function is_component_option_pricing_context($product, $context = 'any')
@@ -7727,6 +7789,15 @@ class WC_CP_Products
      * @return void
      */
     public static function initialize_price_calc_task_runner()
+    {
+    }
+    /**
+     * Get the task runner, spawning it when read before the 'init' hook has run.
+     *
+     * @since  11.2.2
+     * @return WC_CP_Price_Calc_Task_Runner
+     */
+    private static function get_price_calc_task_runner()
     {
     }
     /**
@@ -7793,7 +7864,7 @@ class WC_CP_Products
      * @since  3.12.0
      *
      * @param  WC_Product $product
-     * @param  array      $args
+     * @param  array      $args Price, qty, calc and optional round (default true). Internal aggregations pass false to retain subtotal precision.
      * @return mixed
      */
     public static function get_product_price($product, $args)
@@ -8271,7 +8342,7 @@ class WC_CP_Query_Composite_Products_Ability implements \Automattic\WooCommerce\
  * Compresses and expands query strings.
  *
  * @class    WC_CP_Query_String
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_Query_String
 {
@@ -8605,7 +8676,7 @@ class WC_CP_Scenario
  * Validates configurations against scenarios.
  *
  * @class    WC_CP_Scenarios_Manager
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_Scenarios_Manager
 {
@@ -8618,7 +8689,7 @@ class WC_CP_Scenarios_Manager
     /**
      * Component objects.
      *
-     * @var array|null
+     * @var array
      */
     private $components;
     /**
@@ -9200,7 +9271,7 @@ class WC_CP_Tracker
  * Composite Product Class.
  *
  * @class    WC_Product_Composite
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_Product_Composite extends \WC_Product
 {
@@ -10194,7 +10265,7 @@ class WC_Product_Composite extends \WC_Product
      * When incompatible component options are set to be hidden, pagination cannot be used since results are filtered via js on the client side.
      *
      * @param  string $component_id
-     * @return boolean
+     * @return bool|null
      */
     public function paginate_component_options($component_id)
     {
@@ -10501,7 +10572,7 @@ class WC_CP_Compatibility
  * Functions related to WC core backwards compatibility.
  *
  * @class    WC_CP_Core_Compatibility
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_Core_Compatibility
 {
@@ -10611,7 +10682,7 @@ class WC_CP_Core_Compatibility
      *
      * @since  3.2.0
      *
-     * @return string
+     * @return string|null
      */
     public static function get_wc_version()
     {
@@ -10776,7 +10847,7 @@ class WC_CP_Core_Compatibility
 /**
  * Adds hooks for Product Add-Ons Compatibility.
  *
- * @version 11.2.1
+ * @version 11.2.2
  */
 class WC_CP_Addons_Compatibility
 {
@@ -11034,9 +11105,9 @@ class WC_CP_Addons_Compatibility
      *
      * @since  9.0.2
      *
-     * @param  array        $component_data        Component data to be passed to the REST API.
-     * @param  array|object $component             Component object.
-     * @param  int          $composite_product_id  Composite product ID.
+     * @param  array           $component_data       Component data to be passed to the REST API.
+     * @param  WC_CP_Component $component             Component object.
+     * @param  int             $composite_product_id  Composite product ID.
      *
      * @return array
      */
@@ -11209,7 +11280,7 @@ class WC_CP_Addons_Compatibility
      *
      * @param  boolean              $editable   Whether the composite is editable.
      * @param  WC_Product_Composite $composite  The composite product.
-     * @param  array                $item       The cart item.
+     * @param  array|WC_Order_Item  $item       The cart item, or the order item when editing an order.
      *
      * @return boolean
      */
@@ -11302,7 +11373,7 @@ class WC_CP_Blocks_Compatibility
 /**
  * Cost of Goods Compatibility.
  *
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_COG_Compatibility
 {
@@ -11482,7 +11553,7 @@ class WC_CP_JP_Compatibility
 /**
  * Memberships Integration: Discounts inheritance.
  *
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_Members_Compatibility
 {
@@ -11907,7 +11978,7 @@ class WC_CP_PayPal_Compatibility
 /**
  * PIP Compatibility.
  *
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_PIP_Compatibility
 {
@@ -12026,10 +12097,10 @@ class WC_CP_PIP_Compatibility
     /**
      * Add 'composited-product' class to pip row classes.
      *
-     * @param  array      $classes
-     * @param  WC_Product $product
-     * @param  array      $item
-     * @param  string     $type
+     * @param  array                 $classes
+     * @param  WC_Product            $product
+     * @param  WC_Order_Item_Product $item Order item.
+     * @param  string                $type
      * @return array
      */
     public static function bundled_item_class($classes, $product, $item, $type)
@@ -12076,9 +12147,9 @@ class WC_CP_PIP_Compatibility
     /**
      * Prevent composited order items from being sorted/categorized.
      *
-     * @param  boolean  $uncategorize
-     * @param  array    $order_item
-     * @param  WC_Order $order
+     * @param  boolean               $uncategorize
+     * @param  WC_Order_Item_Product $order_item Order item.
+     * @param  WC_Order              $order
      * @return boolean
      */
     public static function group_bundled_items_as_uncategorized($uncategorize, $order_item, $order)
@@ -12096,7 +12167,7 @@ class WC_CP_PIP_Compatibility
 /**
  * Points and Rewards Compatibility.
  *
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_CP_PnR_Compatibility
 {
@@ -12200,7 +12271,7 @@ class WC_CP_PnR_Compatibility
     /**
      * True if the composite has fixed product- or category-level points.
      *
-     * @param  WC_Product_Composite $composite
+     * @param  WC_Product $composite  The composite product.
      * @return boolean
      */
     private static function has_fixed_points($composite)
@@ -12691,7 +12762,7 @@ class WC_CP_Data
  * Composite data stored as Custom Post Type. For use with the WC 3.0+ CRUD API.
  *
  * @class    WC_Product_Composite_Data_Store_CPT
- * @version  11.2.1
+ * @version  11.2.2
  */
 class WC_Product_Composite_Data_Store_CPT extends \WC_Product_Data_Store_CPT
 {
@@ -12916,7 +12987,7 @@ class WC_Widget_Composite extends \WC_Widget
  * Main plugin class.
  *
  * @class    WC_Composite_Products
- * @version  11.2.1
+ * @version  11.2.2
  *
  * @property-read WC_CP_Compatibility $compatibility
  * @property-read WC_CP_Cart          $cart
@@ -12930,7 +13001,7 @@ class WC_Composite_Products
      *
      * @var string
      */
-    public $version = '11.2.1';
+    public $version = '11.2.2';
     /**
      * The minimum required WooCommerce version.
      *
@@ -14235,4 +14306,4 @@ function wc_cp_remove_composite_summary_widget($widget_areas)
 function WC_CP()
 {
 }
-\define('WC_CP_VERSION', '11.2.1');
+\define('WC_CP_VERSION', '11.2.2');
