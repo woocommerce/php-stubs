@@ -416,6 +416,13 @@
                 "generated_at": "2026-10-22T16:50:40Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "1.6.6": {
+                "source_zip_sha256": "461b88cc5f4f213ea9b95071dd3e389e8cc1d4f706a6495d5741f1f7c1a6e164",
+                "stub_sha256": "6634aceea870975f52875ce170f80aacf38af4c3e1dfdda280603ea26d008e98",
+                "generated_at": "2026-10-29T09:08:17Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-checkout-field-editor": {
