@@ -1121,6 +1121,13 @@
                 "generated_at": "2026-10-22T17:12:19Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "4.5.0": {
+                "source_zip_sha256": "6dea296809b24785c75f194c5089499e8561b0c45a1b956ae08ea9f40efa28af",
+                "stub_sha256": "1bbe229cac80645b9653d576953ff2d43d16f5f46c22563182842d82453164f3",
+                "generated_at": "2026-10-29T09:28:53Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-product-vendors": {
