@@ -1079,6 +1079,13 @@
                 "generated_at": "2026-10-22T17:08:11Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "1.11.8": {
+                "source_zip_sha256": "1889033b7029674ea398866d06754e0689880b1973b2608205cd3cbf9d116bd3",
+                "stub_sha256": "ad9b5358630ac85b4270ef77cfa57336e99edcc04ad564b9781e47fab59e9d9b",
+                "generated_at": "2026-10-29T09:23:43Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-product-dependencies": {
