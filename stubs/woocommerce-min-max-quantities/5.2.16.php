@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-min-max-quantities 5.2.15.
+ * Generated stub declarations for woocommerce-min-max-quantities 5.2.16.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -8,7 +8,7 @@
  * Admin notices handling.
  *
  * @class    WC_Min_Max_Quantities_Admin_Notices
- * @version  5.2.15
+ * @version  5.2.16
  */
 class WC_Min_Max_Quantities_Admin_Notices
 {
@@ -68,9 +68,10 @@ class WC_Min_Max_Quantities_Admin_Notices
     /**
      * Add a notice/error.
      *
-     * @param string  $text The notice text to display.
-     * @param mixed   $args Additional arguments for the notice.
-     * @param boolean $save_notice Whether to save the notice for the next request.
+     * @param string       $text The notice text to display.
+     * @param array|string $args Additional arguments for the notice.
+     * @param boolean      $save_notice Whether to save the notice for the next request.
+     * @phpstan-param array{type: string, dismiss_class?: string, unique_context?: string, save_notice?: bool}|string $args
      * @return void
      */
     public static function add_notice($text, $args, $save_notice = \false)
@@ -156,8 +157,9 @@ class WC_Min_Max_Quantities_Admin_Notices
      *
      * @since  4.2.3
      *
-     * @param string $text The notice text to display.
-     * @param mixed  $args Additional arguments for the notice.
+     * @param string       $text The notice text to display.
+     * @param array|string $args Additional arguments for the notice.
+     * @phpstan-param array{type: string, dismiss_class?: string, unique_context?: string, save_notice?: bool}|string $args
      * @return void
      */
     public static function add_dismissible_notice($text, $args)
@@ -503,7 +505,9 @@ class WC_Min_Max_Quantities_Admin
  * Add custom REST API fields.
  *
  * @class    WC_MMQ_REST_API
- * @version  5.2.15
+ * @version  5.2.16
+ *
+ * @phpstan-type FieldSchema array{description: string, type: string|list<string>, context: list<string>, enum?: list<string>}
  */
 class WC_MMQ_REST_API
 {
@@ -661,7 +665,7 @@ class WC_MMQ_REST_API
     /**
      * Gets extended (unprefixed) variation schema properties for products.
      *
-     * @return array
+     * @return array<string, FieldSchema>
      */
     private static function get_extended_variation_schema()
     {
@@ -682,7 +686,7 @@ class WC_MMQ_REST_API
     /**
      * Gets extended (unprefixed) schema properties for products.
      *
-     * @return array
+     * @return array<string, FieldSchema>
      */
     private static function get_extended_product_schema()
     {
@@ -691,7 +695,7 @@ class WC_MMQ_REST_API
      * Gets schema properties for MMQ product fields.
      *
      * @param string $field_name The name of the field to get schema for.
-     * @return array
+     * @return FieldSchema|null The field schema, or null for an unknown field.
      */
     public static function get_product_field_schema($field_name)
     {
@@ -1076,7 +1080,7 @@ class WC_Min_Max_Quantities_Quantity_Rules
  * Min/Max Quantities Tracker.
  *
  * @class    WC_Min_Max_Quantities_Tracker
- * @version  5.2.15
+ * @version  5.2.16
  */
 class WC_Min_Max_Quantities_Tracker
 {
@@ -1595,7 +1599,7 @@ class WC_MMQ_Compatibility
  * Functions for WC core back-compatibility.
  *
  * @class    WC_MMQ_Core_Compatibility
- * @version  5.2.15
+ * @version  5.2.16
  */
 class WC_MMQ_Core_Compatibility
 {
@@ -1605,7 +1609,7 @@ class WC_MMQ_Core_Compatibility
      *
      * @since 4.2.3
      *
-     * @var array
+     * @var WP_REST_Request[]
      */
     private static $requests = array();
     /**
@@ -1731,7 +1735,7 @@ class WC_MMQ_Core_Compatibility
      *
      * @since  5.1.0
      *
-     * @return string
+     * @return string|null
      */
     private static function get_wc_version()
     {
@@ -2396,4 +2400,4 @@ class WC_Min_Max_Quantities
     {
     }
 }
-\define('WC_MIN_MAX_QUANTITIES', '5.2.15');
+\define('WC_MIN_MAX_QUANTITIES', '5.2.16');

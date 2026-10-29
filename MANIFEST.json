@@ -801,10 +801,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "5.2.15": {
-                "source_zip_sha256": "35bc329aa10f83ac29b0e75bac24eaccb6046e7682cccb2a41c4332e1238c3e4",
-                "stub_sha256": "3c5cd829c02fc612cf3eeaa64d7e9e382942de7e29008487979507f26efcb431",
-                "generated_at": "2026-10-21T21:35:42Z",
+            "5.2.16": {
+                "source_zip_sha256": "6d3fe8d1a1153b78d4664d2fcbce4270429b44e389ff1b202a1595261d3ba06a",
+                "stub_sha256": "c0689e6c1f6a76e3b294f6c730033b3c9347d9fa96ab46219283e49ec51840de",
+                "generated_at": "2026-10-29T09:34:23Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
