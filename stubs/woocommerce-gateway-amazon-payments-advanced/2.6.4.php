@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-gateway-amazon-payments-advanced 2.6.3.
+ * Generated stub declarations for woocommerce-gateway-amazon-payments-advanced 2.6.4.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -2510,6 +2510,17 @@ class WC_Gateway_Amazon_Payments_Advanced extends \WC_Gateway_Amazon_Payments_Ad
      * @return bool
      */
     protected function is_valid_login_return($checkout_session_id)
+    {
+    }
+    /**
+     * Validate the classic return's checkout session was created for the order.
+     *
+     * @param WC_Order $order            Order being paid.
+     * @param mixed    $checkout_session Checkout session returned by Amazon.
+     *
+     * @return bool
+     */
+    protected function is_valid_classic_return($order, $checkout_session)
     {
     }
     /**
@@ -6539,7 +6550,7 @@ class WC_Amazon_Payments_Advanced
  * Plugin Name: Amazon Pay for WooCommerce
  * Plugin URI: https://woocommerce.com/products/pay-with-amazon/
  * Description: Amazon Pay is embedded directly into your existing web site, and all the buyer interactions with Amazon Pay and Login with Amazon take place in embedded widgets so that the buyer never leaves your site. Buyers can log in using their Amazon account, select a shipping address and payment method, and then confirm their order. Requires an Amazon Pay seller account and supports USA, UK, Germany, France, Italy, Spain, Luxembourg, the Netherlands, Sweden, Portugal, Hungary, Denmark, and Japan.
- * Version: 2.6.3
+ * Version: 2.6.4
  * Author: Amazon Pay
  * Author URI: https://pay.amazon.com/
  * Text Domain: woocommerce-gateway-amazon-payments-advanced
@@ -6555,7 +6566,7 @@ class WC_Amazon_Payments_Advanced
  *
  * @package WC_Gateway_Amazon_Pay
  */
-\define('WC_AMAZON_PAY_VERSION', '2.6.3');
+\define('WC_AMAZON_PAY_VERSION', '2.6.4');
 // WRCS: DEFINED_VERSION.
 \define('WC_AMAZON_PAY_VERSION_CV1', '1.13.1');
 /**

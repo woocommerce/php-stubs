@@ -199,6 +199,14 @@
                 "generated_at": "2026-10-23T07:42:53Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "1.6.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/pinterest-for-woocommerce.1.6.1.zip",
+                "source_zip_sha256": "a6753de231a92b3b121e79a6e6848d2a0ae2ba6853ed90a46ccbd8b6360761b3",
+                "stub_sha256": "0a2208daae6cbd280c68835888572e2343106dfe263b417c0a1bef218349a247",
+                "generated_at": "2026-10-30T03:04:05Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "product-bundles-bulk-discounts-for-woocommerce": {
@@ -339,6 +347,14 @@
                 "source_zip_sha256": "c9c647e3666d9f2ad82f606cb1bddaa37dafcb73622d857ae2039588e1e50d20",
                 "stub_sha256": "dcd72dfb006da61750cc6c1244ce59a2257b3aad84834aa3090884b315859a9b",
                 "generated_at": "2026-10-23T07:57:23Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "1.3.16": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-accommodation-bookings.1.3.16.zip",
+                "source_zip_sha256": "6824c06fe5bab14e56aba3ee8449899192e08253164e3c689827b05e142be57d",
+                "stub_sha256": "44659b402aaad8e1bfab77f098b6a9d44c5e662c59a95f11c027669c55d8a59d",
+                "generated_at": "2026-10-30T03:04:58Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -595,11 +611,11 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "2.6.3": {
-                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-amazon-payments-advanced.2.6.3.zip",
-                "source_zip_sha256": "d5263996333ffdd8e3c95c19601328baf6f2fc65b8adac892776aaf3ef912a02",
-                "stub_sha256": "1df2ecf8cd60e52a881b3b9416db670e1014a75fd4e7fa22a877fb843639f72f",
-                "generated_at": "2026-10-27T03:05:08Z",
+            "2.6.4": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-amazon-payments-advanced.2.6.4.zip",
+                "source_zip_sha256": "d82a5bd40c5ed2f9495ddfff355483a0a9a4e152d1897a91151f0d70147cb9c7",
+                "stub_sha256": "484eed09f11745971e22b06ba4f392e9feed03212a8d0a0c8053e14a5eeff19f",
+                "generated_at": "2026-10-30T03:05:43Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
