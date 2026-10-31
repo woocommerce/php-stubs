@@ -323,6 +323,14 @@
                 "generated_at": "2026-10-23T07:55:23Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "1.4.3": {
+                "source_url": "https://downloads.wordpress.org/plugin/tiktok-for-business.1.4.3.zip",
+                "source_zip_sha256": "2eb0631dc59e1321765c9ae0badb8165287ab70a6bf31080e9721f957818948c",
+                "stub_sha256": "9f2020a82cd6a37a80959ae3cdefebabd850b04c9c0d603fbfec91b602c562c6",
+                "generated_at": "2026-10-31T03:03:36Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-accommodation-bookings": {
@@ -1193,6 +1201,14 @@
                 "generated_at": "2026-10-23T08:28:03Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "3.7.4": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-services.3.7.4.zip",
+                "source_zip_sha256": "9583b7d3e30ce34dcd5f38e406e149b8c383041910196c9a620d4c34bc3bde42",
+                "stub_sha256": "5f909f9a7e33ce00c7c0b19dba6f8cb3941367d3b496607be5ff94e1b8b7300d",
+                "generated_at": "2026-10-31T03:04:18Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-shipment-tracking": {
@@ -1226,6 +1242,14 @@
                 "source_zip_sha256": "79661b9d5cf637375852944849522068ff9dd64515fd1652d025123d32245824",
                 "stub_sha256": "f608b601c4f8e1a5eac7e00c816b355da6df5a32bfe449d1d175babc7a546f66",
                 "generated_at": "2026-10-23T08:29:57Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "2.5.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-shipping.2.5.0.zip",
+                "source_zip_sha256": "b62060820d4cef2a8466497c4072411b6e1b7644a2b24db01d8c552872300db1",
+                "stub_sha256": "26ed2d61e0f4b13b7ede398ce29f7795002a85689cf15ca0fc618d8a3b3bc58b",
+                "generated_at": "2026-10-31T03:04:53Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
