@@ -7,6 +7,13 @@
                 "generated_at": "2026-10-21T21:29:43Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "6.9.5": {
+                "source_zip_sha256": "a6ad681842f73af38ea84a3557760de2637d2399a611f430295d6a36c7f77aee",
+                "stub_sha256": "c3d484a10d2bd69c55f2b8d3f34d8cb82dd61b4c2a322086ab0b002b50dc5579",
+                "generated_at": "2026-11-03T15:52:13Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "blaze-ads": {
