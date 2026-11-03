@@ -1449,6 +1449,13 @@
                 "generated_at": "2026-10-22T17:35:01Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "2.8.0": {
+                "source_zip_sha256": "7c348356e5efac9dd42d4ab4920d119e3ee1f3ed349863fd4b3d54f29fc75a1f",
+                "stub_sha256": "b4952179289c72684742f79023d0458f8182c1bb5ef7781a2d6359ad8b19c7cf",
+                "generated_at": "2026-11-03T14:37:12Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "zettle-pos-integration": {
