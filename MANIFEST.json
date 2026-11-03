@@ -1279,6 +1279,13 @@
                 "generated_at": "2026-10-22T17:23:42Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "4.8.4": {
+                "source_zip_sha256": "9a20526baa1ee8abc2d8d2b6340cdea7c9498d81951b7f4a811f3a93003cc0ca",
+                "stub_sha256": "16754a3028bbd1650d8467b68eeb8fb132bdafb5e8a09bb16869d483b5d97f05",
+                "generated_at": "2026-11-03T14:23:16Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-shipping-multiple-addresses": {
