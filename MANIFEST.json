@@ -154,6 +154,14 @@
                 "generated_at": "2026-10-28T03:04:09Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "5.45.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/mailpoet.5.45.0.zip",
+                "source_zip_sha256": "052ef872c51438d50671b0f2970d4bf9f0bf965af35367798318b15b68f1a76d",
+                "stub_sha256": "1dba508c6b0007d63e424ee852e84bd518c63ed3c33285e5a0257c9b7a95bceb",
+                "generated_at": "2026-11-04T03:04:11Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "paypal-payment-buttons": {
@@ -302,6 +310,14 @@
                 "source_zip_sha256": "e2d6ce3118fb2e9a72522a453c03fa5e32a3135a39b837f06ce0761efe6d0fe0",
                 "stub_sha256": "e0da14b36cfec4e725102e5bdd1f0fc4708819e6965ec88aeca096c5eba94106",
                 "generated_at": "2026-10-23T07:53:23Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "1.0.8": {
+                "source_url": "https://downloads.wordpress.org/plugin/snapchat-for-woocommerce.1.0.8.zip",
+                "source_zip_sha256": "dff3fd5b94ce3d6efeb4a26d8ad3902194106a3d275ae1c4c7e7c7925d366c67",
+                "stub_sha256": "a8c7377363ed080b993c7b9f3f25f12d4d237c1415ce2a3dc6c5f3bf9cd9480e",
+                "generated_at": "2026-11-04T03:05:09Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -913,6 +929,14 @@
                 "generated_at": "2026-10-24T04:53:41Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "11.2.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-payments.11.2.1.zip",
+                "source_zip_sha256": "929b6d3a08ffdc787061e859512e7a324d047a61e03539ab0c1d1dbd67bac8de",
+                "stub_sha256": "5d56de240063f6be42425c8d3f7450f06fe480b558728f99971680b24db4ee69",
+                "generated_at": "2026-11-04T03:05:54Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-paypal-payments": {
@@ -1209,11 +1233,11 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "3.7.4": {
-                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-services.3.7.4.zip",
-                "source_zip_sha256": "9583b7d3e30ce34dcd5f38e406e149b8c383041910196c9a620d4c34bc3bde42",
-                "stub_sha256": "5f909f9a7e33ce00c7c0b19dba6f8cb3941367d3b496607be5ff94e1b8b7300d",
-                "generated_at": "2026-10-31T03:04:18Z",
+            "3.7.5": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-services.3.7.5.zip",
+                "source_zip_sha256": "d04f3d59d78c51a603fb8c458234bd946695a4f6adb92a1daee9e231bf02e5fa",
+                "stub_sha256": "66355be201d9fa960dfbc050214037442bf0938e9be794536bc26a3f640c06bf",
+                "generated_at": "2026-11-04T03:06:42Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }

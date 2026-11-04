@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-services 3.7.4.
+ * Generated stub declarations for woocommerce-services 3.7.5.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -2858,6 +2858,14 @@ namespace {
          */
         private $response_cart_item_keys = array();
         /**
+         * How many totals of WC()->cart are running. Another cart totalled during one, like
+         * each recurring cart WooCommerce Subscriptions totals, gives the main cart's answers
+         * back once it is done.
+         *
+         * @var int
+         */
+        private $main_cart_total_depth = 0;
+        /**
          * The cart item each order item was created from at checkout, keyed by
          * spl_object_id() of the order item. Only set in the request that creates the
          * items: an order item loaded from the database carries no cart item key.
@@ -2956,6 +2964,18 @@ namespace {
          */
         private $non_taxable_line_items = array();
         /**
+         * The tax class each order line item was sent to TaxJar in.
+         *
+         * Recorded while the TaxJar request for an order is built and read back when the
+         * response is turned into tax rate rows, so the answer is written to the class it
+         * is about. An order line keeps the class it was added in, which is not always its
+         * product's class today. A cart line's class is its product's, so the cart records
+         * none. Keyed by TaxJar line item id.
+         *
+         * @var array<string, string>
+         */
+        private $line_item_tax_classes = array();
+        /**
          * The user who sent the current admin request, recorded on admin_init.
          *
          * Phone order plugins can log in as the customer before they total the cart, so the
@@ -2964,6 +2984,25 @@ namespace {
          * @var int|null
          */
         private $admin_ajax_user_id = \null;
+        /**
+         * Lookups that failed in this request without an answer that is cached.
+         *
+         * A server error, a rate limit or a timeout is not cached, so a cart totalled
+         * several times in one request would ask TaxJar again each time. Keyed by cache
+         * key, values are what smartcalcs_request() returned. Kept for this request only,
+         * so the next request asks again.
+         *
+         * @var array<string, mixed>
+         */
+        private $failed_lookups_in_request = array();
+        /**
+         * Words in rate row names, translated into the site's language, by site locale.
+         *
+         * Filled only by a request that had to switch to the site's language to build them.
+         *
+         * @var array<string, array{tax: string, nullified: string}>
+         */
+        private static $rate_name_words = array();
         /**
          * Tracks instance.
          *
@@ -3006,7 +3045,7 @@ namespace {
          * @param string $to_country       The destination country for the tax calculation.
          * @param array  $jurisdictions    Tax jurisdictions.
          *
-         * @return string The formatted and localized tax rate name.
+         * @return string The formatted tax rate name, in the site's language.
          */
         private static function generate_itemized_tax_rate_name(string $taxjar_rate_name, string $to_country, array $jurisdictions)
         {
@@ -3034,6 +3073,23 @@ namespace {
          * @return string
          */
         private static function get_nullified_rate_label()
+        {
+        }
+        /**
+         * The translated words in the names of the rate rows a lookup writes, in the site's language.
+         *
+         * Later lookups find these rows again by name. Checkout runs in the site's language,
+         * but the admin (Recalculate, saving an order) runs in the user's, so names built in
+         * the request's language gave the same row a name in each. A lookup in one language
+         * then never found the rows written in the other to remove them, and renamed every
+         * row it reused.
+         *
+         * Switching the locale reloads every loaded text domain, so it happens only when the
+         * request is not in the site's language, and once per request.
+         *
+         * @return array{tax: string, nullified: string}
+         */
+        private static function get_rate_name_words()
         {
         }
         public function init()
@@ -3413,7 +3469,8 @@ namespace {
          * stale keying, and a future caller inherits the invariant instead of having to
          * remember it. Callers reset the map before building, so replacing it wholesale
          * here is safe — an entry whose line item did not survive into $line_items (the
-         * order path skips zero-priced lines) is dropped, exactly as before.
+         * order path skips zero-priced lines) is dropped, exactly as before. The same goes
+         * for `$line_item_tax_classes`.
          *
          * @since 3.6.12
          *
@@ -3886,6 +3943,20 @@ namespace {
         {
         }
         /**
+         * Whether a rate row is one of the 0% rows added beside a state-wide rate.
+         *
+         * Such a row is 0% and its name ends with the label it is given. A merchant's own
+         * 0% row has another name, and a row of ours the merchant set to a rate is theirs.
+         *
+         * @param string|float $rate Rate percentage.
+         * @param string       $name Row name.
+         *
+         * @return bool
+         */
+        private static function is_nullified_rate($rate, $name)
+        {
+        }
+        /**
          * Note that a component was written at a priority in a tax class.
          *
          * @param array  $written   Written priorities per tax class, updated in place.
@@ -4120,6 +4191,8 @@ namespace {
          * - The taxed address changed on an order with refunded tax: TaxJar is not asked,
          *   so the refunds keep matching the order's rates. The cases above apply, and a
          *   note says why the tax was not updated.
+         *
+         * Everything said about one recalculation goes in a single order note.
          *
          * @internal Hooked to woocommerce_order_after_calculate_totals.
          *
@@ -4389,8 +4462,16 @@ namespace {
          * Percentages, labels and codes come from the order's tax lines, never from the
          * rate table, which may have changed since the order was placed.
          *
+         * Writes no note: the caller writes one note for the whole recalculation.
+         *
          * @param WC_Order $order    The recalculated order.
          * @param array    $snapshot Snapshot taken before the recalculation.
+         * @return array {
+         *   @type float    $old_tax Tax before the order changed.
+         *   @type float    $new_tax Tax after.
+         *   @type bool     $moved   Whether the tax changed.
+         *   @type string[] $untaxed Names of new items left untaxed for want of a rate.
+         * }
          */
         private function reapply_order_tax_rates($order, $snapshot)
         {
@@ -4423,15 +4504,31 @@ namespace {
         /**
          * The note for an address change whose lookup failed on an order that had tax.
          *
-         * Says why the lookup failed and what was done instead: the order's tax was kept,
-         * or, when other changes were made in the same edit, the recorded rates were
-         * re-applied to them.
+         * Says why the lookup failed, then what was done instead (see get_kept_order_tax_note()).
          *
+         * @param WC_Order     $order     The order.
          * @param string|false $lookup    Failed result of lookup_order_taxes().
-         * @param bool         $reapplied Whether the recorded rates were re-applied.
+         * @param array|null   $reapplied What reapply_order_tax_rates() returned, or null when the order's tax was kept.
          * @return string
          */
-        private function get_failed_order_tax_update_note($lookup, $reapplied)
+        private function get_failed_order_tax_update_note($order, $lookup, $reapplied)
+        {
+        }
+        /**
+         * A note for an address change the order's tax was not updated for.
+         *
+         * Says why, what was done instead, and what to check. The order's tax was kept, or,
+         * when other changes were made in the same edit, the rates already saved on the order
+         * were applied to them. Those rates came from the last time the order was taxed for
+         * an address, which is not always when it was placed.
+         *
+         * @param WC_Order   $order     The order.
+         * @param string     $reason    Why the tax was not updated, as one sentence.
+         * @param string     $check     What to check, as one sentence.
+         * @param array|null $reapplied What reapply_order_tax_rates() returned, or null when the order's tax was kept.
+         * @return string
+         */
+        private function get_kept_order_tax_note($order, $reason, $check, $reapplied)
         {
         }
         /**
@@ -4620,16 +4717,19 @@ namespace {
          *
          * Every line is re-taxed: the old rates belonged to the old address, or there were
          * none. A fee is taxed at the rates of a product in its tax class, or keeps the tax
-         * WC gave it when no such product was looked up. The address and
-         * the change are recorded in a note when the address changed or the tax moved.
+         * WC gave it when no product in that class has rates from the lookup. The address
+         * and the change are recorded in a note when the address changed or the tax moved.
          *
          * An answer without rates means the store has no nexus at the address. The tax WC
          * calculated from the rate table is kept then, as checkout and the admin Recalculate
          * keep it, so a rate the merchant added for that state is still charged.
          *
+         * Writes no note: the caller writes one note for the whole recalculation.
+         *
          * @param WC_Order $order    The recalculated order.
          * @param array    $lookup   Result of lookup_order_taxes().
          * @param array    $snapshot Snapshot taken before the recalculation.
+         * @return string[] Sentences for the order note.
          */
         private function apply_looked_up_order_taxes($order, array $lookup, array $snapshot)
         {
