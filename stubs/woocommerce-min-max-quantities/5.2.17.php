@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-min-max-quantities 5.2.16.
+ * Generated stub declarations for woocommerce-min-max-quantities 5.2.17.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -218,7 +218,7 @@ class WC_Min_Max_Quantities_Admin_Notices
 /**
  * WC_Min_Max_Quantities_Admin class.
  *
- * @version 5.2.15
+ * @version 5.2.17
  */
 class WC_Min_Max_Quantities_Admin
 {
@@ -1871,7 +1871,7 @@ class WC_Min_Max_Quantities_WC_Payments_Compatibility
 /**
  * Min Max Quantities class.
  *
- * @version  5.2.15
+ * @version  5.2.17
  */
 class WC_Min_Max_Quantities
 {
@@ -2134,9 +2134,9 @@ class WC_Min_Max_Quantities
     /**
      * Add quantity property to add to cart button on shop loop for simple products.
      *
-     * @param  string     $html    Add to cart link.
+     * @param  mixed      $html    Filtered add to cart link.
      * @param  WC_Product $product Product object.
-     * @return string
+     * @return mixed
      */
     public function add_to_cart_link($html, $product)
     {
@@ -2400,4 +2400,4 @@ class WC_Min_Max_Quantities
     {
     }
 }
-\define('WC_MIN_MAX_QUANTITIES', '5.2.16');
+\define('WC_MIN_MAX_QUANTITIES', '5.2.17');

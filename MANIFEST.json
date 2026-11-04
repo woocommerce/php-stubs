@@ -862,10 +862,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "5.2.16": {
-                "source_zip_sha256": "6d3fe8d1a1153b78d4664d2fcbce4270429b44e389ff1b202a1595261d3ba06a",
-                "stub_sha256": "c0689e6c1f6a76e3b294f6c730033b3c9347d9fa96ab46219283e49ec51840de",
-                "generated_at": "2026-10-29T09:34:23Z",
+            "5.2.17": {
+                "source_zip_sha256": "dbd01c35ab8a860fb1e485debe3347f3e39a9de049aec8dc8af4d3946b0719bc",
+                "stub_sha256": "898cb2a678a324a71fcb4c645cebf9f5b1cb33b31f1ae5b160a815b6e3e3d8dc",
+                "generated_at": "2026-11-04T10:16:57Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -1054,10 +1054,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "8.4.6": {
-                "source_zip_sha256": "44573ffd4c5be9e4b16e1d11725373c3c190009d18fc55c21cd36f5989ab5ff6",
-                "stub_sha256": "b39322f7e7f4c33c852bc8ecf7fa831e256f2c8a893e5be4b1c8e835b18ace7f",
-                "generated_at": "2026-10-29T09:39:09Z",
+            "8.4.7": {
+                "source_zip_sha256": "e4e8c1ea0db6c2685acc80d8ca0f76f5ac3ac7f5fce2eda1ab54c51ed6aaa27f",
+                "stub_sha256": "86dccfc1606b17ddb87c76711e81c5524b10684e1b9531824360eea5b7bbfedf",
+                "generated_at": "2026-11-04T10:04:57Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -1149,10 +1149,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "1.11.8": {
-                "source_zip_sha256": "1889033b7029674ea398866d06754e0689880b1973b2608205cd3cbf9d116bd3",
-                "stub_sha256": "ad9b5358630ac85b4270ef77cfa57336e99edcc04ad564b9781e47fab59e9d9b",
-                "generated_at": "2026-10-29T09:23:43Z",
+            "1.11.9": {
+                "source_zip_sha256": "c8175fda24e47b0e46251d1bfa222b483b71a71758caa096c795c93a1314c70d",
+                "stub_sha256": "16cb5ce8a13b50d45015281861a3bbd3a167f314a1bce25eef71ab76e117f906",
+                "generated_at": "2026-11-04T09:53:37Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -1195,6 +1195,13 @@
                 "source_zip_sha256": "6dea296809b24785c75f194c5089499e8561b0c45a1b956ae08ea9f40efa28af",
                 "stub_sha256": "1bbe229cac80645b9653d576953ff2d43d16f5f46c22563182842d82453164f3",
                 "generated_at": "2026-10-29T09:28:53Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "4.5.1": {
+                "source_zip_sha256": "094659e4f5ef5e2f41d7b9ea9c51ee070edf795deabfe45d90cd9f90140e230f",
+                "stub_sha256": "9ed30751667fe74c47110e0e3105e375dd789f68b6405afd91b5faf54994a1b5",
+                "generated_at": "2026-11-04T09:59:12Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }

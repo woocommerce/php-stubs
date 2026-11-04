@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-product-csv-import-suite 1.11.8.
+ * Generated stub declarations for woocommerce-product-csv-import-suite 1.11.9.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -898,7 +898,7 @@ class WC_PCSVIS_Product_Import extends \WP_Importer
  * Imports product variations from a CSV file.
  *
  * @class   WC_PCSVIS_Product_Variation_Import
- * @version 1.11.7
+ * @version 1.11.9
  */
 class WC_PCSVIS_Product_Variation_Import extends \WC_PCSVIS_Product_Import
 {
@@ -918,6 +918,29 @@ class WC_PCSVIS_Product_Variation_Import extends \WC_PCSVIS_Product_Import
      * @return mixed
      */
     public function filter_post_meta_value($value, $key)
+    {
+    }
+    /**
+     * Normalize a variation attribute post meta key.
+     *
+     * WooCommerce stores a variation's attribute selection under
+     * 'attribute_' . sanitize_title( attribute name ), and
+     * wc_get_product_variation_attributes() discards any 'attribute_' meta key that does
+     * not match that form, which leaves the variation set to "Any ...". A CSV column
+     * written with the attribute's display name - for example
+     * meta:attribute_Nº de alveolos - therefore needs the same sanitize_title() treatment
+     * the parent product's attribute: columns already receive.
+     *
+     * Note the prefix tests are case-sensitive, matching the behavior this replaces. A
+     * column such as meta:Attribute_Size is left untouched, as it was before.
+     *
+     * @see https://github.com/woocommerce/woocommerce-product-csv-import-suite/issues/213
+     * @since 1.11.9
+     * @version 1.11.9
+     * @param string $key Post meta key from the CSV column.
+     * @return string Meta key to store against the variation.
+     */
+    protected function normalize_attribute_meta_key($key)
     {
     }
     /**
@@ -1178,7 +1201,7 @@ function woocommerce_product_csv_import_suite_missing_wc_notice()
 {
 }
 \define('WC_PCSVIS_FILE', __FILE__);
-\define('WC_PCSVIS_VERSION', '1.11.8');
+\define('WC_PCSVIS_VERSION', '1.11.9');
 /**
  * Initializes the extension.
  *

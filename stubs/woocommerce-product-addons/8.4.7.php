@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-product-addons 8.4.6.
+ * Generated stub declarations for woocommerce-product-addons 8.4.7.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -915,6 +915,20 @@ class WC_Product_Add_Ons_Groups_Controller extends \WP_REST_Controller
     public function delete_item($request)
     {
     }
+    /**
+     * Get the global group or product ID of a request, or 0 when it is not a positive integer.
+     *
+     * `id` can come from the query string or body as well as the URL, so it may be any string or an array.
+     * A numeric value is cast as PHP would coerce it, as in the v2 controller.
+     *
+     * @since 8.4.7
+     *
+     * @param WP_REST_Request $request Request object.
+     * @return int
+     */
+    private function get_request_id($request)
+    {
+    }
     /** Validate the requester's permissions
      *
      * @since 2.9.0
@@ -1237,6 +1251,8 @@ abstract class WC_Product_Addons_Api_V2_Abstract_Group
  */
 /**
  * Controller class.
+ *
+ * @version 8.4.7
  */
 class WC_Product_Addons_Api_V2_Controller extends \WP_REST_Controller
 {
@@ -1361,7 +1377,7 @@ class WC_Product_Addons_Api_V2_Controller extends \WP_REST_Controller
     {
     }
     /**
-     * Get the group ID of a request, or 0 when it is not a number.
+     * Get the group ID of a request, or 0 when it is not an integer.
      *
      * `id` can come from the query string or body as well as the URL, so it may be any
      * string or an array. A numeric value is cast as PHP would coerce it for the
@@ -1656,7 +1672,7 @@ class WC_Product_Addons_Api_V2_Product_Rest_Api
  *
  * @package Automattic\WooCommerce\ProductAddons
  * @since 6.9.0
- * @version 8.4.5
+ * @version 8.4.7
  */
 /**
  * WC_Product_Addons_Api_V2_Product_Group class.
@@ -2953,7 +2969,7 @@ class WC_Product_Addons_Global_Add_On_Groups_Ability implements \Automattic\WooC
 /**
  * WC_Product_Addons_Helper class.
  *
- * @version 8.4.5
+ * @version 8.4.7
  */
 class WC_Product_Addons_Helper
 {
@@ -3208,7 +3224,7 @@ class WC_Product_Addons_Helper
     {
     }
     /**
-     * Generate a unique timestamp and use it as id.
+     * Generate a positive integer ID without relying on request timing.
      *
      * @since  6.9.0
      *
@@ -5158,7 +5174,7 @@ class WC_Product_Addons_Group_Validator
  * Global and product add-on group storage.
  *
  * @class    WC_Product_Addons_Groups
- * @version  8.4.5
+ * @version  8.4.7
  */
 class WC_Product_Addons_Groups
 {
@@ -5669,4 +5685,4 @@ function woocommerce_product_addons_deactivation()
 function woocommerce_product_addons_init()
 {
 }
-\define('WC_PRODUCT_ADDONS_VERSION', '8.4.6');
+\define('WC_PRODUCT_ADDONS_VERSION', '8.4.7');
