@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for pinterest-for-woocommerce 1.6.1.
+ * Generated stub declarations for pinterest-for-woocommerce 1.6.2.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -30,7 +30,7 @@ namespace {
      * Base Plugin class holding generic functionality
      *
      * @class   Pinterest_For_Woocommerce
-     * @version 1.6.1
+     * @version 1.6.2
      */
     final class Pinterest_For_Woocommerce
     {
@@ -2304,7 +2304,7 @@ namespace Automattic\WooCommerce\Pinterest\API {
      * Endpoint handing Pinterest advertiser.
      *
      * @class   AdvertiserConnect
-     * @version 1.6.0
+     * @version 1.6.2
      */
     class AdvertiserConnect extends \Automattic\WooCommerce\Pinterest\API\VendorAPI
     {
@@ -8533,7 +8533,7 @@ namespace Automattic\WooCommerce\Pinterest\Product {
      * Class GoogleCategorySearch
      *
      * @class   GoogleCategorySearch
-     * @version 1.0.2
+     * @version 1.6.2
      */
     class GoogleCategorySearch
     {
@@ -9271,7 +9271,7 @@ namespace Automattic\WooCommerce\Pinterest {
      * Class adding RichPins support.
      *
      * @class   RichPins
-     * @version 1.6.0
+     * @version 1.6.2
      */
     class RichPins
     {
@@ -9592,7 +9592,7 @@ namespace Automattic\WooCommerce\Pinterest {
      * Class Tracker responsible for hooking into system events.
      *
      * @class   Tracking
-     * @version 1.6.1
+     * @version 1.6.2
      */
     class Tracking
     {
@@ -10563,7 +10563,7 @@ namespace Automattic\WooCommerce\Pinterest\Tracking {
      * Generates browser PageVisit events and handles their CAPI beacons.
      *
      * @class   PageVisit
-     * @version 1.6.1
+     * @version 1.6.2
      */
     class PageVisit
     {
@@ -10977,7 +10977,7 @@ namespace Automattic\WooCommerce\Pinterest\Utilities {
      *
      * @class   CrawlerDetector
      * @since   1.4.27
-     * @version 1.4.27
+     * @version 1.6.2
      */
     class CrawlerDetector
     {
@@ -11004,6 +11004,15 @@ namespace Automattic\WooCommerce\Pinterest\Utilities {
          * @return bool
          */
         public static function is_crawler_request(): bool
+        {
+        }
+        /**
+         * Detects browser prefetch, prerender and preview requests.
+         *
+         * @since 1.6.2
+         * @return bool Whether the browser explicitly marked a speculative request.
+         */
+        public static function is_speculative_request(): bool
         {
         }
     }
@@ -11376,7 +11385,7 @@ namespace Automattic\WooCommerce\Pinterest {
 }
 namespace {
     \define('PINTEREST_FOR_WOOCOMMERCE_PLUGIN_FILE', __FILE__);
-    \define('PINTEREST_FOR_WOOCOMMERCE_VERSION', '1.6.1');
+    \define('PINTEREST_FOR_WOOCOMMERCE_VERSION', '1.6.2');
     /**
      * Main instance of Pinterest_For_Woocommerce.
      *

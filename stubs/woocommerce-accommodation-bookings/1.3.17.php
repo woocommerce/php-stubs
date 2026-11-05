@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-accommodation-bookings 1.3.16.
+ * Generated stub declarations for woocommerce-accommodation-bookings 1.3.17.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -974,7 +974,7 @@ class WC_Product_Accommodation_Booking_Resource extends \WC_Product_Booking_Reso
  * Mostly inherited from WC_Product_Booking (code reuse!) but overrides a few methods
  *
  * @class   WC_Product_Accommodation_Booking
- * @version 1.3.16
+ * @version 1.3.17
  */
 class WC_Product_Accommodation_Booking extends \WC_Product_Booking
 {
@@ -1250,4 +1250,4 @@ class WC_Accommodation_Booking_Addons
     {
     }
 }
-\define('WC_ACCOMMODATION_BOOKINGS_VERSION', '1.3.16');
+\define('WC_ACCOMMODATION_BOOKINGS_VERSION', '1.3.17');

@@ -215,11 +215,11 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "1.6.1": {
-                "source_url": "https://downloads.wordpress.org/plugin/pinterest-for-woocommerce.1.6.1.zip",
-                "source_zip_sha256": "a6753de231a92b3b121e79a6e6848d2a0ae2ba6853ed90a46ccbd8b6360761b3",
-                "stub_sha256": "0a2208daae6cbd280c68835888572e2343106dfe263b417c0a1bef218349a247",
-                "generated_at": "2026-10-30T03:04:05Z",
+            "1.6.2": {
+                "source_url": "https://downloads.wordpress.org/plugin/pinterest-for-woocommerce.1.6.2.zip",
+                "source_zip_sha256": "3eb2cd8c04f5317e930e43efc66509537ec98caea04fc40814ef18efdab757e5",
+                "stub_sha256": "01bbbb12769420341ccf5df98dc36086000f9212c32e281a2a58850fac0a2fd0",
+                "generated_at": "2026-11-05T03:07:28Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -381,11 +381,11 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "1.3.16": {
-                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-accommodation-bookings.1.3.16.zip",
-                "source_zip_sha256": "6824c06fe5bab14e56aba3ee8449899192e08253164e3c689827b05e142be57d",
-                "stub_sha256": "44659b402aaad8e1bfab77f098b6a9d44c5e662c59a95f11c027669c55d8a59d",
-                "generated_at": "2026-10-30T03:04:58Z",
+            "1.3.17": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-accommodation-bookings.1.3.17.zip",
+                "source_zip_sha256": "eda80de63b5a5ef3f367e56cb6b6ac6870f0a4c7c460d1ec815fd314d0ec9d77",
+                "stub_sha256": "75dd6e316af3b7ee2153e3e8ecc8a478366fc90f38eddc7a9eb84907da3f58ed",
+                "generated_at": "2026-11-05T03:08:20Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -698,6 +698,14 @@
                 "source_zip_sha256": "97e5cfcf252d9c6891011b54b09903429cfcfeaf03ae5a12b0a1fc058e6319de",
                 "stub_sha256": "9518e02be4b62de38df1bd6a70d334b0c625c0928072eb288bf9d44c26d6cee1",
                 "generated_at": "2026-10-23T08:05:49Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "3.0.4": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-gocardless.3.0.4.zip",
+                "source_zip_sha256": "92e3ec68f86f305b3ee70e841fe6d8a0a2248e50230037720f782fcb24a81d47",
+                "stub_sha256": "76392ca5613cc725d1c6d0fa042d5773debe3c5386c74c6b47a98b4206d93789",
+                "generated_at": "2026-11-05T03:09:03Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -1472,6 +1480,14 @@
                 "source_zip_sha256": "861e45119b64732921615431df72c0160ba6a8fa16ade961b88b4691514c8834",
                 "stub_sha256": "3e71c8fc92255df65acb739bd305ee34167debbda4d9b80a160044fbb946ffa1",
                 "generated_at": "2026-10-23T08:33:51Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "5.5.3": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-square.5.5.3.zip",
+                "source_zip_sha256": "3074b5e696d5336ba34b15fc547fa820c3af28cea84ca2222ee1e4da8c8c660d",
+                "stub_sha256": "8b6559cd928918062417a5297abe84005957306c17efc2c3d2e3fe4a099f3258",
+                "generated_at": "2026-11-05T03:09:46Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
