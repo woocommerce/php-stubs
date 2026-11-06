@@ -1524,6 +1524,13 @@
                 "generated_at": "2026-11-05T18:37:28Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "9.4.1": {
+                "source_zip_sha256": "ed8c529d1382e2d06fa6e605e799c9db5607d8459806c229e74a20571f871083",
+                "stub_sha256": "fa3ed4567f62817406bcec66128cf7cac2534cf074f1502ec1b945be81fd3c4d",
+                "generated_at": "2026-11-06T14:51:07Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-table-rate-shipping": {
