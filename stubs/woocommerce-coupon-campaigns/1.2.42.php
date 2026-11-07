@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-coupon-campaigns 1.2.41.
+ * Generated stub declarations for woocommerce-coupon-campaigns 1.2.42.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -559,7 +559,7 @@ class WC_Coupon_Campaigns
  * Display the legacy coupon campaign report.
  *
  * @class   WC_Report_Campaigns
- * @version 1.2.41
+ * @version 1.2.42
  */
 class WC_Report_Campaigns extends \WC_Admin_Report
 {
@@ -744,4 +744,4 @@ class WC_Report_Campaigns extends \WC_Admin_Report
 function wc_coupon_campaigns_tracking()
 {
 }
-\define('WC_COUPON_CAMPAIGNS_VERSION', '1.2.41');
+\define('WC_COUPON_CAMPAIGNS_VERSION', '1.2.42');

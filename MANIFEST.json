@@ -614,10 +614,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "1.2.41": {
-                "source_zip_sha256": "90fb2cc7f2ee2e9c4d4f7ce6f1160d4c39d8021254e62853df5f2abf7e5ce7ae",
-                "stub_sha256": "512770753b02a28cd3b4ecb1d09f0d229a53a2420673fef56c61bec5991e91e5",
-                "generated_at": "2026-10-29T09:13:37Z",
+            "1.2.42": {
+                "source_zip_sha256": "74152adae305bb38b59a0970e52e149ac5cac480e54393929ec769adfd2ac203",
+                "stub_sha256": "4c14181ac92570ca23ce34ded02e6abb4ccde6fe87075c178491b9fb5fa0e62f",
+                "generated_at": "2026-11-07T15:52:48Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
