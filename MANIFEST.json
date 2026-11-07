@@ -256,6 +256,14 @@
                 "generated_at": "2026-10-23T07:44:53Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "2.0.2": {
+                "source_url": "https://downloads.wordpress.org/plugin/product-bundles-bulk-discounts-for-woocommerce.2.0.2.zip",
+                "source_zip_sha256": "126f71557753f20efc5c2acd3e071bbf639b499bbf4eb0a052af931e3c3782b7",
+                "stub_sha256": "b5586fecd13c42f5a6b3e67c90412ad3dfa5878276dd6dacb037003d00067894",
+                "generated_at": "2026-11-07T03:03:39Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "product-bundles-variation-bundles": {
