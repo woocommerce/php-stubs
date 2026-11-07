@@ -440,6 +440,13 @@
                 "generated_at": "2026-10-21T21:30:38Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "3.3.6": {
+                "source_zip_sha256": "075c303369135cdeb9cbac96affdb65c90b036b6807a912b8b8ab72e87a26728",
+                "stub_sha256": "a18206692b18f0b6d3a0b628527a6a1a2ebdc0b640dab13b6240f5ece155de8f",
+                "generated_at": "2026-11-07T15:27:26Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-bookings": {
