@@ -1236,6 +1236,14 @@
                 "generated_at": "2026-10-23T08:26:15Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "2.0.2": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-product-dependencies.2.0.2.zip",
+                "source_zip_sha256": "95d67c18293535bc6a94357bdc131fbe22736fc5241e5425b88fa3020b87dcc5",
+                "stub_sha256": "6f537262511a97992a298fe704f6f825b4369bad8654b846d05e35eaffe07c2d",
+                "generated_at": "2026-11-08T03:03:53Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-product-recommendations": {
