@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-conditional-shipping-and-payments 3.2.2.
+ * Generated stub declarations for woocommerce-conditional-shipping-and-payments 3.2.3.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -3563,7 +3563,7 @@ class WC_CSP_WC_Payments_Compatibility
 /**
  * WooCommerce Subscriptions Compatibility.
  *
- * @version 3.2.2
+ * @version 3.2.3
  */
 class WC_CSP_WCS_Compatibility
 {
@@ -3581,6 +3581,73 @@ class WC_CSP_WCS_Compatibility
      * @return void
      */
     public static function load_conditions()
+    {
+    }
+    /**
+     * Restore free-trial subscription items that Subscriptions removes from the initial cart's shipping packages.
+     *
+     * Only the evaluated copy changes; WooCommerce's priced package stays untouched. Restore only when both
+     * the original cart and the surviving initial shipment have one package. Otherwise a trial-only shipment
+     * may have disappeared from a split cart, and assigning its items to another shipment would be incorrect.
+     * All-trial carts already have recurring packages; no extra initial package is needed.
+     *
+     * @since  3.2.3
+     *
+     * @param  mixed $packages The shipping packages CSP evaluates.
+     * @return mixed
+     */
+    public static function restore_free_trial_package_contents($packages)
+    {
+    }
+    /**
+     * Restore free-trial subscription items in a single package evaluated by CSP.
+     *
+     * Companion to {@see restore_free_trial_package_contents()} for code paths that evaluate one package at a
+     * time - the 'woocommerce_package_rates' callback that hides restricted rates from the displayed shipping
+     * options. Without this, a rate would remain visible even though checkout validation rejects it, leaving
+     * the customer with a selectable option that can never be used. Only the evaluated copy is touched; the
+     * package WooCommerce prices carries no trial items, so trials still ship free.
+     *
+     * @since  3.2.3
+     *
+     * @param  mixed $package The shipping package CSP evaluates conditions against.
+     * @return mixed
+     */
+    public static function restore_free_trial_single_package_contents($package)
+    {
+    }
+    /**
+     * Include stripped trial identities and quantities in WooCommerce's shipping-rate cache hash.
+     *
+     * @since 3.2.3
+     * @param mixed $packages Cart shipping packages.
+     * @return mixed
+     */
+    public static function add_free_trial_package_variable($packages)
+    {
+    }
+    /**
+     * Rebuild the initial (non-recurring) shipping packages WooCommerce would have produced if Subscriptions had
+     * not stripped free-trial items from them.
+     *
+     * Also used to detect original split shipments, even if Subscriptions removed an empty trial-only package.
+     * Rebuilt packages are used only for CSP evaluation; WooCommerce's priced packages stay untouched.
+     *
+     * @since  3.2.3
+     *
+     * @return array<array-key, array<string, mixed>>
+     */
+    protected static function get_unstripped_initial_packages()
+    {
+    }
+    /**
+     * Validate filtered package contents before using them in condition evaluation.
+     *
+     * @since 3.2.3
+     * @param mixed $packages Filtered cart shipping packages.
+     * @return array<array-key, array<string, mixed>>
+     */
+    private static function get_initial_packages($packages)
     {
     }
     /**
@@ -6896,7 +6963,7 @@ class WC_CSP_Restrict_Shipping_Countries extends \WC_CSP_Restriction implements 
  * Restrict Shipping Methods.
  *
  * @class    WC_CSP_Restrict_Shipping_Methods
- * @version  3.2.2
+ * @version 3.2.3
  */
 class WC_CSP_Restrict_Shipping_Methods extends \WC_CSP_Restriction implements \WC_CSP_Checkout_Restriction
 {
@@ -7156,7 +7223,7 @@ interface WC_CSP_Update_Cart_Restriction
 class WC_Conditional_Shipping_Payments
 {
     /* Plugin version */
-    const VERSION = '3.2.2';
+    const VERSION = '3.2.3';
     /* Required WC version */
     const REQ_WC_VERSION = '11.1.0';
     /* Required PHP version */
