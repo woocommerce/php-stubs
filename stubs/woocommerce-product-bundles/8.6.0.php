@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-product-bundles 8.5.17.
+ * Generated stub declarations for woocommerce-product-bundles 8.6.0.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -1875,7 +1875,7 @@ class WC_PB_Product_Export
  * WooCommerce core Product Importer support.
  *
  * @class    WC_PB_Product_Import
- * @version  8.5.16
+ * @version  8.6.0
  */
 class WC_PB_Product_Import
 {
@@ -1953,6 +1953,7 @@ class WC_PB_Product_Import
     /**
      * Set bundle-type props.
      *
+     * @throws Exception When an imported discount is outside the supported range.
      * @param  array $product Product data.
      * @param  array $data    Import data.
      * @return array
@@ -1965,7 +1966,7 @@ class WC_PB_Product_Import
  * Product meta-box data for the 'Bundle' type.
  *
  * @class    WC_PB_Meta_Box_Product_Data
- * @version  8.5.17
+ * @version  8.6.0
  */
 class WC_PB_Meta_Box_Product_Data
 {
@@ -2276,7 +2277,7 @@ class WC_PB_Report_Insufficient_Stock extends \WC_Report_Stock
  * Add custom REST API fields.
  *
  * @class    WC_PB_REST_API
- * @version  8.5.16
+ * @version  8.6.0
  */
 class WC_PB_REST_API
 {
@@ -2307,6 +2308,18 @@ class WC_PB_REST_API
     | Products.
     |--------------------------------------------------------------------------
     */
+    /**
+     * Reject invalid discounts before WooCommerce saves any product changes.
+     *
+     * @since 8.6.0
+     * @throws WC_REST_Exception When a bundled item discount is outside the supported range.
+     * @param mixed $product Product prepared for saving.
+     * @param mixed $request REST request.
+     * @return mixed
+     */
+    public static function validate_bundled_item_discounts($product, $request)
+    {
+    }
     /**
      * Filters WC REST API product responses to cast prices to string, as per the schema.
      *
@@ -2509,7 +2522,7 @@ class WC_PB_REST_API
 /**
  * Extends the store public API with bundle related data for each bundle parent and child item.
  *
- * @version 8.5.17
+ * @version 8.6.0
  */
 class WC_PB_Store_API
 {
@@ -2865,7 +2878,7 @@ class WC_PB_Checkout_Blocks_Integration implements \Automattic\WooCommerce\Block
  * The bundled item class is a product container that initializes and holds pricing, availability and variation/attribute-related data for a bundled product.
  *
  * @class    WC_Bundled_Item
- * @version  8.5.17
+ * @version  8.6.0
  *
  * @property-read int|null $item_id Bundled item ID, same as get_id().
  */
@@ -3902,7 +3915,7 @@ class WC_Bundled_Item
      *
      * @param  string $type 'min' or 'max'.
      * @param  array  $args Additional arguments.
-     * @return ($type is 'min' ? int : int|string)
+     * @return ($type is 'min' ? int : int|'')
      */
     public function get_quantity($type = 'min', $args = array())
     {
@@ -4688,7 +4701,7 @@ class WC_PB_Bundled_Item_Formatters
  * Product Bundle cart functions and filters.
  *
  * @class    WC_PB_Cart
- * @version  8.5.17
+ * @version  8.6.0
  */
 class WC_PB_Cart
 {
@@ -4967,6 +4980,17 @@ class WC_PB_Cart
      * @return array
      */
     public function rebuild_posted_bundle_form_data($configuration)
+    {
+    }
+    /**
+     * Fill omitted attributes that are fixed by a chosen variation.
+     *
+     * @since 8.6.0
+     *
+     * @param mixed $configuration Bundle configuration.
+     * @return mixed
+     */
+    public function complete_variation_attributes($configuration)
     {
     }
     /**
@@ -5920,7 +5944,7 @@ class WC_PB_DB_Sync
  * Product Bundle display functions and filters.
  *
  * @class    WC_PB_Display
- * @version  8.5.16
+ * @version  8.6.0
  */
 class WC_PB_Display
 {
@@ -6200,6 +6224,17 @@ class WC_PB_Display
      * @return string
      */
     public function cart_item_subtotal($subtotal, $cart_item, $cart_item_key)
+    {
+    }
+    /**
+     * Limits the cart quantity inputs of bundles and bundled items to the stock of the bundled products.
+     *
+     * @since 8.6.0
+     *
+     * @param  mixed $args Quantity input arguments.
+     * @return mixed
+     */
+    public function cart_quantity_input_args($args)
     {
     }
     /**
@@ -6485,7 +6520,7 @@ class WC_PB_Display
  * Product Bundle Helper Functions.
  *
  * @class    WC_PB_Helpers
- * @version  8.5.17
+ * @version 8.6.0
  */
 class WC_PB_Helpers
 {
@@ -6495,6 +6530,16 @@ class WC_PB_Helpers
      * @var array
      */
     public static $cache = array();
+    /**
+     * Check a percentage discount, including legacy empty values that clear it.
+     *
+     * @since 8.6.0
+     * @param mixed $discount Discount value.
+     * @return bool
+     */
+    public static function is_valid_discount($discount)
+    {
+    }
     /**
      * Whether a product may be included in a public response.
      *
@@ -6588,6 +6633,15 @@ class WC_PB_Helpers
      * @return boolean
      */
     public static function is_front_end()
+    {
+    }
+    /**
+     * Whether the current admin screen edits a product bundle, after WordPress sets the global product ID.
+     *
+     * @since 8.6.0
+     * @return bool
+     */
+    public static function is_product_bundle_edit_page()
     {
     }
     /**
@@ -7208,7 +7262,7 @@ class WC_PB_Order_Again
  * Product Bundle order-related functions and filters.
  *
  * @class    WC_PB_Order
- * @version  8.5.16
+ * @version  8.6.0
  */
 class WC_PB_Order
 {
@@ -8680,7 +8734,7 @@ class WC_PB_Tracks
  * Product Bundle Class.
  *
  * @class    WC_Product_Bundle
- * @version  8.5.16
+ * @version  8.6.0
  */
 class WC_Product_Bundle extends \WC_Product
 {
@@ -10450,7 +10504,7 @@ class WC_PB_Core_Compatibility
 /**
  * Product Addons Compatibility.
  *
- * @version  8.5.17
+ * @version 8.6.0
  */
 class WC_PB_Addons_Compatibility
 {
@@ -11672,7 +11726,7 @@ class WC_PB_Give_Products_Compatibility
 /**
  * Memberships Integration: Discounts inheritance.
  *
- * @version  8.5.17
+ * @version  8.6.0
  */
 class WC_PB_Members_Compatibility
 {
@@ -11773,6 +11827,30 @@ class WC_PB_Members_Compatibility
     {
     }
     /**
+     * Schedules a refresh of the inherited discounts in a cart restored before Memberships enabled its discounts.
+     *
+     * WooCommerce restores the cart on 'wp_loaded' at priority 10, and Memberships enables its discounts on the same
+     * hook at priority 15. Restoring the cart recalculates bundled item discounts, so members would lose theirs.
+     *
+     * @since 8.6.0
+     * @return void
+     */
+    public static function maybe_schedule_cart_discounts_refresh()
+    {
+    }
+    /**
+     * Restores the cart from the session again, now that Memberships has enabled its discounts.
+     *
+     * Restoring it again lets bundles rebuild their discounts and everything derived from them, such as the values
+     * of assembled bundled items in shipping packages.
+     *
+     * @since 8.6.0
+     * @return void
+     */
+    public static function refresh_cart_discounts()
+    {
+    }
+    /**
      * Enables discount filtering.
      *
      * @return void
@@ -11792,7 +11870,7 @@ class WC_PB_Members_Compatibility
 /**
  * Min/Max Quantities Compatibility.
  *
- * @version  8.5.16
+ * @version  8.6.0
  */
 class WC_PB_Min_Max_Compatibility
 {
@@ -11973,7 +12051,7 @@ class WC_PB_Min_Max_Compatibility
 /**
  * NYP Compatibility.
  *
- * @version  8.5.17
+ * @version 8.6.0
  */
 class WC_PB_NYP_Compatibility
 {
@@ -11989,6 +12067,95 @@ class WC_PB_NYP_Compatibility
      * @return void
      */
     public static function init()
+    {
+    }
+    /**
+     * Load NYP and WooCommerce's variation controller on order screens.
+     *
+     * @since 8.6.0
+     * @return void
+     */
+    public static function admin_scripts()
+    {
+    }
+    /**
+     * Print the native template required by WooCommerce's variation controller.
+     *
+     * @since 8.6.0
+     * @return void
+     */
+    public static function admin_variation_template()
+    {
+    }
+    /**
+     * Whether the order form should show an item's NYP input: the form hides prices by filtering the priced-individually flag.
+     *
+     * @since 8.6.0
+     * @param WC_Bundled_Item $item Bundled item.
+     * @return bool
+     */
+    protected static function is_order_form_nyp($item)
+    {
+    }
+    /**
+     * Include the chosen unit price and native order-item totals in an admin edit.
+     *
+     * @since 8.6.0
+     * @param mixed $configuration Posted configuration.
+     * @param mixed $bundle Product bundle.
+     * @param mixed $item Container order item.
+     * @return mixed
+     */
+    public static function admin_order_configuration($configuration, $bundle, $item)
+    {
+    }
+    /**
+     * Validate a selected NYP amount before the order writer saves any items.
+     *
+     * @since 8.6.0
+     * @param mixed $valid Existing validation result.
+     * @param mixed $bundle Bundle product.
+     * @param mixed $item Bundled item.
+     * @param mixed $quantity Selected quantity.
+     * @param mixed $variation_id Selected variation.
+     * @param mixed $configuration Bundle configuration.
+     * @return mixed
+     * @throws Exception When the native NYP validator rejects the price.
+     */
+    public static function admin_validate_nyp($valid, $bundle, $item, $quantity, $variation_id, $configuration)
+    {
+    }
+    /**
+     * Restore saved NYP amounts using the input's store number format.
+     *
+     * @since 8.6.0
+     * @param mixed $form_data Form fields.
+     * @param mixed $configuration Stored configuration.
+     * @return mixed
+     */
+    public static function restore_nyp_form_data($form_data, $configuration)
+    {
+    }
+    /**
+     * Simple NYP products also require order configuration.
+     *
+     * @since 8.6.0
+     * @param mixed $editable Existing editable flag.
+     * @param mixed $bundle Bundle product.
+     * @return mixed
+     */
+    public static function nyp_order_editable($editable, $bundle)
+    {
+    }
+    /**
+     * Leave NYP bundles unconfigured until an administrator supplies their prices.
+     *
+     * @since 8.6.0
+     * @param mixed $auto_add Existing automatic population flag.
+     * @param mixed $bundle Bundle product.
+     * @return mixed
+     */
+    public static function nyp_auto_add($auto_add, $bundle)
     {
     }
     /**
@@ -14111,16 +14278,16 @@ class WC_PB_BS_Product
  * Extend REST API to support bundle-sells.
  *
  * @class    WC_PB_BS_REST_API
- * @version  8.5.16
+ * @version  8.6.0
  */
 class WC_PB_BS_REST_API
 {
     /**
      * Custom REST API product field names, indicating support for getting/updating.
      *
-     * @var array
+     * @var array<string, string[]>
      */
-    private static $product_fields = array('bundle_sell_ids' => array('get', 'update'));
+    private static $product_fields = array('bundle_sell_ids' => array('get', 'update'), 'bundle_sells_title' => array('get', 'update'), 'bundle_sells_discount' => array('get', 'update'));
     /**
      * Setup REST API bundle-sells class.
      *
@@ -14141,7 +14308,7 @@ class WC_PB_BS_REST_API
      * Gets schema properties for PB product fields.
      *
      * @param  string $field_name Field name.
-     * @return array
+     * @return array<string, mixed>|null
      */
     public static function get_product_field_schema($field_name)
     {
@@ -14149,7 +14316,7 @@ class WC_PB_BS_REST_API
     /**
      * Gets extended (unprefixed) schema properties for products.
      *
-     * @return array
+     * @return array<string, array<string, mixed>>
      */
     private static function get_extended_product_schema()
     {
@@ -14157,10 +14324,10 @@ class WC_PB_BS_REST_API
     /**
      * Gets values for PB product fields.
      *
-     * @param  array           $response The response object.
-     * @param  string          $field_name Field name.
-     * @param  WP_REST_Request $request The request object.
-     * @return array|false|null Field value, or null when the response has no product ID.
+     * @param  array<string, mixed> $response The response object.
+     * @param  string               $field_name Field name.
+     * @param  WP_REST_Request      $request The request object.
+     * @return array<array-key, mixed>|string|false|null Field value, or null when the response has no product ID.
      */
     public static function get_product_field_value($response, $field_name, $request)
     {
@@ -14168,7 +14335,7 @@ class WC_PB_BS_REST_API
     /**
      * Updates values for bundle-sells product fields.
      *
-     * @throws WC_REST_Exception When the bundle-sell product ID is invalid or unsupported.
+     * @throws WC_REST_Exception When a bundle-sell product or setting is invalid or unsupported.
      *
      * @param  mixed  $field_value The field value.
      * @param  mixed  $response The response object.
@@ -14182,10 +14349,10 @@ class WC_PB_BS_REST_API
     /**
      * Gets bundle-sells specific product data.
      *
-     * @param  string     $key Field key.
-     * @param  WC_Product $product Product object.
+     * @param  string                $key Field key.
+     * @param  WC_Product|false|null $product Product object, or an unresolved product.
      *
-     * @return array|false Bundle-sell IDs, or false for an unknown field.
+     * @return array<array-key, mixed>|string|false Field value, or false for an unknown field.
      */
     private static function get_product_field($key, $product)
     {
@@ -14555,7 +14722,7 @@ class WC_PB_MMI_Product
  * Main plugin class.
  *
  * @class    WC_Bundles
- * @version  8.5.17
+ * @version  8.6.0
  *
  * @property-read WC_PB_Compatibility $compatibility
  * @property-read WC_PB_Modules       $modules
@@ -14570,7 +14737,7 @@ class WC_Bundles
      *
      * @var string
      */
-    public $version = '8.5.17';
+    public $version = '8.6.0';
     /**
      * Minimum WooCommerce version required.
      *
@@ -15413,4 +15580,4 @@ function wc_pb_update_8517_db_version()
 function WC_PB()
 {
 }
-\define('WC_PB_VERSION', '8.5.17');
+\define('WC_PB_VERSION', '8.6.0');
