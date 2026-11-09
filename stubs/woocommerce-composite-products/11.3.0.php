@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-composite-products 11.2.2.
+ * Generated stub declarations for woocommerce-composite-products 11.3.0.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -1504,7 +1504,7 @@ class WC_CP_Admin_Tracks
  * Setup admin hooks.
  *
  * @class    WC_CP_Admin
- * @version  11.2.1
+ * @version  11.3.0
  */
 class WC_CP_Admin
 {
@@ -1877,7 +1877,7 @@ class WC_CP_Product_Import
  * Product Data tabs/panels for the Composite type.
  *
  * @class    WC_CP_Meta_Box_Product_Data
- * @version  11.2.1
+ * @version  11.3.0
  */
 class WC_CP_Meta_Box_Product_Data
 {
@@ -2662,7 +2662,7 @@ class WC_CP_Meta_Box_Product_Data
  * Add custom REST API fields.
  *
  * @class    WC_CP_REST_API
- * @version  11.2.2
+ * @version  11.3.0
  */
 class WC_CP_REST_API
 {
@@ -2953,7 +2953,7 @@ class WC_CP_REST_API
 /**
  * Extends the store public API with composite related data for each composite parent and child item.
  *
- * @version 11.2.2
+ * @version 11.3.0
  */
 class WC_CP_Store_API
 {
@@ -2968,7 +2968,7 @@ class WC_CP_Store_API
      *
      * @var array
      */
-    private static $product_fields = array('composite_virtual' => 1, 'composite_layout' => 1, 'composite_add_to_cart_form_location' => 0, 'composite_sold_individually_context' => 1, 'composite_shop_price_calc' => 1, 'composite_components' => array('id' => 1, 'title' => 1, 'description' => 1, 'query_type' => 1, 'query_ids' => 1, 'default_option_id' => 1, 'thumbnail_id' => 1, 'thumbnail_src' => 1, 'quantity_min' => 1, 'quantity_max' => 1, 'priced_individually' => 1, 'shipped_individually' => 1, 'optional' => 1, 'discount' => 1, 'options_style' => 1, 'pagination_style' => 1, 'display_prices' => 1, 'show_sorting_options' => 1, 'show_filtering_options' => 1, 'attribute_filter_ids' => 1, 'select_action' => 1, 'product_title_visible' => 1, 'product_descr_visible' => 1, 'product_price_visible' => 1, 'product_thumb_visible' => 1, 'subtotal_visible_product' => 1, 'subtotal_visible_cart' => 1, 'subtotal_visible_orders' => 1), 'composite_scenarios' => 0);
+    private static $product_fields = array('composite_virtual' => 1, 'composite_layout' => 1, 'composite_add_to_cart_form_location' => 0, 'composite_sold_individually_context' => 1, 'composite_shop_price_calc' => 1, 'composite_components' => array('id' => 1, 'title' => 1, 'description' => 1, 'query_type' => 1, 'query_ids' => 1, 'default_option_id' => 1, 'thumbnail_id' => 1, 'thumbnail_src' => 1, 'quantity_min' => 1, 'quantity_max' => 1, 'priced_individually' => 1, 'shipped_individually' => 1, 'optional' => 1, 'discount' => 1, 'options_style' => 1, 'pagination_style' => 1, 'display_prices' => 1, 'show_sorting_options' => 1, 'show_filtering_options' => 1, 'show_category_filter' => 1, 'attribute_filter_ids' => 1, 'select_action' => 1, 'product_title_visible' => 1, 'product_descr_visible' => 1, 'product_price_visible' => 1, 'product_thumb_visible' => 1, 'subtotal_visible_product' => 1, 'subtotal_visible_cart' => 1, 'subtotal_visible_orders' => 1), 'composite_scenarios' => 0);
     /**
      * Cache to store Store API product schema extension, as it's called multiple times in each request.
      *
@@ -2995,6 +2995,17 @@ class WC_CP_Store_API
      * @return void
      */
     public static function extend_store()
+    {
+    }
+    /**
+     * Declare composited children to core's cart quantity display.
+     *
+     * @since 11.3.0
+     * @param mixed $parent_item_key Parent key from earlier callbacks.
+     * @param mixed $cart_item Cart item supplied to the filter.
+     * @return mixed
+     */
+    public static function filter_cart_item_parent_key($parent_item_key, $cart_item)
     {
     }
     /**
@@ -4735,7 +4746,7 @@ class WC_CP_Component_View
  * Component abstraction. Contains data and maintains view state.
  *
  * @class    WC_CP_Component
- * @version  11.2.1
+ * @version  11.3.0
  *
  * @implements ArrayAccess<int|string, mixed>
  */
@@ -5018,6 +5029,15 @@ class WC_CP_Component implements \ArrayAccess
      * @return bool
      */
     public function show_filtering_options()
+    {
+    }
+    /**
+     * Indicates whether the category filter is enabled.
+     *
+     * @since 11.3.0
+     * @return bool
+     */
+    public function show_category_filter()
     {
     }
     /**
@@ -9271,7 +9291,7 @@ class WC_CP_Tracker
  * Composite Product Class.
  *
  * @class    WC_Product_Composite
- * @version  11.2.2
+ * @version  11.3.0
  */
 class WC_Product_Composite extends \WC_Product
 {
@@ -12987,7 +13007,7 @@ class WC_Widget_Composite extends \WC_Widget
  * Main plugin class.
  *
  * @class    WC_Composite_Products
- * @version  11.2.2
+ * @version  11.3.0
  *
  * @property-read WC_CP_Compatibility $compatibility
  * @property-read WC_CP_Cart          $cart
@@ -13001,7 +13021,7 @@ class WC_Composite_Products
      *
      * @var string
      */
-    public $version = '11.2.2';
+    public $version = '11.3.0';
     /**
      * The minimum required WooCommerce version.
      *
@@ -14306,4 +14326,4 @@ function wc_cp_remove_composite_summary_widget($widget_areas)
 function WC_CP()
 {
 }
-\define('WC_CP_VERSION', '11.2.2');
+\define('WC_CP_VERSION', '11.3.0');
