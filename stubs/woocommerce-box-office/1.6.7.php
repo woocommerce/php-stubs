@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-box-office 1.6.6.
+ * Generated stub declarations for woocommerce-box-office 1.6.7.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -687,10 +687,16 @@ class WC_Box_Office_Logger
  * Handles tickets in orders.
  *
  * @class   WC_Box_Office_Order
- * @version 1.6.6
+ * @version 1.6.7
  */
 class WC_Box_Office_Order
 {
+    /**
+     * Order currently being rendered by the trusted email callback.
+     *
+     * @var int
+     */
+    private static $email_order_id = 0;
     /**
      * Ticket IDs captured before WooCommerce removes order items.
      *
@@ -914,6 +920,15 @@ class WC_Box_Office_Order
      * @return void
      */
     public function order_email_ticket_list($order = \false)
+    {
+    }
+    /**
+     * Whether an order is being rendered by the trusted order email callback.
+     *
+     * @param int|string $order_id Order requested by the shortcode.
+     * @return bool
+     */
+    public static function is_rendering_order_email($order_id)
     {
     }
     /**
@@ -2442,7 +2457,7 @@ class WC_Box_Office_Ticket_Frontend
  * Registers the Box Office shortcodes.
  *
  * @class   WC_Box_Office_Ticket_Shortcode
- * @version 1.6.5
+ * @version 1.6.7
  */
 class WC_Box_Office_Ticket_Shortcode
 {
@@ -2550,7 +2565,7 @@ class WC_Box_Office_Ticket_Shortcode
  * Class that represents a ticket.
  *
  * @class   WC_Box_Office_Ticket
- * @version 1.6.6
+ * @version 1.6.7
  */
 class WC_Box_Office_Ticket
 {
@@ -3695,7 +3710,7 @@ function wcbo_sanitize_twitter_handle($twitter)
 function wcbo_update_110()
 {
 }
-\define('WOOCOMMERCE_BOX_OFFICE_VERSION', '1.6.6');
+\define('WOOCOMMERCE_BOX_OFFICE_VERSION', '1.6.7');
 /**
  * Initialize plugin.
  *

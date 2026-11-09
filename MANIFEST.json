@@ -494,10 +494,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "1.6.6": {
-                "source_zip_sha256": "461b88cc5f4f213ea9b95071dd3e389e8cc1d4f706a6495d5741f1f7c1a6e164",
-                "stub_sha256": "6634aceea870975f52875ce170f80aacf38af4c3e1dfdda280603ea26d008e98",
-                "generated_at": "2026-10-29T09:08:17Z",
+            "1.6.7": {
+                "source_zip_sha256": "b9759e9e70b8b52567ecfc3c11d1eeaf7ec31689207bcddd08cf8a68e200c5c9",
+                "stub_sha256": "8b1973bc3abc99705df32126c212b405e5a40b4854024d7ea05b57fc23b7abc3",
+                "generated_at": "2026-11-09T03:48:33Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
