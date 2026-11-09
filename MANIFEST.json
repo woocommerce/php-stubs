@@ -120,6 +120,14 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": [],
                 "public": true
+            },
+            "2.24.0": {
+                "source_zip_sha256": "e20a6e14da5ab963e30581faba3d2ee8ee306797d0ea715d37c34b3240fcb931",
+                "stub_sha256": "36630a3bd24d9a5ba6282594a36dd541045cf15ac4ef162a5c5874892f3a12be",
+                "generated_at": "2026-11-09T22:40:47Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": [],
+                "public": true
             }
         },
         "mailpoet": {
