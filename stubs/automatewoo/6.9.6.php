@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for automatewoo 6.9.5.
+ * Generated stub declarations for automatewoo 6.9.6.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -3606,6 +3606,21 @@ namespace AutomateWoo {
         {
         }
         /**
+         * Clean the reply-to name, which can come from customer data through variables.
+         *
+         * Commas are removed, since wp_mail() splits a Reply-To header on commas, and no
+         * line breaks are left. Matches how WooCommerce cleans its own reply-to names.
+         *
+         * @since 6.9.6
+         *
+         * @param string $name
+         *
+         * @return string
+         */
+        private function sanitize_reply_to_name(string $name): string
+        {
+        }
+        /**
          * Log the result of a send email attempt.
          *
          * @param \WP_Error|bool $result
@@ -6299,6 +6314,23 @@ namespace AutomateWoo\Async_Events {
          * @param \MC4WP_Form $form
          */
         public function schedule_event($form)
+        {
+        }
+        /**
+         * Whether this form submission may set the customer's stored language.
+         *
+         * The form email is typed by the visitor, so it may belong to someone else.
+         * It may set the language when the visitor is verified as this customer, or
+         * when the submission has just created the customer's guest record.
+         *
+         * @since 6.9.6
+         *
+         * @param \AutomateWoo\Customer $customer
+         * @param bool     $guest_existed Whether a guest with this email existed before the submission.
+         *
+         * @return bool
+         */
+        private function may_update_language(\AutomateWoo\Customer $customer, bool $guest_existed): bool
         {
         }
     }
@@ -11782,13 +11814,13 @@ namespace AutomateWoo {
          *
          * @var string[]
          */
-        private static $user_meta_keys = ['automatewoo_visitor_key', 'automatewoo_email_preview_test_emails', '_automatewoo_customer_id', '_aw_order_count', '_aw_order_ids', '_aw_persistent_language', '_aw_user_registered'];
+        private static $user_meta_keys = ['automatewoo_visitor_key', 'automatewoo_email_preview_test_emails', '_automatewoo_customer_id', '_aw_order_count', '_aw_order_ids', '_aw_optin_address_unconfirmed', '_aw_optin_inherited_opt_out_address', '_aw_persistent_language', '_aw_user_registered'];
         /**
          * Order meta keys created by AutomateWoo.
          *
          * @var string[]
          */
-        private static $order_meta_keys = ['_aw_conversion', '_aw_conversion_log', '_aw_is_paid', '_automatewoo_order_created', 'automatewoo_cart_id'];
+        private static $order_meta_keys = ['_aw_conversion', '_aw_conversion_log', '_aw_is_paid', '_aw_optin_confirmation_requested', '_automatewoo_order_created', 'automatewoo_cart_id'];
         /**
          * Coupon meta keys created by AutomateWoo.
          *
@@ -16396,6 +16428,18 @@ namespace AutomateWoo {
     class Frontend
     {
         /**
+         * Order meta key set when a checkout opt-in may still need confirming.
+         *
+         * @var string
+         */
+        private const OPTIN_CONFIRMATION_REQUESTED_META = '_aw_optin_confirmation_requested';
+        /**
+         * Orders with the block checkout opt-in ticked in this request, keyed by order ID.
+         *
+         * @var array<int, bool>
+         */
+        private static $block_optin_orders = [];
+        /**
          * @return string
          */
         public static function get_communication_page_legal_text()
@@ -16451,6 +16495,85 @@ namespace AutomateWoo {
          * @param \WP_Request $request
          */
         public static function process_checkout_block_optin($order, $request)
+        {
+        }
+        /**
+         * Handle the opt-in recorded for a block checkout order once WooCommerce has validated it.
+         *
+         * @since 6.9.6
+         *
+         * @param \WC_Order $order
+         * @return void
+         */
+        public static function process_checkout_block_order($order)
+        {
+        }
+        /**
+         * Remove the opt-in message from an order, for a retry with the checkbox unticked.
+         *
+         * @param \WC_Order $order
+         * @return void
+         */
+        private static function clear_optin_confirmation_requested($order)
+        {
+        }
+        /**
+         * Opt in the customer who placed an order with the checkout opt-in checkbox ticked.
+         *
+         * An order placed from an account that existed before this checkout opts
+         * that customer in, unless its address still needs confirming. Any other
+         * order, a guest order or one that created its account during this checkout,
+         * goes through request_optin_confirmation().
+         *
+         * @since 6.9.6
+         *
+         * @param \WC_Order $order
+         * @return void
+         */
+        private static function opt_in_order_customer($order)
+        {
+        }
+        /**
+         * Tell the shopper on the order received page that an opt-in may need confirming.
+         *
+         * The message is the same whatever the state of the address. It is left out
+         * only when a confirmation email could not be sent.
+         *
+         * @since 6.9.6
+         *
+         * @param string          $text  The order received text.
+         * @param \WC_Order|false $order The order, if there is one.
+         * @return string
+         */
+        public static function filter_order_received_text($text, $order)
+        {
+        }
+        /**
+         * Tell a newly registered customer that an opt-in may need confirming.
+         *
+         * @since 6.9.6
+         *
+         * @param string $redirect The URL to redirect to after registering.
+         * @return string
+         */
+        public static function add_registration_optin_notice($redirect)
+        {
+        }
+        /**
+         * Hold an opt-in pending until it is confirmed from an emailed link.
+         *
+         * Used for an opt-in from a guest order or from an account whose address still
+         * needs confirming, the same as the communication signup form. No new link is
+         * sent while an earlier one is still valid. When confirmation is turned off,
+         * the customer is opted in only if the address had no account before this
+         * request and has never opted out.
+         *
+         * @since 6.9.6
+         *
+         * @param Customer $customer
+         * @return bool False only when a confirmation email could not be sent.
+         */
+        private static function request_optin_confirmation($customer)
         {
         }
         /**
@@ -16863,6 +16986,22 @@ namespace AutomateWoo {
          * @param bool     $set_session Whether to attach the customer to the visitor's tracking session.
          */
         protected static function update_customer_preferences($customer, $set_session = true)
+        {
+        }
+        /**
+         * Hold a subscribe from a customer whose address still needs confirming.
+         *
+         * A customer who is not unsubscribed has nothing to confirm: that is a ticked
+         * box saved again, or a new account on a store in opt-out mode. No new link is
+         * sent while an earlier one is still valid, and sending counts against the
+         * same limit as the signup form.
+         *
+         * @since 6.9.6
+         *
+         * @param Customer $customer
+         * @return void
+         */
+        private static function request_address_confirmation($customer)
         {
         }
         /**
@@ -18633,6 +18772,7 @@ namespace AutomateWoo {
          *
          * @see Customer::is_unsubscribed()
          * @since 5.7.0
+         * @since 6.9.6 Skips an address that is waiting for confirmation.
          * @param Customer $customer The customer object
          */
         public function sync_subscribed_status($customer)
@@ -23091,8 +23231,15 @@ namespace AutomateWoo {
      * subscription (and any workflow that runs on it) happens only for an address
      * whose owner asked for it. Confirmation is on by default and can be turned off
      * with the `automatewoo/communication_signup/require_optin_confirmation` filter.
+     * The marketing opt-in on a guest checkout, and on a new account created at
+     * checkout or from the registration form, uses the same confirmation. So does
+     * a later opt-in from an account created through WooCommerce, from an account
+     * that took over an opted-out guest, or from an account whose customer changed
+     * its email, until the address is confirmed by this link or by a password reset
+     * link.
      *
      * @since 6.9.1
+     * @since 6.9.6 Also used for the checkout and registration opt-ins, and for later opt-ins from new accounts and changed account emails.
      */
     class Optin_Confirmation
     {
@@ -23100,10 +23247,18 @@ namespace AutomateWoo {
         const TOKEN_META = 'optin_confirmation_token';
         /** Customer meta key holding the time the confirmation was requested. */
         const REQUESTED_META = 'optin_confirmation_requested';
+        /** Customer meta key holding the address a confirmation link was sent to. */
+        const TOKEN_ADDRESS_META = 'optin_confirmation_address';
         /** How long a confirmation link stays valid, in seconds. */
         const TOKEN_TTL = 2 * DAY_IN_SECONDS;
+        /** User meta key set on a new or changed account address until it is confirmed. */
+        const ADDRESS_UNCONFIRMED_META = '_aw_optin_address_unconfirmed';
+        /** User meta key holding the address whose earlier opt-out came with the account. */
+        const INHERITED_OPT_OUT_ADDRESS_META = '_aw_optin_inherited_opt_out_address';
         /**
          * Whether a new communication signup must be confirmed by email before it is subscribed.
+         *
+         * Also applies to the checkout and registration opt-ins.
          *
          * @since 6.9.1
          *
@@ -23113,14 +23268,166 @@ namespace AutomateWoo {
         {
         }
         /**
+         * Mark the address of a new account as unconfirmed.
+         *
+         * Set when WooCommerce creates the account, or when a new account takes over an
+         * opted-out guest, unless a store manager created it. Removed once the address
+         * is confirmed.
+         *
+         * @since 6.9.6
+         *
+         * @param int $user_id
+         * @return void
+         */
+        public static function mark_address_unconfirmed($user_id)
+        {
+        }
+        /**
+         * Mark the address as unconfirmed when a new account takes over an opted-out guest.
+         *
+         * This covers accounts created outside WooCommerce, some of which log the visitor
+         * in without an emailed link.
+         *
+         * @since 6.9.6
+         *
+         * @param Customer $customer The customer that was converted to the new account.
+         * @return void
+         */
+        public static function mark_converted_guest_address_unconfirmed($customer)
+        {
+        }
+        /**
+         * Whether an opt-in by this customer has to be confirmed by email.
+         *
+         * @since 6.9.6
+         *
+         * @param Customer $customer
+         * @return bool
+         */
+        public static function needs_address_confirmation($customer)
+        {
+        }
+        /**
+         * Treat an address as confirmed once a password reset link sent to it has been used.
+         *
+         * @since 6.9.6
+         *
+         * @param \WP_User $user
+         * @return void
+         */
+        public static function confirm_address_on_password_reset($user)
+        {
+        }
+        /**
+         * Treat the address as unconfirmed after a customer changes their own account email.
+         *
+         * Any earlier link stops working. An opt-out an address made before it had this
+         * account stays with that address: it is kept when the account leaves, and it
+         * carries over when the account moves to it. In opt-in mode, with confirmation
+         * on, a subscription is paused until the new address confirms it. Changes made
+         * by a store manager, or without a logged-in user, are left alone.
+         *
+         * @since 6.9.6
+         *
+         * @param int      $user_id
+         * @param \WP_User $old_user The user before the update.
+         * @return void
+         */
+        public static function handle_account_email_change($user_id, $old_user)
+        {
+        }
+        /**
+         * Record an opt-out that came with the account against the address it came from.
+         *
+         * @since 6.9.6
+         *
+         * @param string   $email    The address the account is leaving.
+         * @param Customer $customer The account's customer.
+         * @return void
+         */
+        private static function keep_opt_out_with_address($email, $customer)
+        {
+        }
+        /**
+         * Record an earlier opt-out on another record for the same address, with its original date.
+         *
+         * This isn't a new opt-out, so the opted out hook doesn't fire.
+         *
+         * @since 6.9.6
+         *
+         * @param Customer $from The record holding the opt-out.
+         * @param Customer $to   The record to copy it to.
+         * @return void
+         */
+        private static function copy_opt_out($from, $to)
+        {
+        }
+        /**
+         * Clear an opt-out kept for an address once its owner has confirmed an opt-in.
+         *
+         * @since 6.9.6
+         *
+         * @param Customer $customer The customer who confirmed, at their current address.
+         * @return void
+         */
+        private static function clear_kept_opt_out($customer)
+        {
+        }
+        /**
+         * Tell the customer about an email change, on a request that can show notices.
+         *
+         * @since 6.9.6
+         *
+         * @param string $message
+         * @param string $type
+         * @return void
+         */
+        private static function add_email_change_notice($message, $type = 'success')
+        {
+        }
+        /**
          * Store a fresh confirmation token for the customer and email them the confirmation link.
          *
          * @since 6.9.1
+         * @since 6.9.6 Returns whether the email was sent.
          *
          * @param Customer $customer
-         * @return void
+         * @return bool Whether the email was sent.
          */
         public static function start($customer)
+        {
+        }
+        /**
+         * Whether the customer has a confirmation link that is still valid.
+         *
+         * @since 6.9.6
+         *
+         * @param Customer $customer
+         * @return bool
+         */
+        public static function has_pending($customer)
+        {
+        }
+        /**
+         * Whether the customer's confirmation request is within its lifetime and for their current address.
+         *
+         * Links sent before the address was recorded have none.
+         *
+         * @param Customer $customer
+         * @return bool
+         */
+        private static function is_request_current($customer)
+        {
+        }
+        /**
+         * Whether the customer's confirmation request is still within its lifetime.
+         *
+         * @since 6.9.6
+         *
+         * @param Customer $customer
+         * @return bool
+         */
+        private static function is_within_lifetime($customer)
         {
         }
         /**
@@ -23156,6 +23463,7 @@ namespace AutomateWoo {
          * concurrent confirmations opt in at most once.
          *
          * @since 6.9.1
+         * @since 6.9.6 Also marks the address as confirmed.
          *
          * @param Customer $customer
          * @param string   $token    The confirmation token to consume.
@@ -23179,7 +23487,7 @@ namespace AutomateWoo {
         {
         }
         /**
-         * Remove any stored confirmation token.
+         * Remove any stored confirmation token and the details stored with it.
          *
          * @since 6.9.1
          *
@@ -23208,7 +23516,7 @@ namespace AutomateWoo {
          *
          * @param Customer $customer
          * @param string   $token
-         * @return void
+         * @return bool Whether the email was sent.
          */
         private static function send_email($customer, $token)
         {
@@ -28855,7 +29163,10 @@ namespace AutomateWoo\Rules {
         /**
          * Get the select choices for the rule.
          *
-         * Choices are cached in memory.
+         * Choices are cached in memory. Labels show as text, so tags are removed from them and
+         * any "<" left over is encoded.
+         *
+         * @since 6.9.6 Removes tags from the labels and encodes any "<" left over.
          *
          * @return array
          */
@@ -48303,7 +48614,7 @@ namespace {
 }
 namespace {
     \define('AUTOMATEWOO_SLUG', 'automatewoo');
-    \define('AUTOMATEWOO_VERSION', '6.9.5');
+    \define('AUTOMATEWOO_VERSION', '6.9.6');
     // WRCS: DEFINED_VERSION.
     \define('AUTOMATEWOO_FILE', __FILE__);
     \define('AUTOMATEWOO_PATH', __DIR__);
