@@ -1387,6 +1387,13 @@
                 "generated_at": "2026-10-22T17:22:20Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "3.3.6": {
+                "source_zip_sha256": "f73a9d1537f841ff96a821bd3e73773a15872c6dbc9b8523aa2e2b04e69932f7",
+                "stub_sha256": "e60745fd1d96b9b68a5a8c963e7f4ced0c377436b8c2f6765a6270088e5f9cd2",
+                "generated_at": "2026-11-11T07:21:10Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-shipping-fedex": {
