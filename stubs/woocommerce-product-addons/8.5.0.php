@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-product-addons 8.4.7.
+ * Generated stub declarations for woocommerce-product-addons 8.5.0.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -474,7 +474,7 @@ class WC_Product_Addons_Admin_Order
  * Product Add-Ons admin.
  *
  * @class    WC_Product_Addons_Admin
- * @version  8.4.5
+ * @version  8.5.0
  */
 class WC_Product_Addons_Admin
 {
@@ -1409,7 +1409,7 @@ class WC_Product_Addons_Api_V2_Controller extends \WP_REST_Controller
 /**
  * WC_Product_Addons_Api_V2_Global_Group class.
  *
- * @version 8.4.5
+ * @version 8.5.0
  */
 class WC_Product_Addons_Api_V2_Global_Group extends \WC_Product_Addons_Api_V2_Abstract_Group
 {
@@ -2077,7 +2077,7 @@ class WC_Product_Addons_Cart_Ajax
  * WC_Product_Addons_Cart class.
  *
  * @class    WC_Product_Addons_Cart
- * @version  8.4.6
+ * @version  8.5.0
  */
 class WC_Product_Addons_Cart
 {
@@ -2580,7 +2580,7 @@ class WC_PAO_Compatibility
 /**
  * Product_Addon_Display class.
  *
- * @version 8.4.5
+ * @version 8.5.0
  */
 class WC_Product_Addons_Display
 {
@@ -2840,7 +2840,7 @@ class WC_Product_Addons_Display
 /**
  * WC_Product_Addons_Global_Add_On_Groups_Ability ability definition.
  *
- * @version 8.4.5
+ * @version 8.5.0
  */
 class WC_Product_Addons_Global_Add_On_Groups_Ability implements \Automattic\WooCommerce\Abilities\AbilityDefinition
 {
@@ -4476,6 +4476,54 @@ class WC_Product_Addons_WC_Payments_Compatibility
     }
 }
 /**
+ * Shared storage for admin and REST global groups.
+ *
+ * @internal
+ * @since 8.5.0
+ * @version 8.5.0
+ */
+class WC_Product_Addons_Global_Group_Data_Store
+{
+    /**
+     * Read persisted group settings without applying a REST response format.
+     *
+     * @param int $id Group post ID.
+     * @return array{priority: int, categories: array<mixed>, fields: mixed}
+     */
+    public static function read($id)
+    {
+    }
+    /**
+     * Insert a group using the native post arguments supplied by the caller.
+     *
+     * @param array<string, mixed> $post Post arguments.
+     * @return int
+     */
+    public static function create($post = array('post_title' => 'Untitled', 'post_status' => 'publish', 'post_type' => 'global_product_addon'))
+    {
+    }
+    /**
+     * Save supplied group properties in the caller's order so WordPress hooks
+     * continue to see the same state at each step.
+     *
+     * @param int                  $id Group post ID.
+     * @param array<string, mixed> $changes Post arguments, category IDs, or persisted group settings.
+     * @return void
+     */
+    public static function update($id, $changes)
+    {
+    }
+    /**
+     * Delete a validated group and invalidate cached group data on success.
+     *
+     * @param int|string $id Group post ID.
+     * @return bool
+     */
+    public static function delete($id)
+    {
+    }
+}
+/**
  * Product Addon Fields
  *
  * @package woocommerce-product-addons
@@ -4852,7 +4900,7 @@ class WC_Product_Addons_Field_Select extends \WC_Product_Addons_Field
  * Global add-on group storage.
  *
  * @class    WC_Product_Addons_Global_Group
- * @version  8.4.5
+ * @version  8.5.0
  */
 class WC_Product_Addons_Global_Group
 {
@@ -5174,7 +5222,7 @@ class WC_Product_Addons_Group_Validator
  * Global and product add-on group storage.
  *
  * @class    WC_Product_Addons_Groups
- * @version  8.4.7
+ * @version  8.5.0
  */
 class WC_Product_Addons_Groups
 {
@@ -5462,7 +5510,7 @@ class WC_Product_Addons_Migration_3_0
 /**
  * Main class.
  *
- * @version 8.4.5
+ * @version 8.5.0
  */
 class WC_Product_Addons
 {
@@ -5531,6 +5579,17 @@ class WC_Product_Addons
     {
     }
     /**
+     * Add a Settings link to the plugin row, pointing to the global add-ons page, for users who can open it.
+     *
+     * @since 8.5.0
+     *
+     * @param  mixed $links Plugin action links.
+     * @return mixed
+     */
+    public function plugin_action_links($links)
+    {
+    }
+    /**
      * On activation.
      * Runs on activation. Assigns a notice message to a WordPress option.
      *
@@ -5578,7 +5637,7 @@ class WC_Product_Addons
      * @param  string $screen_id Screen ID.
      * @return string
      */
-    function get_formatted_screen_id($screen_id)
+    public function get_formatted_screen_id($screen_id)
     {
     }
     /**
@@ -5685,4 +5744,4 @@ function woocommerce_product_addons_deactivation()
 function woocommerce_product_addons_init()
 {
 }
-\define('WC_PRODUCT_ADDONS_VERSION', '8.4.7');
+\define('WC_PRODUCT_ADDONS_VERSION', '8.5.0');
