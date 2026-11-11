@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-product-csv-import-suite 1.11.9.
+ * Generated stub declarations for woocommerce-product-csv-import-suite 1.11.10.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -87,7 +87,7 @@ class WC_PCSVIS_Admin_Screen
  * Handles the AJAX requests that import CSV rows and regenerate thumbnails.
  *
  * @class   WC_PCSVIS_AJAX_Handler
- * @version 1.11.7
+ * @version 1.11.10
  */
 class WC_PCSVIS_AJAX_Handler
 {
@@ -1201,7 +1201,7 @@ function woocommerce_product_csv_import_suite_missing_wc_notice()
 {
 }
 \define('WC_PCSVIS_FILE', __FILE__);
-\define('WC_PCSVIS_VERSION', '1.11.9');
+\define('WC_PCSVIS_VERSION', '1.11.10');
 /**
  * Initializes the extension.
  *

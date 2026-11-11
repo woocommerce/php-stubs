@@ -1213,10 +1213,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "1.11.9": {
-                "source_zip_sha256": "c8175fda24e47b0e46251d1bfa222b483b71a71758caa096c795c93a1314c70d",
-                "stub_sha256": "16cb5ce8a13b50d45015281861a3bbd3a167f314a1bce25eef71ab76e117f906",
-                "generated_at": "2026-11-04T09:53:37Z",
+            "1.11.10": {
+                "source_zip_sha256": "b1f410fec953a02a41269f79be8ea6d045b6391c9272a204f8183c548a188b84",
+                "stub_sha256": "8be7b62087b5128037e992bbac2e4f5d5258b9ca70e737dc38398dd07a6de14f",
+                "generated_at": "2026-11-11T08:22:49Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
