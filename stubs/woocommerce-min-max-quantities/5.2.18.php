@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-min-max-quantities 5.2.17.
+ * Generated stub declarations for woocommerce-min-max-quantities 5.2.18.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -1871,7 +1871,7 @@ class WC_Min_Max_Quantities_WC_Payments_Compatibility
 /**
  * Min Max Quantities class.
  *
- * @version  5.2.17
+ * @version  5.2.18
  */
 class WC_Min_Max_Quantities
 {
@@ -2221,6 +2221,18 @@ class WC_Min_Max_Quantities
     {
     }
     /**
+     * Check whether quantity errors belong to the Store API instead of session notices.
+     *
+     * The Cart block also fires the Store API cart errors hook during HTML page rendering.
+     *
+     * @since 5.2.18
+     *
+     * @return bool
+     */
+    private function is_store_api_cart_validation()
+    {
+    }
+    /**
      * Add respective error message depending on rules checked.
      *
      * @throws Exception When quantity rules are violated.
@@ -2400,4 +2412,4 @@ class WC_Min_Max_Quantities
     {
     }
 }
-\define('WC_MIN_MAX_QUANTITIES', '5.2.17');
+\define('WC_MIN_MAX_QUANTITIES', '5.2.18');
