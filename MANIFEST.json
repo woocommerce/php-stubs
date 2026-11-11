@@ -1492,6 +1492,13 @@
                 "generated_at": "2026-10-22T17:31:36Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "3.9.19": {
+                "source_zip_sha256": "9545ef47ddce1d2deb92dc142465bd14b2e2d8d7e7f8481161fdf4e918e291c5",
+                "stub_sha256": "d9569eec8b085c6e98c995aca6b7efac97afaeba45ddb5b45e9595f44a789310",
+                "generated_at": "2026-11-11T21:47:06Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-shipping-usps": {
