@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-gift-cards 2.10.1.
+ * Generated stub declarations for woocommerce-gift-cards 2.11.0.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -4098,7 +4098,7 @@ class WC_GC_Report_Gift_Cards extends \WC_Admin_Report
  * WooCommerce Gift Cards Settings.
  *
  * @class    WC_GC_Settings
- * @version  2.9.1
+ * @version  2.11.0
  */
 class WC_GC_Settings extends \WC_Settings_Page
 {
@@ -4123,7 +4123,7 @@ class WC_GC_Settings extends \WC_Settings_Page
      *
      * @param  string $value
      * @param  array  $option Option settings.
-     * @return string
+     * @return string|null
      */
     public function manage_settings($value, $option)
     {
@@ -4150,7 +4150,23 @@ class WC_GC_Settings extends \WC_Settings_Page
     public function manage_bcc_setting($value)
     {
     }
+    /**
+     * Validate the scheduled delivery time upon save.
+     *
+     * @since 2.11.0
+     *
+     * @param  mixed $value Setting value.
+     * @return string|null
+     */
+    public function manage_scheduled_delivery_time_setting($value)
+    {
+    }
 }
+/**
+ * Integrates gift cards with the Store API checkout.
+ *
+ * @version 2.11.0
+ */
 class WC_GC_Checkout_Blocks_Endpoint
 {
     /**
@@ -4159,6 +4175,12 @@ class WC_GC_Checkout_Blocks_Endpoint
      * @var string
      */
     const IDENTIFIER = 'woocommerce-gift-cards';
+    /**
+     * Orders with gift cards awaiting checkout validation, indexed by REST request ID.
+     *
+     * @var array<int, array{order_id: int, lock_keys: array<int, string>}>
+     */
+    private static $checkout_attempts = array();
     /**
      * Bootstrap.
      *
@@ -4184,6 +4206,49 @@ class WC_GC_Checkout_Blocks_Endpoint
      * @return void
      */
     public static function rest_checkout_update_order_meta($order)
+    {
+    }
+    /**
+     * Whether this order is still waiting for Store API checkout validation.
+     *
+     * @since 2.11.0
+     * @param WC_Order $order The order being debited.
+     * @return bool
+     */
+    public static function is_awaiting_checkout_validation($order)
+    {
+    }
+    /**
+     * Debit pending orders after checkout validation and before the gateway runs.
+     *
+     * @since 2.11.0
+     * @param WC_Order $order The order that passed checkout validation.
+     * @return void
+     */
+    public static function debit_validated_checkout($order)
+    {
+    }
+    /**
+     * Let cart checkout retry validation while keeping unvalidated orders out of direct payment.
+     *
+     * @since 2.11.0
+     * @param bool     $needs_payment Whether the order normally needs payment.
+     * @param WC_Order $order         The order being checked.
+     * @return bool
+     */
+    public static function allow_validated_order_payment($needs_payment, $order)
+    {
+    }
+    /**
+     * Release locks taken by a checkout that ended before validation completed.
+     *
+     * @since 2.11.0
+     * @param mixed                $response The REST response.
+     * @param array<string, mixed> $handler  The REST route handler.
+     * @param WP_REST_Request      $request  The completed request.
+     * @return mixed
+     */
+    public static function release_unvalidated_checkout_holds($response, $handler, $request)
     {
     }
     /**
@@ -4255,7 +4320,7 @@ class WC_GC_Checkout_Blocks_Endpoint
  * @package WooCommerce Gift Cards
  * @since   1.11.0
  *
- * @version 2.9.1
+ * @version 2.11.0
  */
 class WC_GC_Checkout_Blocks_Integration implements \Automattic\WooCommerce\Blocks\Integrations\IntegrationInterface
 {
@@ -4392,7 +4457,7 @@ class WC_GC_Abilities
  * Account class.
  *
  * @class    WC_GC_Account
- * @version  2.9.1
+ * @version  2.11.0
  */
 class WC_GC_Account
 {
@@ -5658,7 +5723,7 @@ class WC_GC_Emails
  * Gift Card Product view controller.
  *
  * @class    WC_GC_Gift_Card_Product
- * @version  2.10.0
+ * @version  2.11.0
  */
 class WC_GC_Gift_Card_Product
 {
@@ -6427,7 +6492,7 @@ class WC_GC_Gift_Card
 /**
  * WC_GC_Gift_Cards_Query_Ability ability definition.
  *
- * @version 2.9.1
+ * @version 2.11.0
  */
 class WC_GC_Gift_Cards_Query_Ability implements \Automattic\WooCommerce\Abilities\AbilityDefinition
 {
@@ -7187,10 +7252,16 @@ class WC_GC_Order_Item_Gift_Card extends \WC_Order_Item
 /**
  * WC_GC_Order class.
  *
- * @version 2.10.1
+ * @version 2.11.0
  */
 class WC_GC_Order
 {
+    /**
+     * Marks a cart order as unavailable for direct payment until validation succeeds.
+     *
+     * @var string
+     */
+    const UNVALIDATED_CHECKOUT_META = '_wc_gc_checkout_pending_validation';
     private $debit_order_statuses;
     private $credit_order_statuses;
     /**
@@ -10425,7 +10496,7 @@ class WC_GC_DB
 /**
  * DB API class.
  *
- * @version  2.10.0
+ * @version  2.11.0
  */
 class WC_GC_Gift_Cards_DB
 {
@@ -11958,7 +12029,7 @@ class WC_GC_Email_Gift_Card_Send_To_Buyer extends \WC_GC_Email_Gift_Card_Receive
  * REST API Gift Cards class.
  *
  * @class    WC_GC_REST_API_Gift_Cards_V2_Controller
- * @version  2.9.1
+ * @version  2.11.0
  */
 class WC_GC_REST_API_Gift_Cards_V2_Controller extends \WC_REST_Controller
 {
@@ -12363,7 +12434,7 @@ class WC_GC_REST_API_Order_Controller
  * Main plugin class.
  *
  * @class    WC_Gift_Cards
- * @version  2.10.1
+ * @version  2.11.0
  */
 class WC_Gift_Cards
 {
@@ -12372,7 +12443,7 @@ class WC_Gift_Cards
      *
      * @var string
      */
-    public $version = '2.10.1';
+    public $version = '2.11.0';
     /**
      * Min required WC version.
      *
@@ -13261,4 +13332,4 @@ function wc_gc_update_170_db_version()
 function WC_GC()
 {
 }
-\define('WC_GC_VERSION', '2.10.1');
+\define('WC_GC_VERSION', '2.11.0');
