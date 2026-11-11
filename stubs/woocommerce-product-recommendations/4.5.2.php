@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-product-recommendations 4.5.1.
+ * Generated stub declarations for woocommerce-product-recommendations 4.5.2.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -1423,6 +1423,61 @@ abstract class WC_PRL_Meta_Box
     }
 }
 /**
+ * WC_PRL_Filter_Taxonomy base for custom product taxonomy filters.
+ *
+ * @class    WC_PRL_Filter_Taxonomy
+ * @version  4.5.2
+ */
+abstract class WC_PRL_Filter_Taxonomy extends \WC_PRL_Filter
+{
+    /**
+     * Registered product taxonomy.
+     *
+     * @var string
+     */
+    protected $taxonomy;
+    /**
+     * Term tree reused across editor templates in the same request.
+     *
+     * @var array<WP_Term>|null
+     */
+    private $terms_tree;
+    /**
+     * Constructor.
+     *
+     * @since 4.5.2
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Apply the filter to the query args array.
+     *
+     * @since 4.5.2
+     *
+     * @param  array<string, mixed> $query_args Product query arguments.
+     * @param  WC_PRL_Deployment    $deployment Current deployment.
+     * @param  array<string, mixed> $data Saved filter data.
+     * @return array<string, mixed>
+     */
+    public function filter($query_args, $deployment, $data)
+    {
+    }
+    /**
+     * Get admin html for filter inputs.
+     *
+     * @since 4.5.2
+     *
+     * @param  string|null          $post_name Input name prefix.
+     * @param  int                  $filter_index Filter index.
+     * @param  array<string, mixed> $filter_data Saved filter data.
+     * @return void
+     */
+    public function get_admin_fields_html($post_name, $filter_index, $filter_data)
+    {
+    }
+}
+/**
  * Product Recommendations WooCommerce Admin Analytics.
  *
  * @version 4.4.4
@@ -1835,7 +1890,7 @@ class WC_PRL_Analytics_Revenue_REST_Controller extends \WC_REST_Reports_Controll
  * Admin AJAX meta-box handlers.
  *
  * @class    WC_PRL_Admin_Ajax
- * @version  4.4.4
+ * @version  4.5.2
  */
 class WC_PRL_Admin_Ajax
 {
@@ -3966,7 +4021,7 @@ class WC_PRL_Amplifier_Rating extends \WC_PRL_Amplifier
  * The REST controller for the Amplifier Products.
  *
  * @class    WC_PRL_Rest_Amplifier_Products_V1_Controller
- * @version  4.4.4
+ * @version  4.5.2
  */
 class WC_PRL_Rest_Amplifier_Products_V1_Controller extends \WP_REST_Controller
 {
@@ -5202,15 +5257,427 @@ final class WC_PRL_AS_Generator
     }
 }
 /**
+ * Abstract WC_PRL_Async_Request class.
+ *
+ * @version 4.5.2
+ */
+abstract class WC_PRL_Async_Request
+{
+    /**
+     * Prefix
+     *
+     * (default value: 'wp')
+     *
+     * @var string
+     */
+    protected $prefix = 'wp';
+    /**
+     * Action
+     *
+     * (default value: 'async_request')
+     *
+     * @var string
+     */
+    protected $action = 'async_request';
+    /**
+     * Identifier
+     *
+     * @var mixed
+     */
+    protected $identifier;
+    /**
+     * Data
+     *
+     * (default value: array())
+     *
+     * @var array<array-key, mixed>
+     */
+    protected $data = array();
+    /**
+     * Initiate new async request
+     *
+     * @since 4.5.2
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Set data used during the request
+     *
+     * @param array<array-key, mixed> $data Data.
+     *
+     * @return $this
+     * @since 4.5.2
+     */
+    public function data($data)
+    {
+    }
+    /**
+     * Dispatch the async request
+     *
+     * @return array<array-key, mixed>|WP_Error
+     * @since 4.5.2
+     */
+    public function dispatch()
+    {
+    }
+    /**
+     * Get query args
+     *
+     * @return array<string, mixed>
+     * @since 4.5.2
+     */
+    protected function get_query_args()
+    {
+    }
+    /**
+     * Get query URL
+     *
+     * @return string
+     * @since 4.5.2
+     */
+    protected function get_query_url()
+    {
+    }
+    /**
+     * Get post args
+     *
+     * @return array<string, mixed>
+     * @since 4.5.2
+     */
+    protected function get_post_args()
+    {
+    }
+    /**
+     * Maybe handle
+     *
+     * Check for correct nonce and pass to handler.
+     *
+     * @since 4.5.2
+     * @return void
+     */
+    public function maybe_handle()
+    {
+    }
+    /**
+     * Handle
+     *
+     * Override this method to perform any actions required
+     * during the async request.
+     *
+     * @since 4.5.2
+     * @return void
+     */
+    abstract protected function handle();
+}
+/**
+ * Abstract WC_PRL_Background_Process class.
+ *
+ * @version 4.5.2
+ */
+abstract class WC_PRL_Background_Process extends \WC_PRL_Async_Request
+{
+    /**
+     * Action
+     *
+     * (default value: 'background_process')
+     *
+     * @var string
+     */
+    protected $action = 'background_process';
+    /**
+     * Start time of current process.
+     *
+     * (default value: 0)
+     *
+     * @var int
+     */
+    protected $start_time = 0;
+    /**
+     * Cron_hook_identifier
+     *
+     * @var mixed
+     */
+    protected $cron_hook_identifier;
+    /**
+     * Cron_interval_identifier
+     *
+     * @var mixed
+     */
+    protected $cron_interval_identifier;
+    /**
+     * Initiate new background process
+     *
+     * @since 4.5.2
+     */
+    public function __construct()
+    {
+    }
+    /**
+     * Dispatch
+     *
+     * @return array<array-key, mixed>|WP_Error
+     * @since 4.5.2
+     */
+    public function dispatch()
+    {
+    }
+    /**
+     * Push to queue
+     *
+     * @param mixed $data Data.
+     *
+     * @return $this
+     * @since 4.5.2
+     */
+    public function push_to_queue($data)
+    {
+    }
+    /**
+     * Save queue
+     *
+     * @return $this
+     * @since 4.5.2
+     */
+    public function save()
+    {
+    }
+    /**
+     * Update queue
+     *
+     * @param string                  $key Key.
+     * @param array<array-key, mixed> $data Data.
+     *
+     * @return $this
+     * @since 4.5.2
+     */
+    public function update($key, $data)
+    {
+    }
+    /**
+     * Delete queue
+     *
+     * @param string $key Key.
+     *
+     * @return $this
+     * @since 4.5.2
+     */
+    public function delete($key)
+    {
+    }
+    /**
+     * Generate key
+     *
+     * Generates a unique key based on microtime. Queue items are
+     * given a unique key so that they can be merged upon save.
+     *
+     * @param int $length Length.
+     *
+     * @return string
+     * @since 4.5.2
+     */
+    protected function generate_key($length = 64)
+    {
+    }
+    /**
+     * Maybe process queue
+     *
+     * Checks whether data exists within the queue and that
+     * the process is not already running.
+     *
+     * @since 4.5.2
+     * @return void
+     */
+    public function maybe_handle()
+    {
+    }
+    /**
+     * Is queue empty
+     *
+     * @return bool
+     * @since 4.5.2
+     */
+    protected function is_queue_empty()
+    {
+    }
+    /**
+     * Is process running
+     *
+     * Check whether the current process is already running
+     * in a background process.
+     *
+     * @since 4.5.2
+     * @return bool
+     */
+    protected function is_process_running()
+    {
+    }
+    /**
+     * Lock process
+     *
+     * Lock the process so that multiple instances can't run simultaneously.
+     * Override if applicable, but the duration should be greater than that
+     * defined in the time_exceeded() method.
+     *
+     * @since 4.5.2
+     * @return void
+     */
+    protected function lock_process()
+    {
+    }
+    /**
+     * Unlock process
+     *
+     * Unlock the process so that other instances can spawn.
+     *
+     * @return $this
+     * @since 4.5.2
+     */
+    protected function unlock_process()
+    {
+    }
+    /**
+     * Get batch
+     *
+     * @return stdClass Return the first batch from the queue
+     * @since 4.5.2
+     */
+    protected function get_batch()
+    {
+    }
+    /**
+     * Handle
+     *
+     * Pass each queue item to the task handler, while remaining
+     * within server memory and time limit constraints.
+     *
+     * @since 4.5.2
+     * @return void
+     */
+    protected function handle()
+    {
+    }
+    /**
+     * Memory exceeded
+     *
+     * Ensures the batch process never exceeds 90%
+     * of the maximum WordPress memory.
+     *
+     * @return bool
+     * @since 4.5.2
+     */
+    protected function memory_exceeded()
+    {
+    }
+    /**
+     * Get memory limit
+     *
+     * @return int
+     * @since 4.5.2
+     */
+    protected function get_memory_limit()
+    {
+    }
+    /**
+     * Time exceeded.
+     *
+     * Ensures the batch never exceeds a sensible time limit.
+     * A timeout limit of 30s is common on shared hosting.
+     *
+     * @return bool
+     * @since 4.5.2
+     */
+    protected function time_exceeded()
+    {
+    }
+    /**
+     * Complete.
+     *
+     * Override if applicable, but ensure that the below actions are
+     * performed, or, call parent::complete().
+     *
+     * @since 4.5.2
+     * @return void
+     */
+    protected function complete()
+    {
+    }
+    /**
+     * Schedule cron healthcheck
+     *
+     * @param mixed $schedules Schedules.
+     * @return mixed
+     * @since 4.5.2
+     */
+    public function schedule_cron_healthcheck($schedules)
+    {
+    }
+    /**
+     * Handle cron healthcheck
+     *
+     * Restart the background process if not already running
+     * and data exists in the queue.
+     *
+     * @since 4.5.2
+     * @return void
+     */
+    public function handle_cron_healthcheck()
+    {
+    }
+    /**
+     * Schedule event
+     *
+     * @since 4.5.2
+     * @return void
+     */
+    protected function schedule_event()
+    {
+    }
+    /**
+     * Clear scheduled event
+     *
+     * @since 4.5.2
+     * @return void
+     */
+    protected function clear_scheduled_event()
+    {
+    }
+    /**
+     * Cancel Process
+     *
+     * Stop processing queue items, clear cronjob and delete batch.
+     *
+     * @since 4.5.2
+     * @return void
+     */
+    public function cancel_process()
+    {
+    }
+    /**
+     * Task
+     *
+     * Override this method to perform any actions required on each
+     * queue item. Return the modified item for further processing
+     * in the next pass through. Or, return false to remove the
+     * item from the queue.
+     *
+     * @param mixed $item Queue item to iterate over.
+     *
+     * @return mixed
+     * @since 4.5.2
+     */
+    abstract protected function task($item);
+}
+/**
  * Background Updater.
  *
  * Uses https://github.com/A5hleyRich/wp-background-processing to handle DB
  * updates in the background.
  *
  * @class    WC_PRL_Background_Updater
- * @version  4.4.4
+ * @version  4.5.2
  */
-class WC_PRL_Background_Updater extends \WP_Background_Process
+class WC_PRL_Background_Updater extends \WC_PRL_Background_Process
 {
     /**
      * Initiate new background process.
@@ -5444,7 +5911,7 @@ class WC_PRL_Conditions
  * Deployment class.
  *
  * @class    WC_PRL_Deployment
- * @version  4.4.4
+ * @version  4.5.2
  */
 class WC_PRL_Deployment
 {
@@ -5473,9 +5940,9 @@ class WC_PRL_Deployment
      */
     private $products;
     /**
-     * Runtime property that checks if the deployment has a contextual engine.
+     * Runtime cache of the engine's contextual state.
      *
-     * @var bool
+     * @var bool|null
      */
     private $has_contextual_engine;
     /**
@@ -5665,6 +6132,15 @@ class WC_PRL_Deployment
     {
     }
     /**
+     * Get the cache version for the loaded engine. Legacy deployments use an empty version.
+     *
+     * @since 4.5.2
+     * @return string
+     */
+    public function get_cache_version()
+    {
+    }
+    /**
      * Get cache key.
      *
      * @return string
@@ -5710,7 +6186,7 @@ class WC_PRL_Deployment
  * Deployments Factory class.
  *
  * @class    WC_PRL_Deployments
- * @version  4.4.4
+ * @version  4.5.2
  */
 class WC_PRL_Deployments
 {
@@ -5861,7 +6337,7 @@ class WC_PRL_Deployments
  * Engine.
  *
  * @class    WC_PRL_Engine
- * @version  4.5.0
+ * @version  4.5.2
  */
 class WC_PRL_Engine extends \WC_Data
 {
@@ -5888,7 +6364,7 @@ class WC_PRL_Engine extends \WC_Data
      *
      * @var array
      */
-    protected $data = array('name' => '', 'slug' => '', 'description' => '', 'short_description' => '', 'date_created' => \null, 'date_modified' => \null, 'status' => \false, 'type' => '', 'filters_data' => array(), 'amplifiers_data' => array(), 'cache_version' => '');
+    protected $data = array('name' => '', 'slug' => '', 'description' => '', 'short_description' => '', 'date_created' => \null, 'date_modified' => \null, 'status' => \false, 'type' => '', 'filters_data' => array(), 'amplifiers_data' => array(), 'cache_version' => '', 'contextual_state' => array());
     /**
      * Cache dynamic filters array.
      *
@@ -6061,6 +6537,17 @@ class WC_PRL_Engine extends \WC_Data
     {
     }
     /**
+     * Get the contextual flags saved with the engine. Empty until the engine is saved.
+     *
+     * @since 4.5.2
+     *
+     * @param  string $context What the value is for. Valid values are view and edit.
+     * @return mixed Saved flags; view-context filters may return other values.
+     */
+    public function get_contextual_state($context = 'view')
+    {
+    }
+    /**
      * Returns the filtererd query args.
      *
      * @param  WC_PRL_Deployment $deployment
@@ -6171,6 +6658,17 @@ class WC_PRL_Engine extends \WC_Data
     {
     }
     /**
+     * Set the contextual flags. Calculated by the data store when the engine is saved.
+     *
+     * @since 4.5.2
+     *
+     * @param mixed $state Whether the engine has contextual `filters` and `amplifiers`, and the `cache_version` they were calculated for.
+     * @return void
+     */
+    public function set_contextual_state($state)
+    {
+    }
+    /**
      * Set engine created date.
      *
      * @param string|integer|null $date UTC timestamp, or ISO 8601 DateTime. If the DateTime string has no timezone or offset, WordPress site timezone will be assumed. Null if their is no date.
@@ -6228,6 +6726,17 @@ class WC_PRL_Engine extends \WC_Data
      * @return bool
      */
     public function has_contextual_amplifiers($force = \false)
+    {
+    }
+    /**
+     * Get a saved contextual flag, or null when it must be calculated from the rules.
+     *
+     * @since 4.5.2
+     *
+     * @param  string $key Rules the flag is for: `filters` or `amplifiers`.
+     * @return bool|null
+     */
+    private function get_saved_contextual_flag($key)
     {
     }
     /*
@@ -6408,7 +6917,7 @@ class WC_PRL_Filters
  * Generator Queue class.
  *
  * @class    WC_PRL_Generator_Queue
- * @version  4.4.1
+ * @version  4.5.2
  */
 class WC_PRL_Generator_Queue extends \WC_PRL_Background_Queue
 {
@@ -6430,7 +6939,7 @@ class WC_PRL_Generator_Queue extends \WC_PRL_Background_Queue
     /**
      * Process an item.
      *
-     * Restarts progress created before the engine's latest cache invalidation.
+     * Restarts progress created before the engine or deployment's latest cache invalidation.
      *
      * @since 4.4.1
      *
@@ -6481,7 +6990,7 @@ class WC_PRL_Generator_Queue extends \WC_PRL_Background_Queue
  * Recommendations generator class.
  *
  * @class    WC_PRL_Generator
- * @version  4.4.4
+ * @version  4.5.2
  */
 final class WC_PRL_Generator
 {
@@ -6549,6 +7058,7 @@ final class WC_PRL_Generator
      *     @type  array  $amplifiers           The amplifiers queue for the current deployment.
      *     @type  array  $results              Keeps the progress data of the amplifiers.
      *     @type  string $engine_cache_version Engine cache version used to build the progress data.
+     *     @type  string $deployment_cache_version Deployment cache version used to build the progress data.
      *     @type  int    $step                 Enum( 1, 2, 3 ). Used for keeping track of what needs to run.
      *         - 1: Apply filters and cache amplifiers.
      *         - 2: Run amplifiers one by one.
@@ -7323,7 +7833,7 @@ class WC_PRL_Shortcodes
  * Display functions and filters.
  *
  * @class    WC_PRL_Templates
- * @version  4.5.0
+ * @version  4.5.2
  */
 class WC_PRL_Templates
 {
@@ -7647,7 +8157,7 @@ class WC_PRL_Tracking
  * Allows processing the amplifier generation queue via WP-CLI.
  *
  * @class    WC_PRL_CLI_Process_Amplifier_Generation_Queue
- * @version  4.4.4
+ * @version  4.5.2
  */
 class WC_PRL_CLI_Process_Amplifier_Generation_Queue
 {
@@ -7674,7 +8184,7 @@ class WC_PRL_CLI_Process_Amplifier_Generation_Queue
  * Allows processing the generation queue via WP-CLI.
  *
  * @class    WC_PRL_CLI_Process_Generation_Queue
- * @version  4.4.4
+ * @version  4.5.2
  */
 class WC_PRL_CLI_Process_Generation_Queue
 {
@@ -9167,7 +9677,7 @@ class WC_PRL_Condition_Recent_Tag extends \WC_PRL_Condition
  * Deployment Data model class.
  *
  * @class    WC_PRL_Deployment_Data
- * @version  4.5.0
+ * @version  4.5.2
  */
 class WC_PRL_Deployment_Data
 {
@@ -9676,7 +10186,7 @@ class WC_PRL_Deployment_Data
  * Engine CPT Data Store.
  *
  * @class    WC_PRL_Engine_Data_Store_CPT
- * @version  4.4.4
+ * @version  4.5.2
  */
 class WC_PRL_Engine_Data_Store_CPT extends \WC_Data_Store_WP
 {
@@ -9685,7 +10195,7 @@ class WC_PRL_Engine_Data_Store_CPT extends \WC_Data_Store_WP
      *
      * @var string[]
      */
-    protected $internal_meta_keys = array('_filters_data', '_amplifiers_data', '_cache_version');
+    protected $internal_meta_keys = array('_filters_data', '_amplifiers_data', '_cache_version', '_contextual_state');
     /**
      * Stores updated props.
      *
@@ -10014,7 +10524,7 @@ class WC_PRL_DB
  * Deployments DB API class.
  *
  * @class    WC_PRL_Deployment_DB
- * @version  4.5.0
+ * @version  4.5.2
  */
 class WC_PRL_Deployment_DB
 {
@@ -10087,7 +10597,9 @@ class WC_PRL_Deployment_DB
      *
      * @param  mixed $deployment
      * @param  array $args
-     * @return boolean
+     * @return int|false
+     *
+     * @throws Exception When deployment attributes are invalid.
      */
     public function update($deployment, $args)
     {
@@ -10333,7 +10845,7 @@ class WC_PRL_Queue_DB
  * Tracking DB API class.
  *
  * @class    WC_PRL_Tracking_DB
- * @version  4.5.0
+ * @version  4.5.2
  */
 class WC_PRL_Tracking_DB
 {
@@ -10367,7 +10879,35 @@ class WC_PRL_Tracking_DB
     public function get_top_conversions($args, $limit = 5)
     {
     }
+    /**
+     * Query tracked conversions.
+     *
+     * @param  array<string, mixed> $args {
+     *     Query arguments.
+     *
+     *     @type string           $return        'all' for full rows or 'ids' for conversion IDs. Default 'all'.
+     *     @type int|int[]        $deployment_id Deployment IDs to match.
+     *     @type int|int[]        $engine_id     Engine IDs to match.
+     *     @type int|int[]        $product_id    Product IDs to match.
+     *     @type string|string[]  $location_hash Location hashes to match.
+     *     @type int              $start_date    Earliest `ordered_time` timestamp, inclusive.
+     *     @type int              $end_date      Latest `ordered_time` timestamp, exclusive.
+     *     @type array            $order_by      Column => 'ASC' or 'DESC'. Default sorts by ID, ascending.
+     * }
+     * @return array<int, mixed> Rows as arrays, or IDs as strings.
+     */
     public function query_conversions($args)
+    {
+    }
+    /**
+     * Get the `ordered_time` range of a conversions query: from the start date (inclusive) to the end date (exclusive).
+     *
+     * @since 4.5.2
+     *
+     * @param  array<string, mixed> $args Query arguments with optional 'start_date' and 'end_date' timestamps.
+     * @return int[] Start timestamp, 1 when there is an end date or 0 otherwise, and end timestamp.
+     */
+    private function get_ordered_time_range($args)
     {
     }
     /**
@@ -11436,7 +11976,7 @@ class WC_PRL_Location_Shop extends \WC_PRL_Location
  * Main plugin class.
  *
  * @class    WC_Product_Recommendations
- * @version  4.5.1
+ * @version  4.5.2
  */
 class WC_Product_Recommendations
 {
@@ -11445,7 +11985,7 @@ class WC_Product_Recommendations
      *
      * @var string
      */
-    private $version = '4.5.1';
+    private $version = '4.5.2';
     /**
      * Min required WC version.
      *
