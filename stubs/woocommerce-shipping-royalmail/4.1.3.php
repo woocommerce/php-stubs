@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-shipping-royalmail 4.1.2.
+ * Generated stub declarations for woocommerce-shipping-royalmail 4.1.3.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -2103,6 +2103,15 @@ namespace WooCommerce\RoyalMail\Rates {
          */
         protected array $supported_countries = array();
         /**
+         * Whether the box packer returned no packages for items it was given.
+         *
+         * Set by the packing methods and combined over calls by get_packages(), so it adds up over the tube, Printed Papers
+         * and regular calls of one quote. WC_Shipping_Royalmail_Rates builds a new instance per service and quote.
+         *
+         * @var bool
+         */
+        protected bool $packing_failed = false;
+        /**
          * Class constructor.
          *
          * @param string $rate_type          Rate type.
@@ -2230,6 +2239,21 @@ namespace WooCommerce\RoyalMail\Rates {
          * @version 2.5.3
          */
         public function get_packages(array $items, string $method, string $country_code = '', bool $printed_papers = false, bool $books = false, bool $tube = false): array
+        {
+        }
+        /**
+         * Whether the box packer returned no packages for items this rate gave it.
+         *
+         * The box packer returns no packages when packing fails, or when the cart has more items than it packs.
+         * A quote that leaves those items out is too low, so the rate must not be offered. The answer covers every
+         * get_packages() call since the instance was created, unless woocommerce_shipping_royalmail_packing_failed
+         * cleared it for a call.
+         *
+         * @since 4.1.3
+         *
+         * @return bool
+         */
+        public function has_packing_failed(): bool
         {
         }
         /**
@@ -3644,7 +3668,7 @@ namespace {
 namespace {
     \define('WOOCOMMERCE_SHIPPING_ROYALMAIL_FILE', __FILE__);
     \define('WOOCOMMERCE_SHIPPING_ROYALMAIL_ABSPATH', \trailingslashit(__DIR__));
-    \define('WOOCOMMERCE_SHIPPING_ROYALMAIL_VERSION', '4.1.2');
+    \define('WOOCOMMERCE_SHIPPING_ROYALMAIL_VERSION', '4.1.3');
     /**
      * Initializes extension.
      *
