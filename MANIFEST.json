@@ -599,10 +599,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "3.2.3": {
-                "source_zip_sha256": "126e1868e52a38c3fb3564ddb874953c152dc90365cbb0578bbf1bd6dfa2dc41",
-                "stub_sha256": "49ebfa88f934222e8fffacfb8c1fa8c7b16f9e84491ddd261d5b09bad7a06d07",
-                "generated_at": "2026-11-09T03:43:24Z",
+            "3.3.0": {
+                "source_zip_sha256": "124dbf49f6efdb2f7be305316045d3d917c1cdbe1e2d50eaf715e6e9fb365132",
+                "stub_sha256": "347ff7296968c6035857e404a5dff2ccc03198543ce051828845a0ce634db04e",
+                "generated_at": "2026-11-11T09:03:59Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }

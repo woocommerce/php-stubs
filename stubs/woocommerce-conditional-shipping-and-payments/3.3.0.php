@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-conditional-shipping-and-payments 3.2.3.
+ * Generated stub declarations for woocommerce-conditional-shipping-and-payments 3.3.0.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -8,7 +8,7 @@
  * Registers the CSP restriction rules read ability.
  *
  * @class   WC_CSP_Get_Restriction_Rules_Ability
- * @version 3.2.1
+ * @version 3.3.0
  */
 class WC_CSP_Get_Restriction_Rules_Ability implements \Automattic\WooCommerce\Abilities\AbilityDefinition
 {
@@ -1623,6 +1623,11 @@ class WC_Settings_Restrictions extends \WC_Settings_Page
     {
     }
 }
+/**
+ * Extends the Store API cart with restriction and debugger data.
+ *
+ * @version 3.3.0
+ */
 class WC_CSP_Store_API
 {
     /**
@@ -3476,7 +3481,7 @@ class WC_CSP_PPE_Compatibility
  * Stripe Compatibility.
  *
  * @since  1.4.0
- * @version 3.2.2
+ * @version 3.3.0
  */
 class WC_CSP_Stripe_Compatibility
 {
@@ -3495,6 +3500,17 @@ class WC_CSP_Stripe_Compatibility
      * @return boolean
      */
     public static function hide_payment_request($hide)
+    {
+    }
+    /**
+     * Preserve Stripe's enabled locations while hiding restricted express buttons.
+     *
+     * @since 3.3.0
+     *
+     * @param bool $show Whether Stripe would show express buttons.
+     * @return bool
+     */
+    public static function show_payment_request($show)
     {
     }
     /**
@@ -6797,7 +6813,7 @@ interface WC_CSP_Cart_Restriction
  * Restrict Shipping Countries.
  *
  * @class    WC_CSP_Restrict_Shipping_Countries
- * @version  3.2.2
+ * @version  3.3.0
  */
 class WC_CSP_Restrict_Shipping_Countries extends \WC_CSP_Restriction implements \WC_CSP_Checkout_Restriction, \WC_CSP_Cart_Restriction
 {
@@ -6916,6 +6932,17 @@ class WC_CSP_Restrict_Shipping_Countries extends \WC_CSP_Restriction implements 
     {
     }
     /**
+     * Expand selected continent tokens without changing saved country codes.
+     *
+     * @since 3.3.0
+     *
+     * @param array<array-key, mixed> $countries Selected country codes and continent tokens.
+     * @return array<array-key, mixed>
+     */
+    private function get_country_codes($countries)
+    {
+    }
+    /**
      * Generate map data for each active rule.
      *
      * @since  1.4.0
@@ -6944,7 +6971,7 @@ class WC_CSP_Restrict_Shipping_Countries extends \WC_CSP_Restriction implements 
     /**
      * Validate order checkout and return errors if restrictions apply.
      *
-     * @param  array $posted
+     * @param  mixed $posted Checkout data or pay-for-order context.
      * @return WC_CSP_Check_Result
      */
     public function validate_checkout($posted = array())
@@ -7223,7 +7250,7 @@ interface WC_CSP_Update_Cart_Restriction
 class WC_Conditional_Shipping_Payments
 {
     /* Plugin version */
-    const VERSION = '3.2.3';
+    const VERSION = '3.3.0';
     /* Required WC version */
     const REQ_WC_VERSION = '11.1.0';
     /* Required PHP version */
