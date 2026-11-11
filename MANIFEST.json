@@ -1501,6 +1501,13 @@
                 "generated_at": "2026-10-22T17:32:42Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "5.6.8": {
+                "source_zip_sha256": "770ce4c7cd5785bd4cd7a2ddcdc31a6dbc24d82f3c4661f4b30755ab46f3df9e",
+                "stub_sha256": "ce00d2470a3e50cd4a3c2ddb6b3dadd6a674350fb7e591109e69ca62c903f5f4",
+                "generated_at": "2026-11-11T21:42:01Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-shipstation-integration": {
