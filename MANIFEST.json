@@ -1593,6 +1593,13 @@
                 "generated_at": "2026-10-22T17:34:01Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "3.7.5": {
+                "source_zip_sha256": "680398e3967a6267ee753ddb4dfa1daf7d4173f8cc2f5331185f4b5af0377c1f",
+                "stub_sha256": "223ca3d1c993207cb729f5d0452c1f58a9475947ef0024eca7fe67ea944543d6",
+                "generated_at": "2026-11-11T21:36:49Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-warranty": {
