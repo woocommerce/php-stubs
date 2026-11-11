@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-shipping-fedex 4.8.4.
+ * Generated stub declarations for woocommerce-shipping-fedex 4.8.5.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -3379,7 +3379,7 @@ namespace WooCommerce\FedEx {
     const CARRIER_CODE_SMARTPOST = 'FXSP';
 }
 namespace {
-    \define('WC_SHIPPING_FEDEX_VERSION', '4.8.4');
+    \define('WC_SHIPPING_FEDEX_VERSION', '4.8.5');
     // WRCS: DEFINED_VERSION.
     \define('WC_SHIPPING_FEDEX_FILE', __FILE__);
     \define('WC_SHIPPING_FEDEX_ABSPATH', \trailingslashit(__DIR__));

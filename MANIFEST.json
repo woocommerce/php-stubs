@@ -1411,10 +1411,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "4.8.4": {
-                "source_zip_sha256": "9a20526baa1ee8abc2d8d2b6340cdea7c9498d81951b7f4a811f3a93003cc0ca",
-                "stub_sha256": "16754a3028bbd1650d8467b68eeb8fb132bdafb5e8a09bb16869d483b5d97f05",
-                "generated_at": "2026-11-03T14:23:16Z",
+            "4.8.5": {
+                "source_zip_sha256": "1d8e7069f7f2c27f60dce5b056b3f2a5d85cea4741638904749aea96dc1f4614",
+                "stub_sha256": "4db2d3d18d6f62798b3daa5644603a7da9fb11fb344dc3a38e99f40557d5eb31",
+                "generated_at": "2026-11-11T07:37:13Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
