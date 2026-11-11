@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-eu-vat-number 3.2.2.
+ * Generated stub declarations for woocommerce-eu-vat-number 3.2.3.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -363,6 +363,19 @@ class WC_EU_VAT_Extend_Store_Endpoint
      * @return void
      */
     public function refresh_vat_exemption()
+    {
+    }
+    /**
+     * Re-applies a recovered VAT exemption during payment-only checkout updates.
+     *
+     * WooCommerce calculates totals before firing the draft-update action. Recalculate
+     * only when validation recovery changes the exemption so the response contains the
+     * corrected totals.
+     *
+     * @since 3.2.3
+     * @return void
+     */
+    public function refresh_vat_exemption_for_draft()
     {
     }
     /**
@@ -2319,7 +2332,7 @@ function wc_eu_vat_maybe_add_order_note($order, $vat_number, $is_valid)
 {
 }
 // phpcs:disable WordPress.Files.FileName
-\define('WC_EU_VAT_VERSION', '3.2.2');
+\define('WC_EU_VAT_VERSION', '3.2.3');
 // WRCS: DEFINED_VERSION.
 \define('WC_EU_VAT_FILE', __FILE__);
 \define('WC_EU_ABSPATH', __DIR__ . '/');
