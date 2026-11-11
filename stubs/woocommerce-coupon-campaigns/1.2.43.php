@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-coupon-campaigns 1.2.42.
+ * Generated stub declarations for woocommerce-coupon-campaigns 1.2.43.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -118,7 +118,7 @@ class WC_Coupon_Campaign_Filter
  * Register Coupon Campaigns privacy handlers.
  *
  * @class   WC_Coupon_Campaigns_Privacy
- * @version 1.2.40
+ * @version 1.2.43
  */
 class WC_Coupon_Campaigns_Privacy extends \WC_Abstract_Privacy
 {
@@ -259,7 +259,7 @@ class WC_Coupon_Campaigns_Privacy extends \WC_Abstract_Privacy
  * Coupon Campaigns class.
  *
  * @class   WC_Coupon_Campaigns
- * @version 1.2.41
+ * @version 1.2.43
  */
 class WC_Coupon_Campaigns
 {
@@ -293,6 +293,59 @@ class WC_Coupon_Campaigns
      * @param string $file The main plugin filename.
      */
     public function __construct($file)
+    {
+    }
+    /**
+     * Queue the one-time cleanup for existing installs and retry interrupted runs.
+     *
+     * @return void
+     */
+    public function schedule_legacy_meta_cleanup()
+    {
+    }
+    /**
+     * Collapse legacy padding one row at a time, so only one oversized value is in memory.
+     *
+     * Versions before 1.1.4 wrote usage data into a string at the order ID's offset, padding
+     * it with spaces. Later uses cast that string into element 0 of the serialized usage map.
+     *
+     * @param int $last_meta_id Last row handled by the previous batch.
+     * @return void
+     * @throws RuntimeException When a database operation fails.
+     */
+    public function trim_legacy_coupon_meta($last_meta_id = 0)
+    {
+    }
+    /**
+     * Collapse the space padding of a legacy usage string.
+     *
+     * @param string $legacy Legacy usage string.
+     * @return string
+     */
+    private static function collapse_legacy_padding($legacy)
+    {
+    }
+    /**
+     * Remove legacy padding before saving a usage map.
+     *
+     * Checkout and privacy erasure can read the map before cleanup and save it afterwards.
+     *
+     * @since 1.2.43
+     * @internal
+     * @param array<array-key, mixed> $usage Coupon usage map.
+     * @return array<array-key, mixed>
+     */
+    public static function normalize_legacy_usage_map($usage)
+    {
+    }
+    /**
+     * Read a coupon usage map for an update.
+     *
+     * @param int    $coupon_id Coupon ID.
+     * @param string $meta_key  Usage meta key.
+     * @return array<array-key, mixed>
+     */
+    private function get_usage_map($coupon_id, $meta_key)
     {
     }
     /**
@@ -744,4 +797,4 @@ class WC_Report_Campaigns extends \WC_Admin_Report
 function wc_coupon_campaigns_tracking()
 {
 }
-\define('WC_COUPON_CAMPAIGNS_VERSION', '1.2.42');
+\define('WC_COUPON_CAMPAIGNS_VERSION', '1.2.43');
