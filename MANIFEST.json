@@ -171,11 +171,11 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "5.45.1": {
-                "source_url": "https://downloads.wordpress.org/plugin/mailpoet.5.45.1.zip",
-                "source_zip_sha256": "99fb76e80143705fda707b2ca994af9c5a23a48aba897b8f9be9b6dcb839a88c",
-                "stub_sha256": "fd7cb27f2be24060823cfbeec55c80a2ab32d52cdadb8a92fa700fe69fc2ac1e",
-                "generated_at": "2026-11-06T03:03:57Z",
+            "5.45.2": {
+                "source_url": "https://downloads.wordpress.org/plugin/mailpoet.5.45.2.zip",
+                "source_zip_sha256": "6e1ba8c05ab244c709f7831bcd333b3fd833e19df92ee85ea1ab999b1f6d7224",
+                "stub_sha256": "e77f76e7c43765e4f4d35b91dd6ff880a290aef3220fde51c3350418e752a2a3",
+                "generated_at": "2026-11-11T03:03:38Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -1239,11 +1239,11 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "2.0.2": {
-                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-product-dependencies.2.0.2.zip",
-                "source_zip_sha256": "95d67c18293535bc6a94357bdc131fbe22736fc5241e5425b88fa3020b87dcc5",
-                "stub_sha256": "6f537262511a97992a298fe704f6f825b4369bad8654b846d05e35eaffe07c2d",
-                "generated_at": "2026-11-08T03:03:53Z",
+            "2.0.3": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-product-dependencies.2.0.3.zip",
+                "source_zip_sha256": "fc1eb2e62230dc37525cc90e4d167c92ca6949ab3e4745a7561133a505d2ecdf",
+                "stub_sha256": "5727b24dc5cfba99310714828b3d5ad7ea4d9ebddea98ee5dca27910a7c5d27f",
+                "generated_at": "2026-11-11T03:04:39Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }

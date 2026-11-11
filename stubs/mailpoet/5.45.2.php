@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for mailpoet 5.45.1.
+ * Generated stub declarations for mailpoet 5.45.2.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -93,6 +93,17 @@ namespace MailPoet\API\JSON {
         {
         }
         private function logError(\Throwable $e): void
+        {
+        }
+    }
+    /**
+     * Messages MailPoet.Ajax (assets/js/src/ajax.ts) shows when a request fails.
+     * Every admin page that loads MailPoet.Ajax needs them.
+     */
+    class AjaxErrorMessages
+    {
+        /** @return array<string, string> */
+        public function getTranslations(): array
         {
         }
     }
@@ -1715,19 +1726,6 @@ namespace MailPoet\API\JSON\v1 {
         {
         }
     }
-    class WoocommerceSettings extends \MailPoet\API\JSON\Endpoint
-    {
-        public $permissions = ['global' => \MailPoet\Config\AccessControl::PERMISSION_MANAGE_EMAILS];
-        private $allowedSettings = ['woocommerce_email_base_color'];
-        /** @var \MailPoet\WP\Functions */
-        private $wp;
-        public function __construct(\MailPoet\WP\Functions $wp)
-        {
-        }
-        public function set($data = [])
-        {
-        }
-    }
 }
 namespace MailPoet\API\MP\v1 {
     /**
@@ -1783,7 +1781,7 @@ namespace MailPoet\API\MP\v1 {
         public function addSubscriber(array $subscriber, $listIds = [], $options = []): array
         {
         }
-        public function updateSubscriber($subscriberIdOrEmail, array $subscriber): array
+        public function updateSubscriber($subscriberIdOrEmail, array $subscriber, array $options = []): array
         {
         }
         public function addList(array $list)
@@ -1871,6 +1869,7 @@ namespace MailPoet\API\MP\v1 {
         const TAG_NOT_EXISTS = 29;
         const FAILED_TO_UPDATE_TAG = 30;
         const FAILED_TO_DELETE_TAG = 31;
+        const CUSTOM_FIELD_VALUE_REQUIRED = 32;
     }
     class CustomFields
     {
@@ -1985,7 +1984,7 @@ namespace MailPoet\API\MP\v1 {
         public function addSubscriber(array $data, array $listIds = [], array $options = []): array
         {
         }
-        public function updateSubscriber($subscriberIdOrEmail, array $data): array
+        public function updateSubscriber($subscriberIdOrEmail, array $data, array $options = []): array
         {
         }
         /**
@@ -2147,6 +2146,9 @@ namespace MailPoet\API\MP\v1 {
          * honoured either way.
          */
         private function resolveTrackingConsentFields(array $fields): array
+        {
+        }
+        private function shouldSkipUnsentRequiredCustomFields(array $options): bool
         {
         }
         /**
@@ -2312,10 +2314,9 @@ namespace MailPoet\API\REST {
         }
         /**
          * Returns `['count' => int, 'groups' => array]`. Split into a hook so an
-         * endpoint whose group counts already include the current group's count can
-         * compute both from a single query and skip the separate getCount(). The
-         * default keeps the two independent queries, unchanged for every other
-         * listing.
+         * endpoint can read the count from cached statistics instead of running
+         * getCount(). The default keeps the two independent queries, unchanged for
+         * every other listing.
          *
          * @return array{count: int, groups: array<int, array<string, mixed>>}
          */
@@ -2890,7 +2891,8 @@ namespace MailPoet\AdminPages {
         private \MailPoet\Util\License\Features\CapabilitiesManager $capabilitiesManager;
         private \MailPoet\Newsletter\Sending\OverdueCampaignHold $overdueCampaignHold;
         private \MailPoet\API\JSON\ResponseBuilders\HeldCampaignsResponseBuilder $heldCampaignsResponseBuilder;
-        public function __construct(\MailPoet\Services\Bridge $bridge, \MailPoet\Config\Renderer $renderer, \MailPoet\Config\ServicesChecker $servicesChecker, \MailPoet\Features\FeaturesController $featuresController, \MailPoet\Util\Installation $installation, \MailPoet\Settings\SettingsController $settings, \MailPoet\Settings\UserFlagsController $userFlags, \MailPoet\Segments\SegmentsRepository $segmentRepository, \MailPoet\Tags\TagRepository $tagRepository, \MailPoet\Cron\Workers\SubscribersCountCacheRecalculation $subscribersCountCacheRecalculation, \MailPoet\Util\License\Features\Subscribers $subscribersFeature, \MailPoet\Settings\TrackingConfig $trackingConfig, \MailPoet\Cache\TransientCache $transientCache, \MailPoet\WP\Functions $wp, \MailPoet\AdminPages\AssetsController $assetsController, \MailPoet\WooCommerce\Helper $wooCommerceHelper, \MailPoet\WooCommerce\WooCommerceSubscriptions\Helper $wooCommerceSubscriptionsHelper, \MailPoet\WooCommerce\WooCommerceBookings\Helper $wooCommerceBookingsHelper, \MailPoet\Util\License\Features\CapabilitiesManager $capabilitiesManager, \MailPoet\Newsletter\Sending\OverdueCampaignHold $overdueCampaignHold, \MailPoet\API\JSON\ResponseBuilders\HeldCampaignsResponseBuilder $heldCampaignsResponseBuilder)
+        private \MailPoet\API\JSON\AjaxErrorMessages $ajaxErrorMessages;
+        public function __construct(\MailPoet\Services\Bridge $bridge, \MailPoet\Config\Renderer $renderer, \MailPoet\Config\ServicesChecker $servicesChecker, \MailPoet\Features\FeaturesController $featuresController, \MailPoet\Util\Installation $installation, \MailPoet\Settings\SettingsController $settings, \MailPoet\Settings\UserFlagsController $userFlags, \MailPoet\Segments\SegmentsRepository $segmentRepository, \MailPoet\Tags\TagRepository $tagRepository, \MailPoet\Cron\Workers\SubscribersCountCacheRecalculation $subscribersCountCacheRecalculation, \MailPoet\Util\License\Features\Subscribers $subscribersFeature, \MailPoet\Settings\TrackingConfig $trackingConfig, \MailPoet\Cache\TransientCache $transientCache, \MailPoet\WP\Functions $wp, \MailPoet\AdminPages\AssetsController $assetsController, \MailPoet\WooCommerce\Helper $wooCommerceHelper, \MailPoet\WooCommerce\WooCommerceSubscriptions\Helper $wooCommerceSubscriptionsHelper, \MailPoet\WooCommerce\WooCommerceBookings\Helper $wooCommerceBookingsHelper, \MailPoet\Util\License\Features\CapabilitiesManager $capabilitiesManager, \MailPoet\Newsletter\Sending\OverdueCampaignHold $overdueCampaignHold, \MailPoet\API\JSON\ResponseBuilders\HeldCampaignsResponseBuilder $heldCampaignsResponseBuilder, \MailPoet\API\JSON\AjaxErrorMessages $ajaxErrorMessages)
         {
         }
         /**
@@ -10795,6 +10797,7 @@ namespace MailPoet\Config {
     }
     class AssetsLoader
     {
+        private const BUNDLED_DESIGN_TOKENS_STYLE = 'mailpoet-wpds-tokens';
         private const FORM_EDITOR_WORDPRESS_STYLE_DEPENDENCIES = ['wp-components', 'wp-block-library', 'wp-block-library-theme', 'wp-block-editor', 'wp-edit-blocks', 'wp-editor', 'wp-edit-post', 'wp-format-library'];
         /** @var Renderer */
         private $renderer;
@@ -10804,6 +10807,19 @@ namespace MailPoet\Config {
         {
         }
         public function loadStyles(): void
+        {
+        }
+        /**
+         * Get the handle of the WordPress Design System tokens stylesheet.
+         *
+         * Uses the `wp-theme` style registered by WordPress 7.1+ or the Gutenberg plugin when available,
+         * and falls back to the copy of the tokens bundled with MailPoet otherwise. The caller lists
+         * the handle as a style dependency, so WordPress enqueues it.
+         *
+         * The tokens are used by our styles, @wordpress/ui, @wordpress/dataviews and @wordpress/admin-ui.
+         * The bundled fallback can be removed once WP 7.1 is the minimum supported version.
+         */
+        private function getDesignTokensStyleHandle(): string
         {
         }
         private function enqueueStyle(string $name, array $deps = []): void
@@ -19363,7 +19379,8 @@ namespace MailPoet\EmailEditor\Integrations\MailPoet {
         private \MailPoet\Features\FeaturesController $featuresController;
         private \MailPoet\Util\License\Features\CapabilitiesManager $capabilitiesManager;
         private \MailPoet\Subscribers\TrackingConsentController $trackingConsentController;
-        public function __construct(\MailPoet\WP\Functions $wp, \MailPoet\Util\CdnAssetUrl $cdnAssetUrl, \MailPoet\Config\ServicesChecker $servicesChecker, \MailPoet\Util\License\Features\Subscribers $subscribersFeature, \MailPoet\EmailEditor\Integrations\MailPoet\DependencyNotice $dependencyNotice, \MailPoet\Settings\SettingsController $mailpoetSettings, \MailPoet\Newsletter\NewslettersRepository $newslettersRepository, \MailPoet\Settings\UserFlagsController $userFlagsController, \MailPoet\Analytics\Analytics $analytics, \MailPoet\Services\Bridge $bridge, \MailPoet\Services\AuthorizedEmailsController $authorizedEmailsController, \MailPoet\Services\AuthorizedSenderDomainController $senderDomainController, \MailPoet\Features\FeaturesController $featuresController, \MailPoet\Util\License\Features\CapabilitiesManager $capabilitiesManager, \MailPoet\Subscribers\TrackingConsentController $trackingConsentController)
+        private \MailPoet\API\JSON\AjaxErrorMessages $ajaxErrorMessages;
+        public function __construct(\MailPoet\WP\Functions $wp, \MailPoet\Util\CdnAssetUrl $cdnAssetUrl, \MailPoet\Config\ServicesChecker $servicesChecker, \MailPoet\Util\License\Features\Subscribers $subscribersFeature, \MailPoet\EmailEditor\Integrations\MailPoet\DependencyNotice $dependencyNotice, \MailPoet\Settings\SettingsController $mailpoetSettings, \MailPoet\Newsletter\NewslettersRepository $newslettersRepository, \MailPoet\Settings\UserFlagsController $userFlagsController, \MailPoet\Analytics\Analytics $analytics, \MailPoet\Services\Bridge $bridge, \MailPoet\Services\AuthorizedEmailsController $authorizedEmailsController, \MailPoet\Services\AuthorizedSenderDomainController $senderDomainController, \MailPoet\Features\FeaturesController $featuresController, \MailPoet\Util\License\Features\CapabilitiesManager $capabilitiesManager, \MailPoet\Subscribers\TrackingConsentController $trackingConsentController, \MailPoet\API\JSON\AjaxErrorMessages $ajaxErrorMessages)
         {
         }
         public function render()
@@ -21524,6 +21541,8 @@ namespace MailPoet\Entities {
         const COLUMN_BLOCK_TYPE = 'column';
         public const FORM_DISPLAY_TYPES = [self::DISPLAY_TYPE_BELOW_POST, self::DISPLAY_TYPE_FIXED_BAR, self::DISPLAY_TYPE_POPUP, self::DISPLAY_TYPE_SLIDE_IN, self::DISPLAY_TYPE_OTHERS];
         public const FORM_FIELD_TYPES = [self::CHECKBOX_BLOCK_TYPE, self::RADIO_BLOCK_TYPE, self::SEGMENT_SELECTION_BLOCK_TYPE, self::DATE_BLOCK_TYPE, self::SELECT_BLOCK_TYPE, self::TEXT_BLOCK_TYPE, self::TEXTAREA_BLOCK_TYPE];
+        // Keep in sync with assets/js/src/form-editor/components/close-button-settings.tsx
+        public const CLOSE_BUTTON_ICONS = ['classic', 'classic_white', 'round_black', 'round_white', 'square_black', 'square_white'];
         /**
          * @ORM\Column(type="string")
          * @var string
@@ -21568,6 +21587,9 @@ namespace MailPoet\Entities {
          * @return array|null
          */
         public function getSettings()
+        {
+        }
+        public function getCloseButtonIcon(string $default): string
         {
         }
         /**
@@ -29287,6 +29309,19 @@ namespace MailPoet\Migrations\App {
         {
         }
     }
+    /**
+     * Obsolete link tokens are now accepted for 1 month after the link token upgrade instead of 12.
+     * Sites that already upgraded saved a deadline 12 months ahead; this moves it to at most 1 month from now.
+     */
+    class Migration_20261103_092807_App extends \MailPoet\Migrator\AppMigration
+    {
+        // Kept literal so later changes in LinkTokens don't affect this migration
+        private const OBSOLETE_TOKENS_ACCEPTED_UNTIL_SETTING = 'obsolete_link_tokens_accepted_until';
+        private const GRACE_PERIOD_MONTHS = 1;
+        public function run(): void
+        {
+        }
+    }
 }
 namespace MailPoet\Migrator {
     abstract class DbMigration
@@ -31004,6 +31039,10 @@ namespace MailPoet\Newsletter\Listing {
         private static $supportedTypes = [\MailPoet\Entities\NewsletterEntity::TYPE_STANDARD, \MailPoet\Entities\NewsletterEntity::TYPE_RE_ENGAGEMENT, \MailPoet\Entities\NewsletterEntity::TYPE_WELCOME, \MailPoet\Entities\NewsletterEntity::TYPE_AUTOMATIC, \MailPoet\Entities\NewsletterEntity::TYPE_NOTIFICATION, \MailPoet\Entities\NewsletterEntity::TYPE_NOTIFICATION_HISTORY];
         /** @var \MailPoet\WP\Functions */
         private $wp;
+        /** @var \MailPoet\Listing\ListingDefinition|null */
+        private $statusCountsDefinition;
+        /** @var array<string, array<string, int>> */
+        private $statusCounts = [];
         public function __construct(\MailPoetVendor\Doctrine\ORM\EntityManager $entityManager, \MailPoet\WP\Functions $wp)
         {
         }
@@ -31014,7 +31053,8 @@ namespace MailPoet\Newsletter\Listing {
         {
         }
         /**
-         * Listing groups that exist for the type, as shown by getGroups().
+         * Groups a listing request or a bulk action may name for the type. Paused is a
+         * status tab and filter value only, not a group the listing query applies.
          *
          * @return string[]
          */
@@ -31034,13 +31074,23 @@ namespace MailPoet\Newsletter\Listing {
         {
         }
         /**
-         * Counts the emails of the type that are trashed (Trash group) or not (any other group),
-         * ignoring search and other filters.
-         * “Sending” excludes and “Paused” includes paused emails, like the status filter.
+         * The status filter options, labelled with the counts of trashed emails on the
+         * Trash tab and of the other emails on every other tab.
          *
          * @return array<int, array{label: string, value: string}>
          */
-        private function getStatusOptions(string $type, ?int $parentId, bool $trashed): array
+        private function getStatusOptions(\MailPoet\Listing\ListingDefinition $definition, string $type, bool $trashed): array
+        {
+        }
+        /**
+         * Counts the trashed or live emails of the type (and parent) for each status the way
+         * the status filter selects them: “Sending” excludes and “Paused” includes paused
+         * emails. getFilters() and getGroups() get the same definition in one listing
+         * request, so the counts are kept for that definition only.
+         *
+         * @return array<string, int>
+         */
+        private function getStatusCounts(\MailPoet\Listing\ListingDefinition $definition, string $type, bool $trashed): array
         {
         }
         /** @return array<string, string> */
@@ -34858,6 +34908,9 @@ namespace MailPoet\NewsletterTemplates {
         public function ensureTemplateThumbnailFile(\MailPoet\Entities\NewsletterTemplateEntity $template): \MailPoet\Entities\NewsletterTemplateEntity
         {
         }
+        private function isThumbnailFileName(string $fileName): bool
+        {
+        }
         private function saveTemplateImage(\MailPoet\Entities\NewsletterTemplateEntity $template): void
         {
         }
@@ -35088,6 +35141,12 @@ namespace MailPoet\Referrals {
         {
         }
         public function detect()
+        {
+        }
+        /**
+         * @param mixed $referralId
+         */
+        public static function isValid($referralId): bool
         {
         }
     }
@@ -41152,12 +41211,24 @@ namespace MailPoet\Subscribers {
          */
         public const UPGRADED_TOKEN_SEPARATOR = '-';
         public const OBSOLETE_TOKENS_ACCEPTED_UNTIL_SETTING = 'obsolete_link_tokens_accepted_until';
-        private const OBSOLETE_TOKENS_GRACE_PERIOD_MONTHS = 12;
+        private const OBSOLETE_TOKENS_GRACE_PERIOD_MONTHS = 1;
+        /**
+         * Once a subscriber reaches this many tokens that don't match the obsolete part, only their whole
+         * upgraded token is accepted. Mismatches aren't counted while the limit is reached, so the limit
+         * holds for MISMATCH_WINDOW seconds after the last counted mismatch.
+         */
+        public const MISMATCH_LIMIT = 10;
+        private const MISMATCH_WINDOW = DAY_IN_SECONDS;
+        private const MISMATCHES_TRANSIENT_PREFIX = 'MAILPOET_link_token_mismatches_';
         /** @var SubscribersRepository */
         private $subscribersRepository;
         /** @var \MailPoet\Settings\SettingsController */
         private $settings;
-        public function __construct(\MailPoet\Subscribers\SubscribersRepository $subscribersRepository, \MailPoet\Settings\SettingsController $settings)
+        /** @var \MailPoet\WP\Functions */
+        private $wp;
+        /** @var array<string, true> Mismatches counted in this request, so a token checked twice counts once */
+        private $countedMismatches = [];
+        public function __construct(\MailPoet\Subscribers\SubscribersRepository $subscribersRepository, \MailPoet\Settings\SettingsController $settings, \MailPoet\WP\Functions $wp)
         {
         }
         public function getToken(\MailPoet\Entities\SubscriberEntity $subscriber): string
@@ -41176,6 +41247,18 @@ namespace MailPoet\Subscribers {
         {
         }
         private function isUpgradedToken(string $token): bool
+        {
+        }
+        private function hasTooManyMismatches(\MailPoet\Entities\SubscriberEntity $subscriber): bool
+        {
+        }
+        private function countMismatch(\MailPoet\Entities\SubscriberEntity $subscriber, string $token): void
+        {
+        }
+        private function getMismatchCount(\MailPoet\Entities\SubscriberEntity $subscriber): int
+        {
+        }
+        private function getMismatchesTransient(\MailPoet\Entities\SubscriberEntity $subscriber): ?string
         {
         }
         private function acceptsObsoleteTokens(): bool
@@ -41236,10 +41319,14 @@ namespace MailPoet\Subscribers {
         /**
          * @param array $data
          * @param \MailPoet\Entities\FormEntity|null $form
+         * @param bool $skipUnsentFields
          *
          * @throws \Exception
          */
-        public function validate(array $data, ?\MailPoet\Entities\FormEntity $form = null)
+        public function validate(array $data, ?\MailPoet\Entities\FormEntity $form = null, bool $skipUnsentFields = false)
+        {
+        }
+        private function isCustomFieldSent(int $customFieldId, array $data): bool
         {
         }
         private function isCustomFieldMissing(int $customFieldId, array $data): bool
@@ -42284,35 +42371,18 @@ namespace MailPoet\Subscribers {
         protected function applySorting(\MailPoetVendor\Doctrine\ORM\QueryBuilder $queryBuilder, string $sortBy, string $sortOrder)
         {
         }
+        /**
+         * The tab counts are site totals, like the status links in wp-admin lists:
+         * search and filters don’t change them.
+         */
         public function getGroups(\MailPoet\Listing\ListingDefinition $definition): array
         {
         }
         /**
-         * The count of the current group plus the All and Trash tab counts, all under
-         * the active filters and search. Unfiltered and single-list requests are
-         * answered from the cron-warmed statistics. Anything narrower runs live
-         * counts, reusing the current group’s count when it is All or Trash.
-         *
-         * @return array{count: int, groups: array<int, array<string, mixed>>}
+         * The count of the current group under the active filters and search,
+         * read from the cron-warmed statistics when they cover the request.
          */
-        public function getCountAndAllTrashGroups(\MailPoet\Listing\ListingDefinition $definition): array
-        {
-        }
-        private function withGroup(\MailPoet\Listing\ListingDefinition $definition, string $group): \MailPoet\Listing\ListingDefinition
-        {
-        }
-        /**
-         * The status-tab counts. Cheapest first:
-         *
-         *   1. Global cache: the unfiltered “All Lists” view (cron-warmed).
-         *   2. Per-segment cache: a plain single-list filter and nothing else.
-         *   3. Live: anything narrower. A grouped scan on the non-segment path, or
-         *      one count per status when a segment redefines the buckets (a static
-         *      segment uses the per-list status, a dynamic one an id subquery).
-         *
-         * @return array<string, int>
-         */
-        private function getGroupCountsForDefinition(\MailPoet\Listing\ListingDefinition $definition): array
+        public function getListingCount(\MailPoet\Listing\ListingDefinition $definition): int
         {
         }
         /**
@@ -42343,7 +42413,7 @@ namespace MailPoet\Subscribers {
         }
         /**
          * Map the cached per-segment statistics onto the listing's status-keyed counts
-         * array. "all" is read in formatGroups/countForCurrentGroup as the sum of the
+         * array. "all" is read in getListingCount as the sum of the
          * status buckets, which equals the cached "all" because the buckets partition
          * the non-deleted members exactly.
          *
@@ -42377,32 +42447,6 @@ namespace MailPoet\Subscribers {
          * @return array<int, array<string, mixed>>
          */
         private function formatGroups(array $counts): array
-        {
-        }
-        /**
-         * Count every status tab in a single grouped scan plus one trash count,
-         * instead of a separate COUNT per group. Valid whenever each group's
-         * predicate is a plain `s.status` (no static/dynamic segment list filter).
-         *
-         * @return array<string, int>
-         */
-        private function getGroupCounts(\MailPoet\Listing\ListingDefinition $definition): array
-        {
-        }
-        /**
-         * Shared FROM + active filters/search for the group counts. Deliberately
-         * skips applyGroup so a single query can bucket every status at once.
-         */
-        private function createGroupCountQueryBuilder(\MailPoet\Listing\ListingDefinition $definition): \MailPoetVendor\Doctrine\ORM\QueryBuilder
-        {
-        }
-        /**
-         * Fallback for static/dynamic segment filters, where a group's predicate is
-         * more than a plain `s.status`. One count per group, scoped to the segment.
-         *
-         * @return array<string, int>
-         */
-        private function getGroupCountsPerStatus(\MailPoet\Listing\ListingDefinition $definition): array
         {
         }
         private function hasSegmentListFilter(\MailPoet\Listing\ListingDefinition $definition): bool
@@ -42658,6 +42702,9 @@ namespace MailPoet\Subscribers {
         {
         }
         public function subscribe(array $data): array
+        {
+        }
+        private function getWaitErrorMessage(int $seconds): string
         {
         }
         private function getSuccessPageUrl(int $pageId): ?string
@@ -44000,6 +44047,19 @@ namespace MailPoet\Subscription {
         public function __construct(\MailPoet\Subscribers\SubscriberIPsRepository $subscriberIPsRepository, \MailPoet\WP\Functions $wp)
         {
         }
+        /**
+         * Returns the seconds left, rounded up to whole minutes, before the visitor's IP may subscribe again,
+         * or 0 when it may subscribe now. Unlike throttle(), it never records a subscription.
+         */
+        public function getWaitTime(): int
+        {
+        }
+        /**
+         * Returns the seconds to wait when the visitor's IP must wait before subscribing again.
+         * Otherwise records the subscription and returns false.
+         *
+         * @return int|false
+         */
         public function throttle()
         {
         }
@@ -47386,6 +47446,9 @@ namespace MailPoet\WP {
         public function wpEnqueueScript($handle, $src = '', array $deps = [], $ver = false, $inFooter = false)
         {
         }
+        public function wpStyleIs($handle, $status = 'enqueued')
+        {
+        }
         public function wpEnqueueStyle($handle, $src = '', array $deps = [], $ver = false, $media = 'all')
         {
         }
@@ -49344,6 +49407,7 @@ namespace MailPoet\WooCommerce\TransactionalEmails {
          * - We prefix the original selectors to avoid inlining those rules into content added int the MailPoet's editor.
          * - We update the font-family in the original CSS if it's set in the editor.
          * - We update the font-size for the inner content if it's set in the editor.
+         * - We set links in the WooCommerce content to the editor's link color.
          */
         public function enhanceCss(string $css, \MailPoet\Entities\NewsletterEntity $newsletter): string
         {

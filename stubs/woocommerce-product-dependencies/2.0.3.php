@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-product-dependencies 2.0.2.
+ * Generated stub declarations for woocommerce-product-dependencies 2.0.3.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -107,7 +107,7 @@ class WC_PD_Helpers
  * Plugin Name: WooCommerce Product Dependencies
  * Plugin URI: https://woocommerce.com/
  * Description: Restrict access to WooCommerce products, depending on the ownership and/or purchase of other, required products.
- * Version: 2.0.2
+ * Version: 2.0.3
  * Author: WooCommerce
  * Author URI: https://woocommerce.com/
  *
@@ -140,7 +140,7 @@ class WC_Product_Dependencies
     /**
      * Product Dependencies version.
      */
-    public $version = '2.0.2';
+    public $version = '2.0.3';
     /**
      * 'Ownership' dependency type code.
      */
@@ -326,7 +326,9 @@ class WC_Product_Dependencies
     {
     }
     /**
-     * Re-implementation of 'wc_customer_bought_product' with support for array input.
+     * Returns the subset of product IDs that a customer has bought.
+     *
+     * Uses 'wc_customer_bought_product', which supports both HPOS and legacy order storage.
      *
      * @since  1.2.0
      *
