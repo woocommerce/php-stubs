@@ -1328,6 +1328,13 @@
                 "generated_at": "2026-10-22T17:16:29Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "2.7.10": {
+                "source_zip_sha256": "18097ba2212bdb11b6096fd57c60f3ee5ce7ff601eb9e3ccddf4d26a81a5f8a5",
+                "stub_sha256": "9a3f2cfc1bcb2b099115e530a49812d9db3fd2e473d1292ee9d756b3b2e7a179",
+                "generated_at": "2026-11-11T07:31:34Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-shipping": {
