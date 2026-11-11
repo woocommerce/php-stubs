@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-box-office 1.6.7.
+ * Generated stub declarations for woocommerce-box-office 1.7.0.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -67,7 +67,7 @@ class WC_Box_Office_Assets
  * Gutenberg Blocks and WooCommerce.
  *
  * @class   WC_Box_Office_Blocks
- * @version 1.6.5
+ * @version 1.7.0
  */
 class WC_Box_Office_Blocks
 {
@@ -687,7 +687,7 @@ class WC_Box_Office_Logger
  * Handles tickets in orders.
  *
  * @class   WC_Box_Office_Order
- * @version 1.6.7
+ * @version 1.7.0
  */
 class WC_Box_Office_Order
 {
@@ -2043,7 +2043,7 @@ class WC_Box_Office_Ticket_Create_Admin
  * Renders the ticket fields form for a ticket product.
  *
  * @class   WC_Box_Office_Ticket_Form
- * @version 1.6.6
+ * @version 1.7.0
  */
 class WC_Box_Office_Ticket_Form
 {
@@ -2565,7 +2565,7 @@ class WC_Box_Office_Ticket_Shortcode
  * Class that represents a ticket.
  *
  * @class   WC_Box_Office_Ticket
- * @version 1.6.7
+ * @version 1.7.0
  */
 class WC_Box_Office_Ticket
 {
@@ -2963,7 +2963,7 @@ class WC_Box_Office_Updater
  * Box Office plugin controller.
  *
  * @class   WC_Box_Office
- * @version 1.6.5
+ * @version 1.7.0
  */
 class WC_Box_Office
 {
@@ -3076,6 +3076,14 @@ class WC_Box_Office
      * @return void
      */
     public function init()
+    {
+    }
+    /**
+     * Register the ticket flag on WooCommerce product REST responses.
+     *
+     * @return void
+     */
+    public function register_rest_fields()
     {
     }
     /**
@@ -3710,7 +3718,7 @@ function wcbo_sanitize_twitter_handle($twitter)
 function wcbo_update_110()
 {
 }
-\define('WOOCOMMERCE_BOX_OFFICE_VERSION', '1.6.7');
+\define('WOOCOMMERCE_BOX_OFFICE_VERSION', '1.7.0');
 /**
  * Initialize plugin.
  *

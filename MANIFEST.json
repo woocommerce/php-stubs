@@ -502,10 +502,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "1.6.7": {
-                "source_zip_sha256": "b9759e9e70b8b52567ecfc3c11d1eeaf7ec31689207bcddd08cf8a68e200c5c9",
-                "stub_sha256": "8b1973bc3abc99705df32126c212b405e5a40b4854024d7ea05b57fc23b7abc3",
-                "generated_at": "2026-11-09T03:48:33Z",
+            "1.7.0": {
+                "source_zip_sha256": "35d803c91ab5e4c9b0909caae68a372a4f169ca68db7dc45984bda42e9a10a6b",
+                "stub_sha256": "7478f576d4a58f6f950e26b4b4476c2a8e86c65311191f206daeec6384e40372",
+                "generated_at": "2026-11-11T08:33:11Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
