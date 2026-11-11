@@ -1134,13 +1134,6 @@
             }
         },
         "woocommerce-product-bundles": {
-            "7.0.0": {
-                "source_zip_sha256": "ea3711ffffaea01139ae82da94de7bff4d86a95aece9b79668bc913a7f5d0ef7",
-                "stub_sha256": "0c3f10f0ea5fbed3af5fe6dc29ec015940afd3784e6529fac3d0a365d4635d9f",
-                "generated_at": "2026-10-22T17:57:40Z",
-                "generator": "php-stubs/generator v0.9.0",
-                "frameworks": []
-            },
             "7.1.0": {
                 "source_zip_sha256": "a8ce3287fb44497985f0a77238d81e206ed94e79f12f95ccc08a8c25109896d9",
                 "stub_sha256": "eb8e52dde65cd80f1487f958eed81568c45c6387d020bb7096c8ebbe90acac6c",
@@ -1201,6 +1194,13 @@
                 "source_zip_sha256": "9b4ca8e8f97a858cb6490f6bb1e96da1ebd196edf90a0c4586ff0b0620690a07",
                 "stub_sha256": "cad2ef871a23b66228f43d0002ddd2048fb687b594b6f5055236fdb48926cf9b",
                 "generated_at": "2026-11-09T03:28:03Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "8.7.0": {
+                "source_zip_sha256": "5e5e320b40e16482a5661b2ae4869be59758a3295310a43b1ef0594bf55d6e8f",
+                "stub_sha256": "55a098d7cf8f920f72e0d8fa63cdcbb19d1c903cec5d7322baef57485a3bb987",
+                "generated_at": "2026-11-11T09:14:19Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
