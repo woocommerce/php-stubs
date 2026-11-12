@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-payments 11.2.1.
+ * Generated stub declarations for woocommerce-payments 11.3.0.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -178,7 +178,7 @@ namespace {
         }
         /**
          * Whether this notice exposes a snooze flow. Override to return false for
-         * notices that only support dismiss (e.g. the post-KYC notice).
+         * notices that only support dismiss.
          *
          * @return bool
          */
@@ -188,8 +188,7 @@ namespace {
         /**
          * Extra query args appended to every action URL (cta/dismiss/snooze) and
          * stripped from the redirect URL after the handler fires. Used by
-         * subclasses that need per-request context (e.g. the Post-KYC notice's
-         * `wcpay_stage`).
+         * subclasses that need per-request context.
          *
          * @return array<string, scalar>
          */
@@ -217,7 +216,7 @@ namespace {
         }
         /**
          * User meta key marking the impression Tracks event has fired. Stays a
-         * method because the post-KYC notice suffixes it per stage.
+         * method so a subclass can vary it per variant.
          *
          * @return string
          */
@@ -267,18 +266,10 @@ namespace {
         {
         }
         /**
-         * Default cache invalidator wired to external signals.
-         *
-         * @return void
-         */
-        public function invalidate_cache(): void
-        {
-        }
-        /**
          * Standard terminal-CTA flow: record the cta_clicked event, mark the
          * notice as dismissed for this user, then redirect to the destination.
-         * Subclasses with non-terminal CTAs (test-to-live's "flip mode" variant)
-         * should not call this — they record their own event and redirect directly.
+         * Subclasses with non-terminal CTAs should not call this; they record
+         * their own event and redirect directly.
          *
          * @param string $destination_url Where to send the user after the CTA.
          * @param array  $tracks_props    Properties attached to the cta_clicked event.
@@ -408,6 +399,14 @@ namespace {
          * @return void
          */
         public function init_hooks(): void
+        {
+        }
+        /**
+         * Keep old dependency handles resolvable without loading retired bundles.
+         *
+         * @since 11.3.0
+         */
+        public static function register_retired_notice_assets(): void
         {
         }
     }
@@ -752,280 +751,6 @@ namespace {
         }
     }
     /**
-     * Nudges merchants who have completed KYC but haven't yet taken their first
-     * live WooPayments sale. Three stages (7, 14, 30 days after KYC completion);
-     * each stage has its own dismissed/shown user_meta marker so a user who
-     * dismisses the day-7 reminder still sees day-14 and day-30. Notice window
-     * closes at day 60.
-     *
-     * No snooze flow — only dismiss + CTA (and dismiss is per-stage).
-     */
-    class WC_Payments_Post_Kyc_Activation_Notice extends \WC_Payments_Abstract_Admin_Notice
-    {
-        /**
-         * Days after KYC completion during which the notice may be shown. Past this
-         * window, the eligibility machinery short-circuits.
-         *
-         * @var int
-         */
-        const NOTICE_WINDOW_DAYS = 60;
-        /**
-         * Stage thresholds in days since KYC. The user_meta dismissed/shown keys
-         * are suffixed with the current stage so per-stage dismissals don't carry
-         * over to later reminders.
-         *
-         * @var int[]
-         */
-        const STAGES = [7, 14, 30];
-        /**
-         * User meta prefix; the full key is built by appending `{stage}_dismissed`
-         * or `{stage}_shown`.
-         *
-         * @var string
-         */
-        const USER_META_PREFIX = 'wcpay_post_kyc_activation_';
-        /**
-         * Eligibility transient key.
-         *
-         * @var string
-         */
-        const TRANSIENT_ELIGIBLE = 'wcpay_post_kyc_activation_eligible';
-        /**
-         * Adds the account-refresh cache invalidator on top of the base wiring.
-         *
-         * @return void
-         */
-        public function init_hooks(): void
-        {
-        }
-        /**
-         * Registers this notice's non-admin-context hooks.
-         *
-         * @return void
-         */
-        public function init_global_hooks(): void
-        {
-        }
-        /**
-         * Returns the current nudge stage (7, 14, or 30) based on days elapsed
-         * since KYC completion. Returns null if the KYC date isn't recorded, fewer
-         * than 7 days have passed, or the notice window has expired.
-         *
-         * @return int|null
-         */
-        public function get_current_stage(): ?int
-        {
-        }
-        /**
-         * Handles the CTA click. Validates the stage from $_GET, records a
-         * per-stage Tracks event, marks this stage dismissed, and redirects to
-         * the WC Admin Marketing Hub.
-         *
-         * @return void
-         */
-        public function handle_cta(): void
-        {
-        }
-        /**
-         * Persists the per-stage dismissal. Overrides the base because the meta
-         * key is stage-suffixed and the Tracks event needs the stage property.
-         *
-         * @return void
-         */
-        public function hide_notice(): void
-        {
-        }
-        /**
-         * Snake_case identifier.
-         *
-         * @return string
-         */
-        protected function get_slug(): string
-        {
-        }
-        /**
-         * Pin the eligibility transient key to the public TRANSIENT_ELIGIBLE
-         * constant so the onboarding service's cache invalidation and the base's
-         * cache lookup share one source of truth.
-         *
-         * @return array<string, string>
-         */
-        protected function naming_overrides(): array
-        {
-        }
-        /**
-         * Eligibility predicate.
-         *
-         * Conditions:
-         * - Account is connected and valid.
-         * - Not a test-drive account.
-         * - Payments are enabled.
-         * - Plugin is in live mode (not test, not dev).
-         * - KYC completion date has been recorded.
-         * - Merchant has no live WooPayments orders yet.
-         *
-         * @return bool
-         */
-        protected function compute_eligibility(): bool
-        {
-        }
-        /**
-         * Override: no snooze for this notice.
-         *
-         * @return bool
-         */
-        protected function supports_snooze(): bool
-        {
-        }
-        /**
-         * Override: short-circuit before the eligibility query when a live sale
-         * already exists or no nudge stage is currently active. Keeps the
-         * eligibility transient + order query from running for those branches.
-         *
-         * @return bool
-         */
-        protected function is_applicable(): bool
-        {
-        }
-        /**
-         * Override: dismissal is tracked per stage rather than via the shared
-         * dismissed meta key.
-         *
-         * @return bool
-         */
-        protected function is_dismissed(): bool
-        {
-        }
-        /**
-         * Override: stage-suffixed shown meta key. Returns the slug default when
-         * no stage is currently active so base-class internals stay well-defined.
-         *
-         * @return string
-         */
-        protected function shown_meta_key(): string
-        {
-        }
-        /**
-         * Override: thread the current stage through CTA / dismiss URLs.
-         *
-         * @return array<string, scalar>
-         */
-        protected function get_extra_action_query_args(): array
-        {
-        }
-        /**
-         * Override: thread the current stage into the React entrypoint's settings.
-         *
-         * @return array<string, mixed>
-         */
-        protected function get_extra_localize_data(): array
-        {
-        }
-        /**
-         * Override: attach the stage to the impression Tracks event.
-         *
-         * @return array<string, scalar>
-         */
-        protected function get_impression_tracks_props(): array
-        {
-        }
-        /**
-         * Builds the dismissed user_meta key for a specific stage.
-         *
-         * @param int $stage Stage day (7, 14, or 30).
-         * @return string
-         */
-        private function dismissed_meta_key_for_stage(int $stage): string
-        {
-        }
-        /**
-         * Reads the `wcpay_stage` value from $_GET. Returns null if absent or not a
-         * recognized stage.
-         *
-         * @return int|null
-         */
-        private function stage_from_request(): ?int
-        {
-        }
-    }
-    /**
-     * Nudges merchants who have been in test mode for at least 7 days and have
-     * processed at least one test WooPayments order toward going live. CTA either
-     * flips the mode flag (when a live Stripe account is already connected) or
-     * routes the merchant through the live-onboarding flow.
-     */
-    class WC_Payments_Test_To_Live_Notice extends \WC_Payments_Abstract_Admin_Notice
-    {
-        /**
-         * Number of days a merchant must have been in test mode before the nudge is shown.
-         *
-         * @var int
-         */
-        const DAYS_THRESHOLD = 7;
-        /**
-         * Eligibility transient key. Public so the onboarding service can drop the
-         * cache when test mode flips. Mirrors what eligibility_transient_key()
-         * derives from the slug — kept in sync via the override below so callers
-         * referencing the constant don't desync from the base's lookup.
-         *
-         * @var string
-         */
-        const TRANSIENT_ELIGIBLE = 'wcpay_test_to_live_eligible';
-        /**
-         * Handles the "Go live" CTA.
-         *
-         * Two paths:
-         *   - If a live Stripe account is already connected, flip the gateway and
-         *     onboarding test_mode flags off directly and redirect back to the
-         *     current page (the notice disappears because eligibility recomputes).
-         *   - Otherwise route to the live-onboarding flow with the appropriate
-         *     `from` / `source` query args.
-         *
-         * Does not call the base's `record_dismissal_and_redirect()` because the
-         * notice self-clears via the eligibility predicate rather than a per-user
-         * dismissed-meta flag.
-         *
-         * @return void
-         */
-        public function handle_cta(): void
-        {
-        }
-        /**
-         * Snake_case identifier.
-         *
-         * @return string
-         */
-        protected function get_slug(): string
-        {
-        }
-        /**
-         * Pin the eligibility transient key to the public TRANSIENT_ELIGIBLE
-         * constant so the onboarding service's sync and the base's cache lookup
-         * share one source of truth.
-         *
-         * @return array<string, string>
-         */
-        protected function naming_overrides(): array
-        {
-        }
-        /**
-         * Eligibility predicate.
-         *
-         * Conditions:
-         * - Account is connected and valid.
-         * - Account is not a test-drive account.
-         * - Payments are enabled.
-         * - Mode is test (and not dev).
-         * - Test mode has been enabled for at least DAYS_THRESHOLD days.
-         * - At least one test-mode WooPayments order has been completed or processed.
-         *
-         * @return bool
-         */
-        protected function compute_eligibility(): bool
-        {
-        }
-    }
-    /**
      * Class WC_Payments_Admin_Settings
      *
      * @package WooCommerce\Payments\Admin
@@ -1101,6 +826,14 @@ namespace {
          * @see self::maybe_show_test_account_notice()
          */
         public function maybe_show_sandbox_account_notice()
+        {
+        }
+        /**
+         * Outputs the development mode message shared by the test mode, test account and sandbox account notices.
+         *
+         * The same message is used on the other WooPayments pages, so keep it in sync with the `DevModeMessage` component.
+         */
+        private function print_dev_mode_notice_text()
         {
         }
         /**
@@ -1203,12 +936,6 @@ namespace {
          */
         private $order_service;
         /**
-         * WC_Payments_Incentives_Service instance to get information for incentives.
-         *
-         * @var WC_Payments_Incentives_Service
-         */
-        private $incentives_service;
-        /**
          * WC_Payments_PM_Promotions_Service instance to get information for payment method promotions.
          *
          * @var WC_Payments_PM_Promotions_Service
@@ -1250,12 +977,11 @@ namespace {
          * @param WC_Payments_Account               $account               Account instance.
          * @param WC_Payments_Onboarding_Service    $onboarding_service    Onboarding service instance.
          * @param WC_Payments_Order_Service         $order_service         Order service instance.
-         * @param WC_Payments_Incentives_Service    $incentives_service    Incentives service instance.
          * @param WC_Payments_PM_Promotions_Service $pm_promotions_service PM Promotions service instance.
          * @param WC_Payments_Fraud_Service         $fraud_service         Fraud service instance.
          * @param \WCPay\Database_Cache                    $database_cache        Database Cache instance.
          */
-        public function __construct(\WC_Payments_API_Client $payments_api_client, \WC_Payment_Gateway_WCPay $gateway, \WC_Payments_Account $account, \WC_Payments_Onboarding_Service $onboarding_service, \WC_Payments_Order_Service $order_service, \WC_Payments_Incentives_Service $incentives_service, \WC_Payments_PM_Promotions_Service $pm_promotions_service, \WC_Payments_Fraud_Service $fraud_service, \WCPay\Database_Cache $database_cache)
+        public function __construct(\WC_Payments_API_Client $payments_api_client, \WC_Payment_Gateway_WCPay $gateway, \WC_Payments_Account $account, \WC_Payments_Onboarding_Service $onboarding_service, \WC_Payments_Order_Service $order_service, \WC_Payments_PM_Promotions_Service $pm_promotions_service, \WC_Payments_Fraud_Service $fraud_service, \WCPay\Database_Cache $database_cache)
         {
         }
         /**
@@ -2065,6 +1791,60 @@ namespace {
          * @param WP_REST_Request $request Full data about the request.
          */
         private function get_documents_filters($request)
+        {
+        }
+    }
+    /**
+     * REST controller for the payments carrying an actionable early fraud warning.
+     *
+     * The Overview task reads this on mount rather than from the localized settings blob, so a
+     * warning resolved during the session stops being reported without a full page reload, and
+     * so the bounded order query behind it does not run on every wc-admin screen.
+     */
+    class WC_REST_Payments_Early_Fraud_Warnings_Controller extends \WC_Payments_REST_Controller
+    {
+        /**
+         * Endpoint path.
+         *
+         * @var string
+         */
+        protected $rest_base = 'payments/early_fraud_warnings';
+        /**
+         * Order service.
+         *
+         * @var WC_Payments_Order_Service
+         */
+        private $order_service;
+        /**
+         * Database cache.
+         *
+         * @var \WCPay\Database_Cache
+         */
+        private $database_cache;
+        /**
+         * Constructor.
+         *
+         * @param WC_Payments_API_Client    $api_client     WooCommerce Payments API client.
+         * @param WC_Payments_Order_Service $order_service  Order service.
+         * @param \WCPay\Database_Cache            $database_cache Database cache.
+         */
+        public function __construct(\WC_Payments_API_Client $api_client, \WC_Payments_Order_Service $order_service, \WCPay\Database_Cache $database_cache)
+        {
+        }
+        /**
+         * Configure REST API routes.
+         */
+        public function register_routes()
+        {
+        }
+        /**
+         * Retrieve the orders whose latest early fraud warning is still actionable.
+         *
+         * @param WP_REST_Request $_unused_request Full data about the request.
+         *
+         * @return WP_REST_Response
+         */
+        public function get_active_early_fraud_warnings($_unused_request)
         {
         }
     }
@@ -4069,6 +3849,18 @@ namespace WCPay {
          */
         const AUTHORIZATION_SUMMARY_KEY_TEST_MODE = 'wcpay_test_authorization_summary_cache';
         /**
+         * Cache key for orders with an actionable early fraud warning.
+         *
+         * @var string
+         */
+        const EARLY_FRAUD_WARNING_ORDERS_KEY = 'wcpay_early_fraud_warning_orders_cache';
+        /**
+         * Cache key for orders with an actionable early fraud warning, in test mode.
+         *
+         * @var string
+         */
+        const EARLY_FRAUD_WARNING_ORDERS_KEY_TEST_MODE = 'wcpay_test_early_fraud_warning_orders_cache';
+        /**
          * Cache key for eligible connect incentive data.
          */
         const CONNECT_INCENTIVE_KEY = 'wcpay_connect_incentive';
@@ -4083,7 +3875,7 @@ namespace WCPay {
          *
          * @var string[]
          */
-        const ALL_KEYS = [self::ACCOUNT_KEY, self::ADDRESS_AUTOCOMPLETE_JWT_KEY, self::ONBOARDING_FIELDS_DATA_KEY, self::BUSINESS_TYPES_KEY, self::FRAUD_SERVICES_KEY, self::RECOMMENDED_PAYMENT_METHODS, self::DISPUTE_STATUS_COUNTS_KEY, self::DISPUTE_STATUS_COUNTS_KEY_TEST_MODE, self::ACTIVE_DISPUTES_KEY, self::AUTHORIZATION_SUMMARY_KEY, self::AUTHORIZATION_SUMMARY_KEY_TEST_MODE, self::CONNECT_INCENTIVE_KEY, self::TRACKING_INFO_KEY];
+        const ALL_KEYS = [self::ACCOUNT_KEY, self::ADDRESS_AUTOCOMPLETE_JWT_KEY, self::ONBOARDING_FIELDS_DATA_KEY, self::BUSINESS_TYPES_KEY, self::FRAUD_SERVICES_KEY, self::RECOMMENDED_PAYMENT_METHODS, self::DISPUTE_STATUS_COUNTS_KEY, self::DISPUTE_STATUS_COUNTS_KEY_TEST_MODE, self::ACTIVE_DISPUTES_KEY, self::AUTHORIZATION_SUMMARY_KEY, self::AUTHORIZATION_SUMMARY_KEY_TEST_MODE, self::EARLY_FRAUD_WARNING_ORDERS_KEY, self::EARLY_FRAUD_WARNING_ORDERS_KEY_TEST_MODE, self::CONNECT_INCENTIVE_KEY, self::TRACKING_INFO_KEY];
         /**
          * Refresh disabled flag, controlling the behaviour of the get_or_add function.
          *
@@ -4195,6 +3987,15 @@ namespace WCPay {
         {
         }
         /**
+         * Delete the cached lists of orders with an actionable early fraud warning.
+         * This ensures both live and test mode lists are refreshed.
+         *
+         * @return void
+         */
+        public function delete_early_fraud_warning_caches()
+        {
+        }
+        /**
          * Validates the cache contents and, given the passed params and the current application state, determines whether the cache should be refreshed.
          * See get_or_add.
          *
@@ -4281,6 +4082,12 @@ namespace WCPay {
          * @type string
          */
         const SESSION_KEY_PROCESSING_ORDER = 'wcpay_processing_order';
+        /**
+         * Key name for saving the ID of the WC Session the processing order_id above was stored in.
+         *
+         * @type string
+         */
+        const SESSION_KEY_PROCESSING_ORDER_OWNER = 'wcpay_processing_order_session';
         /**
          * Flag to indicate that a previous order with the same cart content has already paid.
          *
@@ -5332,9 +5139,13 @@ namespace {
         /**
          * Returns whether this user is changing the payment method for a subscription.
          *
+         * @param WC_Order|WC_Subscription|int|null $order Optional. The order being processed, or its ID.
+         *                                                 When it is a subscription, the request is always a
+         *                                                 payment method change.
+         *
          * @return bool
          */
-        public function is_changing_payment_method_for_subscription()
+        public function is_changing_payment_method_for_subscription($order = \null)
         {
         }
         /**
@@ -5519,7 +5330,7 @@ namespace {
          *
          * For credit cards, returns "{title} ending in {last4}".
          * For Amazon Pay, returns "{title} ({redacted_email})".
-         * For Stripe Link, returns "{title} ({redacted_email})".
+         * For Link, returns "{title} ({redacted_email})".
          * For other tokens, returns the default title.
          *
          * @param WC_Payment_Token|null $token   The payment token.
@@ -5696,8 +5507,8 @@ namespace {
         /**
          * Override the payment method display for Link subscriptions in all contexts.
          *
-         * Stripe Link uses the card gateway (woocommerce_payments), so the gateway title is "Card".
-         * This replaces it with the Link token's display name (e.g. "Stripe Link (r***@r***.com)").
+         * Link uses the card gateway (woocommerce_payments), so the gateway title is "Card".
+         * This replaces it with the Link token's display name (e.g. "Link (r***@r***.com)").
          *
          * @param string          $payment_method_to_display Default payment method to display.
          * @param WC_Subscription $subscription              Subscription object.
@@ -5813,6 +5624,26 @@ namespace {
          * @return array The renewal order data with the data we don't want copied removed
          */
         public function remove_data_renewal_order($order_data)
+        {
+        }
+        /**
+         * Keeps a single payment's details out of anything Subscriptions copies from an order or subscription.
+         *
+         * A retried checkout would otherwise pass the earlier attempt's intent to every renewal.
+         *
+         * @param array $data The data Subscriptions is about to copy.
+         *
+         * @return array
+         */
+        public function remove_single_payment_data($data)
+        {
+        }
+        /**
+         * Meta keys tied to one payment, unlike the reusable payment method renewals need.
+         *
+         * @return string[]
+         */
+        private function get_single_payment_meta_keys(): array
         {
         }
         /**
@@ -5945,12 +5776,31 @@ namespace {
         const ACCOUNT_SETTINGS_MAPPING = ['account_statement_descriptor' => 'statement_descriptor', 'account_statement_descriptor_kanji' => 'statement_descriptor_kanji', 'account_statement_descriptor_kana' => 'statement_descriptor_kana', 'account_business_name' => 'business_name', 'account_business_url' => 'business_url', 'account_business_support_address' => 'business_support_address', 'account_business_support_email' => 'business_support_email', 'account_business_support_phone' => 'business_support_phone', 'account_branding_logo' => 'branding_logo', 'account_branding_icon' => 'branding_icon', 'account_branding_primary_color' => 'branding_primary_color', 'account_branding_secondary_color' => 'branding_secondary_color', 'account_communications_email' => 'communications_email', 'deposit_schedule_interval' => 'deposit_schedule_interval', 'deposit_schedule_weekly_anchor' => 'deposit_schedule_weekly_anchor', 'deposit_schedule_monthly_anchor' => 'deposit_schedule_monthly_anchor'];
         const UPDATE_SAVED_PAYMENT_METHOD = 'wcpay_update_saved_payment_method';
         /**
+         * The main gateway's form fields in English, without calling the translation functions.
+         *
+         * Used by get_main_gateway_form_fields() before `init`, when translations are not available
+         * yet. Keep this an exact English copy of get_main_gateway_translated_form_fields(); the two
+         * are compared by WC_Payment_Gateway_WCPay_Test::test_untranslated_form_fields_match_translated_definitions.
+         *
+         * @var array
+         */
+        private const MAIN_GATEWAY_UNTRANSLATED_FORM_FIELDS = ['account_statement_descriptor' => ['type' => 'account_statement_descriptor', 'title' => 'Customer bank statement', 'description' => 'Edit the way your store name appears on your customers’ bank statements (read more about requirements <a href="https://woocommerce.com/document/woopayments/customization-and-translation/bank-statement-descriptor/" target="_blank" rel="noopener noreferrer">here</a>).'], 'manual_capture' => ['title' => 'Manual capture', 'label' => 'Issue an authorization on checkout, and capture later.', 'type' => 'checkbox', 'description' => 'Charge must be captured within 7 days of authorization, otherwise the authorization and order will be canceled.', 'default' => 'no'], 'saved_cards' => ['title' => 'Saved cards', 'label' => 'Enable payment via saved cards', 'type' => 'checkbox', 'description' => 'If enabled, users will be able to pay with a saved card during checkout. Card details are saved on our platform, not on your store.', 'default' => 'yes', 'desc_tip' => \true], 'test_mode' => ['title' => 'Test mode', 'label' => 'Enable test mode', 'type' => 'checkbox', 'description' => 'Simulate transactions using test card numbers.', 'default' => 'no', 'desc_tip' => \true], 'enable_logging' => ['title' => 'Debug log', 'label' => 'When enabled debug notes will be added to the log.', 'type' => 'checkbox', 'description' => '', 'default' => 'no'], 'payment_request_details' => ['title' => 'Payment request buttons', 'type' => 'title', 'description' => ''], 'payment_request_button_type' => ['title' => 'Button type', 'type' => 'select', 'description' => 'Select the button type you would like to show.', 'default' => 'default', 'desc_tip' => \true, 'options' => ['default' => 'Only icon', 'buy' => 'Buy', 'donate' => 'Donate', 'book' => 'Book']], 'payment_request_button_theme' => ['title' => 'Button theme', 'type' => 'select', 'description' => 'Select the button theme you would like to show.', 'default' => 'dark', 'desc_tip' => \true, 'options' => ['dark' => 'Dark', 'light' => 'Light', 'light-outline' => 'Light-Outline']], 'payment_request_button_height' => ['title' => 'Button height', 'type' => 'text', 'description' => 'Enter the height you would like the button to be in pixels. Width will always be 100%.', 'default' => '44', 'desc_tip' => \true], 'payment_request_button_label' => ['title' => 'Custom button label', 'type' => 'text', 'description' => 'Enter the custom text you would like the button to have.', 'default' => 'Buy now', 'desc_tip' => \true], 'payment_request_button_locations' => ['title' => 'Button locations', 'type' => 'multiselect', 'description' => 'Select where you would like to display the button.', 'default' => ['product', 'cart', 'checkout'], 'class' => 'wc-enhanced-select', 'desc_tip' => \true, 'options' => ['product' => 'Product', 'cart' => 'Cart', 'checkout' => 'Checkout'], 'custom_attributes' => ['data-placeholder' => 'Select pages']], 'upe_enabled_payment_method_ids' => ['title' => 'Payments accepted on checkout', 'type' => 'multiselect', 'default' => ['card'], 'options' => []], 'payment_request_button_size' => ['title' => 'Size of the button displayed for Express Checkouts', 'type' => 'select', 'description' => 'Select the size of the button.', 'default' => 'medium', 'desc_tip' => \true, 'options' => ['small' => 'Small', 'medium' => 'Medium', 'large' => 'Large']], 'platform_checkout_custom_message' => ['default' => 'By placing this order, you agree to our [terms] and understand our [privacy_policy].'], 'express_checkout_product_methods' => ['title' => 'Express checkout methods on product page', 'type' => 'multiselect', 'default' => ['payment_request', 'woopay', 'amazon_pay'], 'options' => ['payment_request' => 'Apple Pay / Google Pay', 'woopay' => 'WooPay', 'amazon_pay' => 'Amazon Pay', 'link' => 'Link']], 'express_checkout_cart_methods' => ['title' => 'Express checkout methods on cart page', 'type' => 'multiselect', 'default' => ['payment_request', 'woopay', 'amazon_pay'], 'options' => ['payment_request' => 'Apple Pay / Google Pay', 'woopay' => 'WooPay', 'amazon_pay' => 'Amazon Pay', 'link' => 'Link']], 'express_checkout_checkout_methods' => ['title' => 'Express checkout methods on checkout page', 'type' => 'multiselect', 'default' => ['payment_request', 'woopay', 'amazon_pay'], 'options' => ['payment_request' => 'Apple Pay / Google Pay', 'woopay' => 'WooPay', 'amazon_pay' => 'Amazon Pay', 'link' => 'Link']]];
+        /**
          * Set a large limit argument for retrieving user tokens.
          *
          * @type int
          */
         const USER_FORMATTED_TOKENS_LIMIT = 100;
         const PROCESS_REDIRECT_ORDER_MISMATCH_ERROR_CODE = 'upe_process_redirect_order_id_mismatched';
+        const PROCESS_REDIRECT_RETRYABLE_DECLINE_ERROR_CODE = 'upe_process_redirect_retryable_decline';
+        /**
+         * Payment provider error code and decline code combinations after which the customer
+         * can retry the payment with a different payment method, so the order is left in
+         * pending status.
+         *
+         * @type array<string, string[]>
+         */
+        const RETRYABLE_DECLINE_CODES = ['payment_intent_authentication_failure' => ['klarna_payment_declined'], 'payment_intent_payment_attempt_failed' => ['klarna_payment_declined'], 'payment_method_provider_decline' => ['partner_high_risk_customer', 'partner_generic_decline']];
         /**
          * Client for making requests to the WooCommerce Payments API
          *
@@ -6093,6 +5943,33 @@ namespace {
         {
         }
         /**
+         * Returns the form fields which only the main gateway registers.
+         *
+         * Called during the gateway's constructor on `plugins_loaded`, which is before translations
+         * are available: WC_Settings_API::init_settings() reads the field defaults when the settings
+         * row does not exist yet (a fresh install), and get_option() does the same for any single
+         * setting missing from an existing row. Building the labels that early triggers the
+         * `_load_textdomain_just_in_time` notice, so until `init` has run the fields are returned
+         * in English. Nothing reads their text before then: the settings screen is rendered by the
+         * React app, and the REST controllers which expose these fields run on `rest_api_init`.
+         *
+         * @return array
+         */
+        private function get_main_gateway_form_fields()
+        {
+        }
+        /**
+         * Returns the main gateway's form fields with their translated text.
+         *
+         * Only called once `init` has run, so the translations are available. Any change here must
+         * be copied, in English, to MAIN_GATEWAY_UNTRANSLATED_FORM_FIELDS.
+         *
+         * @return array
+         */
+        private function get_main_gateway_translated_form_fields()
+        {
+        }
+        /**
          * Initializes this class's WP hooks.
          *
          * @return void
@@ -6160,6 +6037,14 @@ namespace {
          * @return mixed
          */
         public function remove_all_actions_on_preflight_check($response, $handler, $request)
+        {
+        }
+        /**
+         * Whether WooPay authenticated the current request with an attestation or signature.
+         *
+         * @return bool True if the request carries valid WooPay proof.
+         */
+        private function is_request_composed_by_woopay(): bool
         {
         }
         /**
@@ -6484,6 +6369,25 @@ namespace {
         {
         }
         /**
+         * Redirects to the given URL and exits.
+         *
+         * @param string $url The URL to redirect to.
+         */
+        protected function redirect_and_exit(string $url): void
+        {
+        }
+        /**
+         * Whether a redirect payment error is a retryable decline, i.e. the payment provider
+         * declined the payment but the customer can pay with a different payment method.
+         *
+         * @param array $error The last payment/setup error of the intent.
+         *
+         * @return bool
+         */
+        protected function is_retryable_decline(array $error): bool
+        {
+        }
+        /**
          * Mandate must be shown and acknowledged by customer before deferred intent UPE payment can be processed.
          * This applies to SEPA and Link payment methods.
          * https://stripe.com/docs/payments/finalize-payments-on-the-server
@@ -6752,6 +6656,17 @@ namespace {
          * @return \WCPay\Constants\Payment_Capture_Type MANUAL or AUTOMATIC depending on the settings.
          */
         protected function get_capture_type()
+        {
+        }
+        /**
+         * Checks whether payments are authorized at checkout and captured later.
+         *
+         * The setting applies to the whole store, but only the card gateway saves it. Every other
+         * payment method's gateway has its own settings row, so they all read it from the card gateway.
+         *
+         * @return bool
+         */
+        private function is_manual_capture_enabled(): bool
         {
         }
         /**
@@ -7131,6 +7046,29 @@ namespace {
          * @return string The nonce action.
          */
         private function get_update_order_status_nonce_action(int $order_id): string
+        {
+        }
+        /**
+         * Builds the nonce action for the UPE redirect return.
+         *
+         * @param int $order_id The order ID.
+         * @return string The nonce action.
+         */
+        private function get_process_redirect_nonce_action(int $order_id): string
+        {
+        }
+        /**
+         * Rejects an intent created for a different order.
+         *
+         * An order can end up storing another order's intent (e.g. copied by Subscriptions),
+         * so the intent's own metadata decides which order it pays. See WOOPMNT-5356.
+         *
+         * @param WC_Payments_API_Abstract_Intention $intent The intent fetched for the order.
+         * @param WC_Order                           $order  The order being updated.
+         *
+         * @throws \WCPay\Exceptions\Intent_Authentication_Exception When the intent was created for another order.
+         */
+        private function ensure_intent_belongs_to_order($intent, \WC_Order $order): void
         {
         }
         /**
@@ -7595,6 +7533,18 @@ namespace {
         {
         }
         /**
+         * Checks whether an API error reports the Stripe customer itself as missing.
+         *
+         * `resource_missing` also covers other objects, so only the object named after "No such" counts.
+         *
+         * @param \WCPay\Exceptions\API_Exception $e The exception thrown by the intent request.
+         *
+         * @return bool True when the missing resource is the customer.
+         */
+        private function is_missing_customer_error(\WCPay\Exceptions\API_Exception $e): bool
+        {
+        }
+        /**
          * Modifies the create intent parameters when processing a payment.
          *
          * If the selected Stripe payment type is AFTERPAY, it updates the shipping data in the request.
@@ -7616,27 +7566,11 @@ namespace {
          * POST flag that reflects the intent of the client request. When that flag is present
          * we trust it; otherwise we fall back to the trait's live `$_GET`-based detection.
          *
-         * @param bool|null $is_changing_payment Explicit flag from the current request, or null to rely on the trait.
+         * @param bool|null     $is_changing_payment Explicit flag from the current request, or null to rely on the trait.
+         * @param WC_Order|null $order               Optional. The order being processed; a subscription is always a card change.
          * @return bool
          */
-        private function is_changing_payment_method_for_subscription_from_request(?bool $is_changing_payment = \null): bool
-        {
-        }
-        /**
-         * Runs a callback with the `woocommerce_payment_complete_reduce_order_stock` filter forced to false.
-         *
-         * Payment-method-change flows must never decrement stock: the order was already paid once
-         * and the customer is only updating the stored payment credential. The status transition
-         * inside WooCommerce core would otherwise trigger `wc_maybe_reduce_stock_levels()` via
-         * `woocommerce_payment_complete` and `woocommerce_order_status_*` hooks.
-         *
-         * The filter is added at `PHP_INT_MAX - 1` so it wins over any upstream filter that
-         * might re-enable reduction, and we guard against double-adding to stay reentrant.
-         *
-         * @param callable $callback Callback to execute with stock reduction suppressed.
-         * @return mixed The callback's return value.
-         */
-        private function with_stock_reduction_disabled(callable $callback)
+        private function is_changing_payment_method_for_subscription_from_request(?bool $is_changing_payment = \null, $order = \null): bool
         {
         }
     }
@@ -7722,7 +7656,7 @@ namespace {
         }
     }
     /**
-     * WooCommerce Stripe Link Payment Token.
+     * WooCommerce Link Payment Token.
      *
      * Representation of a payment token for Link.
      *
@@ -7955,7 +7889,17 @@ namespace {
         const NOX_PROFILE_OPTION_KEY = 'woocommerce_woopayments_nox_profile';
         const NOX_ONBOARDING_LOCKED_KEY = 'woocommerce_woopayments_nox_onboarding_locked';
         const STORE_SETUP_SYNC_ACTION = 'wcpay_store_setup_sync';
+        /**
+         * Historic reminder timestamp.
+         *
+         * @deprecated 11.3.0 No longer written.
+         */
         const KYC_COMPLETION_DATE_OPTION = 'wcpay_kyc_completion_date';
+        /**
+         * Historic reminder timestamp.
+         *
+         * @deprecated 11.3.0 No longer written.
+         */
         const KYC_SUBMITTED_DATE_OPTION = 'wcpay_kyc_submitted_date';
         /**
          * Client for making requests to the WooCommerce Payments API
@@ -8011,6 +7955,12 @@ namespace {
          * Wipes the account data option, forcing to re-fetch the account data from WP.com.
          */
         public function clear_cache()
+        {
+        }
+        /**
+         * Re-fetches the account data from WP.com, keeping the saved data if the fetch fails.
+         */
+        public function refresh_cache(): void
         {
         }
         /**
@@ -8747,16 +8697,10 @@ namespace {
         {
         }
         /**
-         * Records the date a merchant's account first becomes KYC-approved and payments-enabled on live mode.
-         * Stored once and never overwritten so the Post-KYC activation nudge clock starts from the real approval date.
+         * Compatibility callback for the retired activation reminder clock.
          *
-         * For post-launch merchants we have a `wcpay_kyc_submitted_date` set at finalize_*_connection,
-         * which means the current observation is a fresh KYC and `time()` is accurate.
-         * For pre-existing merchants we fall back to `account['created']` (Stripe's account creation timestamp)
-         * so the nudge clock reflects roughly when KYC happened — imprecise but the best signal we have.
-         *
-         * @param array|bool $account The account data passed by woocommerce_payments_account_refreshed.
-         *
+         * @deprecated 11.3.0 KYC reminder timestamps are no longer recorded.
+         * @param array|bool $account Legacy account data.
          * @return void
          */
         public function maybe_record_kyc_completion_date($account): void
@@ -9978,6 +9922,10 @@ namespace {
          */
         const CUSTOMER_ID_SESSION_KEY = 'wcpay_customer_id';
         /**
+         * Key used to store the ID of the WooCommerce Session which the customer id above was stored in.
+         */
+        const CUSTOMER_ID_SESSION_OWNER_KEY = 'wcpay_customer_id_session';
+        /**
          * Client for making requests to the WooCommerce Payments API
          *
          * @var WC_Payments_API_Client
@@ -10139,6 +10087,16 @@ namespace {
         {
         }
         /**
+         * Returns the customer ID stored in the current session for a shopper who isn't logged in.
+         *
+         * The customer ID is only used in the session that stored it.
+         *
+         * @return string|null The customer ID, or null if there's none or it was stored in another session.
+         */
+        private function get_customer_id_from_session(): ?string
+        {
+        }
+        /**
          * Returns the name of the customer option meta, taking test mode into account.
          *
          * @return string The customer ID option name.
@@ -10182,6 +10140,19 @@ namespace {
          * @param int $user_id The WordPress user ID.
          */
         public function add_customer_id_to_user($user_id)
+        {
+        }
+        /**
+         * Checks whether a customer ID is already stored on a user other than the given one.
+         *
+         * A customer ID from the session is only added to a new account when no other account has it.
+         *
+         * @param string $customer_id The WooCommerce Payments customer ID.
+         * @param int    $user_id     The WordPress user ID to leave out of the check.
+         *
+         * @return bool True if another user has the customer ID.
+         */
+        private function is_customer_id_bound_to_another_user(string $customer_id, int $user_id): bool
         {
         }
         /**
@@ -10629,6 +10600,7 @@ namespace {
         /**
          * Checks whether the Fraud and Risk Tools welcome tour was dismissed.
          *
+         * @deprecated 11.3.0 The fraud protection welcome tour has been removed.
          * @return bool
          */
         public static function is_fraud_protection_welcome_tour_dismissed(): bool
@@ -10940,220 +10912,6 @@ namespace {
         {
         }
     }
-    /**
-     * Class handling WooPayments incentives related business logic.
-     */
-    class WC_Payments_Incentives_Service
-    {
-        const PREFIX = 'woocommerce_admin_pes_incentive_';
-        /**
-         * The option name used to store whether the store had WooPayments in use.
-         *
-         * We use the same option key as the WC core suggestion incentives.
-         *
-         * @see \Automattic\WooCommerce\Internal\Admin\Suggestions\Incentives\WooPayments
-         */
-        const STORE_HAD_WOOPAYMENTS_OPTION_NAME = self::PREFIX . 'woopayments_store_had_woopayments';
-        /**
-         * The option name used to store the logic version that determined the store had WooPayments value.
-         *
-         * We use the same option key as the WC core suggestion incentives.
-         *
-         * @see \Automattic\WooCommerce\Internal\Admin\Suggestions\Incentives\WooPayments
-         */
-        const STORE_HAD_WOOPAYMENTS_VERSION_OPTION_NAME = self::STORE_HAD_WOOPAYMENTS_OPTION_NAME . '_version';
-        /**
-         * The version of the logic used to determine if the store had WooPayments in use.
-         *
-         * The determined value is stored long-term (see `has_wcpay()`), and WooCommerce core
-         * stores its own determination under the very same option name. Persisting the version
-         * alongside the value lets us tell a value determined by the current logic from one
-         * determined by an earlier (or by WC core's, potentially older) logic, so a stale
-         * positive gets re-determined instead of being trusted forever.
-         *
-         * Bump this whenever the determination logic gets stricter. Keep it in sync with the
-         * WC core copy of this logic.
-         *
-         * @var int
-         */
-        private const STORE_HAD_WOOPAYMENTS_LOGIC_VERSION = 2;
-        /**
-         * The transient name for incentives cache.
-         *
-         * @var string
-         */
-        private $cache_transient_name;
-        /**
-         * The transient name used to store the value for if store has orders.
-         *
-         * @var string
-         */
-        private $store_has_orders_transient_name;
-        /**
-         * The option name used to store the value for if store had WooPayments in use.
-         *
-         * @var string
-         */
-        private $store_had_woopayments_option_name;
-        /**
-         * The option name used to store the logic version that determined the store had WooPayments value.
-         *
-         * @var string
-         */
-        private $store_had_woopayments_version_option_name;
-        /**
-         * The memoized incentives to avoid fetching multiple times during a request.
-         *
-         * @var array|null
-         */
-        private $incentives_memo = \null;
-        /**
-         * Cache util for managing onboarding data.
-         *
-         * @var \WCPay\Database_Cache
-         */
-        private $database_cache;
-        /**
-         * Class constructor
-         *
-         * @param \WCPay\Database_Cache $database_cache      Database cache util.
-         */
-        public function __construct(\WCPay\Database_Cache $database_cache)
-        {
-        }
-        /**
-         * Initialise class hooks.
-         *
-         * @return void
-         */
-        public function init_hooks()
-        {
-        }
-        /**
-         * Add badge to payments menu if there is an eligible incentive.
-         *
-         * @return void
-         */
-        public function add_payments_menu_badge(): void
-        {
-        }
-        /**
-         * Adds allowed promo notes from eligible incentive.
-         *
-         * @param array $promo_notes Current allowed promo notes.
-         * @return array Updated allowed promo notes.
-         */
-        public function allowed_promo_notes($promo_notes = []): array
-        {
-        }
-        /**
-         * Adds the WooPayments incentive badge to the onboarding task.
-         *
-         * @param string $badge Current badge.
-         *
-         * @return string
-         */
-        public function onboarding_task_badge(string $badge): string
-        {
-        }
-        /**
-         * Filter the onboarding task additional data to add the WooPayments incentive data to it.
-         *
-         * @param ?array $additional_data The current task additional data.
-         *
-         * @return ?array The filtered task additional data.
-         */
-        public function onboarding_task_additional_data(?array $additional_data): ?array
-        {
-        }
-        /**
-         * Clear the incentives cache.
-         */
-        public function clear_cache()
-        {
-        }
-        /**
-         * Reset the memoized incentives.
-         *
-         * This is useful for testing purposes.
-         */
-        public function reset_memo()
-        {
-        }
-        /**
-         * Get an eligible 'connect_page' type incentive, if available.
-         *
-         * @return array|null The incentive details or null if there is no eligible incentive.
-         */
-        public function get_connect_incentive(): ?array
-        {
-        }
-        /**
-         * Fetches and caches eligible incentives from the WooPayments API.
-         *
-         * @param string $country_code The business location country code to get incentives for.
-         *
-         * @return array List of eligible incentives.
-         */
-        private function get_incentives(string $country_code): array
-        {
-        }
-        /**
-         * Check whether the incentive data is valid.
-         * Expects an array with at least `id`, `description`, and `tc_url` keys.
-         *
-         * @param mixed $incentive_data The incentive data.
-         *
-         * @return bool Whether the incentive data is valid.
-         */
-        private function validate_incentive($incentive_data): bool
-        {
-        }
-        /**
-         * Check if WooPayments payment gateway was active and set up at some point,
-         * or there are live-mode orders processed with it, at some moment.
-         *
-         * @return boolean Whether the store has WooPayments.
-         */
-        private function has_wcpay(): bool
-        {
-        }
-        /**
-         * Check if there is meaningful live account data in the WooPayments account cache.
-         *
-         * Sandbox accounts don't count: a test-drive account is a trial of WooPayments,
-         * not actual use of it. This mirrors how we decide whether an account belongs to
-         * a genuine live merchant.
-         *
-         * @see WC_Payments_Account::maybe_record_kyc_completion_date()
-         *
-         * @return boolean
-         */
-        private function has_wcpay_account_data(): bool
-        {
-        }
-        /**
-         * Check if the store has any paid orders.
-         *
-         * Currently, we look at the past 90 days and only consider orders
-         * with status `wc-completed`, `wc-processing`, or `wc-refunded`.
-         *
-         * @return boolean Whether the store has any paid orders.
-         */
-        private function has_orders(): bool
-        {
-        }
-        /**
-         * Generate a hash from the store context data.
-         *
-         * @param array $context The store context data.
-         *
-         * @return string The context hash.
-         */
-        private function generate_context_hash(array $context): string
-        {
-        }
-    }
 }
 namespace WCPay\MultiCurrency\Interfaces {
     interface MultiCurrencyLocalizationInterface
@@ -11247,9 +11005,22 @@ namespace {
     class WC_Payments_Onboarding_Service
     {
         const TEST_MODE_OPTION = 'wcpay_onboarding_test_mode';
+        /**
+         * Historic reminder timestamp.
+         *
+         * @deprecated 11.3.0 No longer written.
+         */
         const TEST_MODE_ENABLED_DATE_OPTION = 'wcpay_test_mode_enabled_date';
         const ONBOARDING_CONNECTION_SUCCESS_MODAL_OPTION = 'wcpay_connection_success_modal_dismissed';
         const ONBOARDING_INIT_IN_PROGRESS_TRANSIENT = 'wcpay_onboarding_init_in_progress';
+        /**
+         * The WooCommerce core options that store whether the store had WooPayments in use,
+         * for incentive eligibility.
+         *
+         * @see \Automattic\WooCommerce\Internal\Admin\Suggestions\Incentives\WooPayments
+         */
+        private const STORE_HAD_WOOPAYMENTS_OPTION = 'woocommerce_admin_pes_incentive_woopayments_store_had_woopayments';
+        private const STORE_HAD_WOOPAYMENTS_VERSION_OPTION = 'woocommerce_admin_pes_incentive_woopayments_store_had_woopayments_version';
         // Onboarding flow sources.
         // We use these to identify the originating place for the current onboarding flow.
         // This should be very sticky as opposed to the `from` value which is meant to represent the immediately previous step.
@@ -11391,7 +11162,9 @@ namespace {
          *                                  indicating whether the capability should be requested when the account is created
          *                                  and enabled in the settings.
          * @param string|null $explicit_mode Optional. The user's explicit mode selection ('live' or 'test').
-         *                                   When provided, overrides the auto-detected mode (unless dev mode is active).
+         *                                   Used only before an account is connected, where it overrides the
+         *                                   environment auto-detection (except in dev mode). Ignored in dev mode or
+         *                                   once an account is connected, where the store keeps its onboarded mode.
          *
          * @return array Session data.
          *
@@ -11631,12 +11404,11 @@ namespace {
         {
         }
         /**
-         * Hook handler for `update_option_woocommerce_<gateway_id>_settings`. Keeps
-         * the test-to-live nudge's bookkeeping in sync when the gateway's
-         * `test_mode` value flips.
+         * Compatibility callback for the retired test-to-live notice timer.
          *
-         * @param mixed $old_value Previous gateway settings array, or '' on first save.
-         * @param mixed $new_value New gateway settings array.
+         * @deprecated 11.3.0 Notice bookkeeping is no longer maintained.
+         * @param mixed $old_value Previous gateway settings.
+         * @param mixed $new_value New gateway settings.
          * @return void
          */
         public function maybe_handle_gateway_test_mode_toggle($old_value, $new_value): void
@@ -11769,17 +11541,6 @@ namespace {
         private function tracks_event(string $name, array $properties = [])
         {
         }
-        /**
-         * Maintains notice state that depends on test mode: sets/clears
-         * TEST_MODE_ENABLED_DATE_OPTION (test-to-live nudge clock) and drops the
-         * test-to-live and post-KYC eligibility transients.
-         *
-         * @param bool $test_mode True if test mode is being enabled, false if disabled.
-         * @return void
-         */
-        private static function sync_notice_state(bool $test_mode): void
-        {
-        }
     }
     /**
      * Class handling order functionality.
@@ -11806,6 +11567,12 @@ namespace {
          * @const string
          */
         const PAID_INTENT_ID_SESSION_KEY = 'wcpay_paid_intent_id';
+        /**
+         * Key used to store the ID of the WooCommerce session the paid intent ID above was stored in.
+         *
+         * @const string
+         */
+        const PAID_INTENT_ID_SESSION_OWNER_KEY = 'wcpay_paid_intent_id_session';
         /**
          * Meta key used to store payment method Id.
          *
@@ -11840,11 +11607,31 @@ namespace {
          */
         const CHARGE_RISK_LEVEL_META_KEY = '_charge_risk_level';
         /**
+         * Maximum length of the payment provider's error message in an order note.
+         *
+         * @const int
+         */
+        private const MAX_PROVIDER_ERROR_LENGTH = 1000;
+        /**
          * Meta key used to store customer Id.
          *
          * @const string
          */
         const CUSTOMER_ID_META_KEY = '_stripe_customer_id';
+        /**
+         * Meta key holding the Unix time at which another gateway last took the order over from a WooPayments
+         * attempt, whose payment details were removed then. Webhooks compare an intent's creation time against it.
+         *
+         * @const string
+         */
+        const PAYMENT_DETAILS_REMOVED_META_KEY = '_wcpay_payment_details_removed';
+        /**
+         * Meta key listing the intents of WooPayments attempts whose payment details were removed because another
+         * gateway took the order over. Webhooks for these intents leave the order alone.
+         *
+         * @const string
+         */
+        const SUPERSEDED_INTENT_IDS_META_KEY = '_wcpay_superseded_intent_ids';
         /**
          * Meta key used to store WCPay fraud meta box type.
          *
@@ -11981,11 +11768,32 @@ namespace {
          */
         const WCPAY_EARLY_FRAUD_WARNING_META_KEY = '_wcpay_early_fraud_warning';
         /**
+         * Meta key indexing orders whose stored early fraud warning is still actionable.
+         *
+         * Present only while actionable, so the bounded warning query can filter on it: the
+         * warning itself is a serialized array MySQL cannot read, and its row is never removed
+         * (the order screen keeps showing resolved warnings), so without this key resolved rows
+         * would hold window slots forever and hide older still-actionable ones.
+         *
+         * The value is the warning's Unix `created` timestamp, so `wc_get_orders` can sort by
+         * when the warning arrived rather than when the order was placed.
+         *
+         * @const string
+         */
+        const WCPAY_EARLY_FRAUD_WARNING_ACTIONABLE_META_KEY = '_wcpay_early_fraud_warning_actionable';
+        /**
          * Client for making requests to the WooCommerce Payments API
          *
          * @var WC_Payments_API_Client
          */
         protected $api_client;
+        /**
+         * Earlier WooPayments attempts whose removal finishes once the request ends, by order ID: the removed
+         * intent, and whether it is still waiting for 3DS and must be cancelled.
+         *
+         * @var array<int, array{intent_id: string, cancel: bool}>
+         */
+        private $earlier_attempts_to_finish = [];
         /**
          * WC_Payments_Order_Service constructor.
          *
@@ -12047,6 +11855,8 @@ namespace {
          * required (it excludes completed test-mode orders), so live orders created before that
          * meta existed aren't detected.
          *
+         * @deprecated 11.3.0 Its only callers were the retired activation notice and reminder emails.
+         *
          * @return bool
          */
         public function has_live_sale(): bool
@@ -12086,6 +11896,47 @@ namespace {
          * @return void
          */
         public function mark_payment_failed($order, $intent_id, $intent_status, $charge_id, $message = '')
+        {
+        }
+        /**
+         * Updates an order to failed status after the payment provider declined the payment,
+         * adding a note with the provider's decline details.
+         *
+         * The `payment_intent.payment_failed` webhook adds the same note for BNPL payment methods
+         * without changing the order status, so an existing note does not stop the status change.
+         *
+         * @param WC_Order    $order         Order object.
+         * @param string      $intent_id     The ID of the intent associated with this order.
+         * @param string|null $intent_status The status of the intent related to this order.
+         * @param string|null $charge_id     The charge ID related to the intent/order.
+         * @param array       $error         The payment provider's error.
+         *
+         * @return void
+         */
+        public function mark_payment_declined($order, $intent_id, $intent_status, $charge_id, array $error): void
+        {
+        }
+        /**
+         * Get content for the payment failure order note.
+         *
+         * @param WC_Order $order     Order object.
+         * @param string   $intent_id The ID of the intent associated with this order.
+         * @param string   $charge_id The charge ID related to the intent/order.
+         * @param string   $message   Optional message to add to the note.
+         *
+         * @return string Note content.
+         */
+        public function get_payment_failure_note($order, $intent_id, $charge_id, $message = '')
+        {
+        }
+        /**
+         * Gets the payment provider's decline details for a failure note.
+         *
+         * @param array $error The payment provider's error.
+         *
+         * @return string The formatted decline message.
+         */
+        public function get_provider_decline_message(array $error): string
         {
         }
         /**
@@ -12376,6 +12227,93 @@ namespace {
         {
         }
         /**
+         * Removes the payment details of an earlier WooPayments attempt from an order paid with another gateway.
+         *
+         * WooCommerce can reuse a pending or failed order at checkout, which keeps what an earlier WooPayments
+         * attempt stored on it. Every attempt stores its mode with its details and this cleanup removes it, so a
+         * mode means an attempt since the last cleanup. Other gateways, such as WooCommerce Stripe, store
+         * `_stripe_customer_id` too, and never the mode, so what they store stays.
+         *
+         * @param int|WC_Order $order The order, or its ID.
+         *
+         * @return void
+         */
+        public function maybe_remove_payment_details_for_other_gateway($order): void
+        {
+        }
+        /**
+         * Adds an order note whose message names a WooPayments payment in its `<code>%1$s</code>` placeholder.
+         *
+         * @param WC_Order $order     The order.
+         * @param string   $message   The translated message, with the `<code>` tag around `%1$s`.
+         * @param string   $intent_id The payment to name.
+         *
+         * @return void
+         */
+        private function add_note_naming_intent(\WC_Order $order, string $message, string $intent_id): void
+        {
+        }
+        /**
+         * Whether an intent belongs to a WooPayments attempt from before another gateway took the order over.
+         *
+         * Webhooks find the order through the intent's metadata rather than the intent on the order. An intent
+         * the cleanup removed is named on the order, which is exact. An older attempt the order no longer named
+         * at the takeover is told apart by its creation time against the takeover time, which compares Stripe's
+         * clock with the store's, so it can miss an attempt started within the clock difference of the takeover.
+         * That comparison stops once a new WooPayments attempt writes the mode back: a store clock ahead of
+         * Stripe's would otherwise make a retry seconds after a failed takeover look superseded, and for a method
+         * that pays later the skipped webhook is what completes the order.
+         *
+         * @param WC_Order $order             The order.
+         * @param string   $intent_id         The intent.
+         * @param int      $intent_created_at When the intent was created, as a Unix time; 0 when unknown.
+         *
+         * @return bool
+         */
+        public function is_intent_from_superseded_attempt(\WC_Order $order, string $intent_id, int $intent_created_at): bool
+        {
+        }
+        /**
+         * Finishes removing earlier WooPayments attempts from orders another gateway took over in this request.
+         *
+         * Runs on `shutdown`, once the checkout has saved the order: clears each attempt's transaction id and
+         * cancels an attempt still waiting for 3DS. Each attempt is handled once. An uncaught error is fatal on
+         * `shutdown`, so both steps catch every throwable, and a failed clear doesn't stop the cancel.
+         *
+         * @internal
+         *
+         * @return void
+         */
+        public function finish_removing_earlier_attempts(): void
+        {
+        }
+        /**
+         * Clears the transaction id of an order when it is the intent of an earlier WooPayments attempt.
+         *
+         * The capture and cancel actions on the authorizations screen act on the transaction id. A transaction id
+         * another gateway set stays.
+         *
+         * @param WC_Order $order     The order.
+         * @param string   $intent_id The intent of the earlier attempt.
+         *
+         * @return void
+         */
+        private function clear_transaction_id_of_earlier_attempt(\WC_Order $order, string $intent_id): void
+        {
+        }
+        /**
+         * Cancels the intent of an earlier WooPayments attempt on an order another gateway took over, and notes
+         * whether it worked.
+         *
+         * @param WC_Order $order     The order.
+         * @param string   $intent_id The intent of the earlier attempt.
+         *
+         * @return void
+         */
+        private function cancel_intent_of_earlier_attempt(\WC_Order $order, string $intent_id): void
+        {
+        }
+        /**
          * Get the payment metadata for customer id.
          *
          * @param  mixed $order The order Id or order object.
@@ -12560,6 +12498,39 @@ namespace {
         {
         }
         /**
+         * Returns orders whose latest early fraud warning is still actionable.
+         *
+         * Inspects the $limit most recent actionable warnings by warning date, so
+         * the result is a lower bound on very large stores. Callers should cache
+         * the result — the meta query is too slow to run on every admin request.
+         *
+         * The actionable index stores the warning timestamp, so the query itself
+         * returns the newest warnings first even when a warning lands long after
+         * the order was placed.
+         *
+         * @param int $limit Maximum number of warning-carrying orders to inspect.
+         *
+         * @return array[] Arrays with `order_id`, `order_number`, `charge_id` and `created` keys, newest warning first.
+         */
+        public function get_actionable_early_fraud_warning_orders(int $limit = 100): array
+        {
+        }
+        /**
+         * Drops the cached early fraud warning lists when a flagged order is refunded.
+         *
+         * Only a warning webhook invalidates them otherwise, which leaves the refunded-order
+         * guard in get_actionable_early_fraud_warning_orders() unreachable on a cache hit —
+         * exactly when no resolving webhook is coming. What counts as resolved stays in that
+         * query, so this only decides that the list may be stale.
+         *
+         * @param int $order_id The refunded order's ID.
+         *
+         * @return void
+         */
+        public function maybe_clear_early_fraud_warning_caches($order_id)
+        {
+        }
+        /**
          * Set the IPP channel for an order.
          *
          * @param mixed  $order   The order ID or order object.
@@ -12677,6 +12648,31 @@ namespace {
          * @return void
          */
         private function mark_payment_completed($order, $intent_data)
+        {
+        }
+        /**
+         * Checks whether a payment intent is for the order's current total and currency.
+         *
+         * The order total can change after the intent is created, for example when a merchant edits a pending order.
+         *
+         * @param WC_Payments_API_Payment_Intention $intent The intent to compare.
+         * @param WC_Order                          $order  The order to compare against.
+         *
+         * @return bool
+         */
+        private function intent_amount_matches_order(\WC_Payments_API_Payment_Intention $intent, \WC_Order $order): bool
+        {
+        }
+        /**
+         * Puts an order on hold when its payment succeeded for an amount or currency that differs from the order total.
+         *
+         * @param WC_Order                          $order       Order object.
+         * @param WC_Payments_API_Payment_Intention $intent      The succeeded intent.
+         * @param array                             $intent_data The data of the intent associated with this order.
+         *
+         * @return void
+         */
+        private function mark_payment_held_for_amount_mismatch($order, \WC_Payments_API_Payment_Intention $intent, $intent_data)
         {
         }
         /**
@@ -13156,6 +13152,17 @@ namespace {
         {
         }
         /**
+         * Reads a copy of the order as currently stored, bypassing the post cache, so that changes made
+         * by another request after this one loaded the order are visible.
+         *
+         * @param WC_Order $order The order to read.
+         *
+         * @return WC_Order A copy of the order with the stored properties.
+         */
+        private function get_stored_order(\WC_Order $order): \WC_Order
+        {
+        }
+        /**
          * Completes order processing by updating the intent meta, unlocking the order, and saving the order.
          *
          * @param WC_Order    $order         Order object.
@@ -13491,8 +13498,8 @@ namespace {
          * the express wallet at payment time, which stamps it on the order and trips core's guest email
          * verification even though the shopper just paid. We waive it only for the session that actually
          * completed the payment: at payment time we stored the paid intent id in the WC session, and here
-         * we waive verification only when it matches the order's intent. A leaked order key in another
-         * browser carries no such session, so it still has to verify.
+         * we waive verification only when it matches the order's intent and was stored in this same session.
+         * A leaked order key in another browser carries no such session, so it still has to verify.
          * See https://github.com/woocommerce/woocommerce/issues/48540
          *
          * @param bool|mixed     $required Whether email verification is required.
@@ -13530,6 +13537,15 @@ namespace {
          * @return string Formatted text.
          */
         private function format_addtional_thankyou_order_received_text(string $additional_text): string
+        {
+        }
+        /**
+         * Returns the merchant's account country, which drives country-specific payment method branding
+         * (e.g. "Onelink" for GB accounts). All WooPayments gateways share the same account.
+         *
+         * @return string
+         */
+        private function get_account_country(): string
         {
         }
     }
@@ -13628,9 +13644,9 @@ namespace {
          */
         protected $token;
         /**
-         * The session id to reference in the sessions table.
+         * The session id to reference in the sessions table. Null until the token session loads.
          *
-         * @var string
+         * @var string|null
          */
         public $session_id;
         /**
@@ -13654,6 +13670,26 @@ namespace {
         {
         }
         /**
+         * Sets the session cookie, unless the cart is ephemeral.
+         *
+         * Skipping the hook in `init()` isn't enough: other code, like Multi-Currency's currency switch, calls this
+         * directly. A cookie would give the shopper a session they never started, which takes their later page views
+         * off the page cache.
+         *
+         * @param bool $set Whether the cookie should be set.
+         */
+        public function set_customer_session_cookie($set)
+        {
+        }
+        /**
+         * Whether the cart only lives for this request, to read product prices and payment methods.
+         *
+         * @return bool
+         */
+        private function is_ephemeral_cart(): bool
+        {
+        }
+        /**
          * Setup cookie and customer ID.
          * We need to ensure that we _also_ call `init_session_from_token` when `init_session_cookie` is called.
          * Otherwise, this clears everything: https://github.com/woocommerce/woocommerce/blob/de4a8ffdd474ca1879d4aa16487d6c52472a861b/plugins/woocommerce/src/StoreApi/Routes/V1/Checkout.php#L556-L558
@@ -13669,10 +13705,11 @@ namespace {
         }
         /**
          * Delete the session from the cache and database.
+         * Before the token session loads, the parent can still act on the cookie's session (e.g. when it's invalid).
          *
-         * @param int $_unused_customer_id Customer ID.
+         * @param string $customer_id Customer ID.
          */
-        public function delete_session($_unused_customer_id)
+        public function delete_session($customer_id)
         {
         }
         /**
@@ -13703,9 +13740,9 @@ namespace {
         /**
          * Save data - copy of parent method with a few modifications.
          *
-         * @param int $_unused_old_session_key session ID before user logs in.
+         * @param string $old_session_key session ID before user logs in.
          */
-        public function save_data($_unused_old_session_key = 0)
+        public function save_data($old_session_key = '')
         {
         }
         /**
@@ -13734,6 +13771,11 @@ namespace {
      */
     class WC_Payments_Payment_Request_Session
     {
+        /**
+         * Nonce action that lets product-page requests use their own isolated tokenized cart session.
+         * It lives here because this class loads even when WC_Payments::init() bails early.
+         */
+        const TOKENIZED_CART_SESSION_NONCE_ACTION = 'woopayments_tokenized_cart_session_nonce';
         /**
          * Name of the parameter added to the "order received" page for orders placed with the custom session handler on product pages.
          *
@@ -14192,101 +14234,6 @@ namespace {
         }
     }
     /**
-     * Schedules and sends post-KYC activation emails on day 7, 14, and 30 to merchants
-     * who have not yet made their first live WooPayments sale.
-     *
-     * Three one-off Action Scheduler actions are scheduled per store the first time the
-     * KYC completion date is recorded — calculated as kyc_date + 7d / +14d / +30d. Each
-     * action handler re-checks eligibility at fire time and bails if the merchant has
-     * since made a sale, gone back to test mode, etc.
-     */
-    class WC_Payments_Post_Kyc_Activation_Email_Service
-    {
-        const SEND_HOOK = 'wcpay_post_kyc_activation_email_send';
-        const EMAIL_SENT_OPTION = 'wcpay_post_kyc_activation_email_sent_stages';
-        const SCHEDULED_OPTION = 'wcpay_post_kyc_activation_emails_scheduled';
-        const STAGE_DAYS = [7, 14, 30];
-        /**
-         * Stages whose calculated send time is more than this far in the past are skipped at scheduling time
-         * — avoids spamming long-since-approved merchants with stale activation nudges.
-         */
-        const STALE_GRACE_SECONDS = 7 * \DAY_IN_SECONDS;
-        /**
-         * Account service instance.
-         *
-         * @var WC_Payments_Account
-         */
-        private $account;
-        /**
-         * WCPay gateway instance.
-         *
-         * @var WC_Payment_Gateway_WCPay
-         */
-        private $wcpay_gateway;
-        /**
-         * Order service instance.
-         *
-         * @var WC_Payments_Order_Service
-         */
-        private $order_service;
-        /**
-         * Constructor.
-         *
-         * @param WC_Payments_Account       $account       Account service.
-         * @param WC_Payment_Gateway_WCPay  $wcpay_gateway WCPay gateway.
-         * @param WC_Payments_Order_Service $order_service Order service.
-         */
-        public function __construct(\WC_Payments_Account $account, \WC_Payment_Gateway_WCPay $wcpay_gateway, \WC_Payments_Order_Service $order_service)
-        {
-        }
-        /**
-         * Register hooks.
-         *
-         * @return void
-         */
-        public function init_hooks(): void
-        {
-        }
-        /**
-         * Schedule day-7, day-14, and day-30 send actions when the KYC completion date is first recorded.
-         * Stages whose calculated send time is more than STALE_GRACE_SECONDS in the past are skipped.
-         *
-         * @param string $option_name The option name fired by the add_option_* action.
-         * @param mixed  $value       The option value.
-         * @return void
-         */
-        public function schedule_stage_emails($option_name, $value): void
-        {
-        }
-        /**
-         * Action Scheduler handler — fires once per stage at the scheduled time.
-         *
-         * @param int $stage The stage day (7, 14, or 30).
-         * @return void
-         */
-        public function send_email_for_stage($stage): void
-        {
-        }
-        /**
-         * Eligibility check — mirrors the in-app notice logic.
-         *
-         * @return bool
-         */
-        public function is_eligible(): bool
-        {
-        }
-        /**
-         * Fires `wcpay_post_kyc_activation_email_cta_clicked` when an admin lands on
-         * Marketing Hub via the email CTA, then strips the marker query args so a
-         * page refresh doesn't double-count the click.
-         *
-         * @return void
-         */
-        public function maybe_track_cta_click(): void
-        {
-        }
-    }
-    /**
      * Class handling redirects business logic.
      */
     class WC_Payments_Redirect_Service
@@ -14427,6 +14374,21 @@ namespace {
          * @param WC_Payments_API_Client $payments_api_client - WooCommerce Payments API client.
          */
         public function __construct(\WC_Payments_API_Client $payments_api_client)
+        {
+        }
+        /**
+         * Registers session hooks.
+         */
+        public function init_hooks(): void
+        {
+        }
+        /**
+         * Preserves ownership of checkout data when a guest session becomes a user session.
+         *
+         * @param mixed $guest_session_id The previous session ID, expected to be a string.
+         * @param mixed $user_session_id  The new session ID, expected to be a string.
+         */
+        public function migrate_session_ownership($guest_session_id, $user_session_id): void
         {
         }
         /**
@@ -15134,7 +15096,7 @@ namespace {
          *
          * @param string  $payment_method_id Payment method to be added.
          * @param WP_User $user              User to attach payment method to.
-         * @return WC_Payment_Token_CC       The newly created token.
+         * @return WC_Payment_Token          The newly created token.
          */
         public function add_payment_method_to_user($payment_method_id, $user)
         {
@@ -15256,7 +15218,7 @@ namespace {
         {
         }
         /**
-         * Controls the output for Stripe Link on the My account page.
+         * Controls the output for Link on the My account page.
          *
          * @param  array                                        $item          Individual list item from woocommerce_saved_payment_methods_list.
          * @param  WC_Payment_Token|WC_Payment_Token_WCPay_Link $payment_token The payment token associated with this method entry.
@@ -15295,10 +15257,10 @@ namespace {
         {
         }
         /**
-         * Normalizes the Stripe Link label on My Account page.
+         * Normalizes the Link label on My Account page.
          *
          * @param string $label Token label.
-         * @return string $label Capitalized SEPA IBAN label.
+         * @return string $label Capitalized Link/Onelink label.
          */
         public function normalize_stripe_link_label($label)
         {
@@ -15369,6 +15331,20 @@ namespace {
          * @return string Decoded text.
          */
         public static function decode_html_entities(string $value): string
+        {
+        }
+        /**
+         * Explains to merchants what turned development mode on.
+         *
+         * Development mode has several triggers, so naming the active one keeps merchants from looking in the wrong place.
+         * Only the first trigger is named, in the order the mode records them.
+         *
+         * @see \WCPay\Core\Mode::get_dev_mode_triggers()
+         *
+         * @param string[] $triggers The development mode triggers.
+         * @return string The explanation, or an empty string when no trigger has a merchant-facing explanation.
+         */
+        public static function get_dev_mode_reason(array $triggers): string
         {
         }
         /**
@@ -16156,21 +16132,26 @@ namespace {
         /**
          * Process webhook for a payment intent canceled event.
          *
-         * @param array $_unused_event_body The event that triggered the webhook.
-         *
          * @return void
          */
-        private function process_webhook_payment_intent_canceled($_unused_event_body)
+        private function process_webhook_payment_intent_canceled()
         {
         }
         /**
          * Process webhook for a payment intent amount capturable updated event.
          *
-         * @param array $_unused_event_body The event that triggered the webhook.
+         * Puts a pending order on hold once its payment is authorized. After 3DS, the browser
+         * may never report the result, and Hold stock would then cancel the order and void the authorization.
+         * A failed order is retried without leaving that status on the classic checkout and the order-pay page,
+         * so it is put on hold too, as the succeeded webhook completes it with automatic capture.
+         *
+         * @param array $event_body The event that triggered the webhook.
          *
          * @return void
+         *
+         * @throws \WCPay\Exceptions\Invalid_Webhook_Data_Exception Required parameters not found.
          */
-        private function process_webhook_payment_intent_amount_capturable_updated($_unused_event_body)
+        private function process_webhook_payment_intent_amount_capturable_updated($event_body)
         {
         }
         /**
@@ -16182,6 +16163,23 @@ namespace {
          * @throws \WCPay\Exceptions\Invalid_Payment_Method_Exception When unable to resolve charge ID to order.
          */
         private function process_webhook_payment_intent_failed($event_body)
+        {
+        }
+        /**
+         * Adds an order note for a failed BNPL payment, without changing the order status.
+         *
+         * BNPL failures are otherwise only handled when the customer returns from the payment
+         * provider's page, which leaves the order pending for a retry or fails it for other
+         * declines. If the customer abandons the payment (e.g. the provider's session expires),
+         * this note is the only record of the failure.
+         *
+         * @param array  $event_body         The event that triggered the webhook.
+         * @param array  $last_payment_error The last payment error of the intent.
+         * @param string $charge_id          The charge ID related to the intent/order.
+         *
+         * @return void
+         */
+        private function maybe_add_bnpl_payment_failure_note(array $event_body, array $last_payment_error, string $charge_id): void
         {
         }
         /**
@@ -16310,6 +16308,20 @@ namespace {
          * @return bool
          */
         private function has_webhook_property($items, $key)
+        {
+        }
+        /**
+         * Leaves the order alone when the event's intent belongs to a WooPayments attempt from before another
+         * gateway took the order over, and notes why. Payments started later, such as in person, go through.
+         *
+         * @param WC_Order $order        The order the event resolved to.
+         * @param array    $event_object The intent in the event.
+         * @param string   $message      The translated note, with the intent ID in `<code>%1$s</code>`.
+         * @param string   ...$note_args More IDs the note names, from `%2$s` on.
+         *
+         * @return bool Whether the event was skipped.
+         */
+        private function skip_superseded_attempt(\WC_Order $order, array $event_object, string $message, string ...$note_args): bool
         {
         }
         /**
@@ -16945,12 +16957,6 @@ namespace {
          */
         private static $duplicate_payment_prevention_service;
         /**
-         * Instance of WC_Payments_Incentives_Service, created in init function.
-         *
-         * @var WC_Payments_Incentives_Service
-         */
-        private static $incentives_service;
-        /**
          * Instance of WC_Payments_PM_Promotions_Service, created in init function.
          *
          * @var WC_Payments_PM_Promotions_Service
@@ -16993,12 +16999,6 @@ namespace {
          */
         private static $fee_remediation;
         /**
-         * Instance of WC_Payments_Post_Kyc_Activation_Email_Service, created in init function
-         *
-         * @var WC_Payments_Post_Kyc_Activation_Email_Service
-         */
-        private static $post_kyc_activation_email_service;
-        /**
          * Entry point to the initialization logic.
          */
         public static function init()
@@ -17019,15 +17019,6 @@ namespace {
          * @return array
          */
         public static function add_ipp_emails(array $email_classes): array
-        {
-        }
-        /**
-         * Adds the post-KYC activation reminder email to WooCommerce emails.
-         *
-         * @param array $email_classes the email classes.
-         * @return array
-         */
-        public static function add_post_kyc_activation_email(array $email_classes): array
         {
         }
         /**
@@ -17749,6 +17740,13 @@ namespace WCPay {
          */
         private static $pixel_base_url = 'https://pixel.wp.com/g.gif';
         /**
+         * Maximum number of events recorded from a single batched `platform_tracks` request.
+         * Keep in sync with `maxBatchedShopperEvents` in `client/tracks/index.ts`.
+         *
+         * @var int
+         */
+        const MAX_BATCHED_EVENTS = 20;
+        /**
          * Constructor.
          *
          * @param \WC_Payments_Http_Interface $http    A class implementing WC_Payments_Http_Interface.
@@ -17766,6 +17764,17 @@ namespace WCPay {
          * Override jetpack-tracking's ajax handling to use internal maybe_record_event method.
          */
         public function ajax_tracks()
+        {
+        }
+        /**
+         * Records an event sent by a shopper's browser, without the controls only the server may set.
+         *
+         * @param string $event      Name of the event, without the `wcpay_` prefix.
+         * @param array  $properties Event properties.
+         *
+         * @return bool|\WP_Error
+         */
+        private function record_event_from_browser(string $event, array $properties)
         {
         }
         /**
@@ -18656,8 +18665,6 @@ namespace WCPay\Constants {
     }
     /**
      * Currency Code constants
-     *
-     * @psalm-immutale
      */
     class Currency_Code extends \WCPay\Constants\Base_Constant
     {
@@ -20335,11 +20342,12 @@ namespace WCPay\Core\Server\Request {
         /**
          * Returns a list of fingerprinting metadata to attach to order.
          *
-         * @param string $fingerprint Fingerprint data.
+         * @param string         $fingerprint Fingerprint data.
+         * @param \WC_Order|null $order       Payment order, or null when no order exists yet.
          *
          * @return array List of fingerprinting metadata.
          */
-        private function get_fingerprint_metadata($fingerprint = ''): array
+        private function get_fingerprint_metadata($fingerprint = '', ?\WC_Order $order = null): array
         {
         }
         /**
@@ -20627,12 +20635,13 @@ namespace WCPay\Core\Server\Request {
         /**
          * Set fingerprint.
          *
-         * @param string $fingerprint Fingerprint data.
+         * @param string         $fingerprint Fingerprint data.
+         * @param \WC_Order|null $order       Payment order being charged, when known.
          *
          * @return void
          * @throws \WCPay\Core\Exceptions\Server\Request\Invalid_Request_Parameter_Exception
          */
-        public function set_fingerprint(string $fingerprint = '')
+        public function set_fingerprint(string $fingerprint = '', ?\WC_Order $order = null)
         {
         }
         /**
@@ -20820,11 +20829,12 @@ namespace WCPay\Core\Server\Request {
          * Adds hashed fingerprint metadata to the setup intent request
          * to help detect and prevent card testing attacks.
          *
-         * @param string $fingerprint Fingerprint data from the client.
+         * @param string         $fingerprint Fingerprint data from the client.
+         * @param \WC_Order|null $order       Payment order being charged, when known.
          *
          * @return void
          */
-        public function set_fingerprint(string $fingerprint = '')
+        public function set_fingerprint(string $fingerprint = '', ?\WC_Order $order = null)
         {
         }
         /**
@@ -22196,7 +22206,7 @@ namespace WCPay\Core\Server\Request {
          *
          * @param array  $a         First item to be compared.
          * @param array  $b         Second item to be compared.
-         * @param array  $sort      Sort key.
+         * @param string $sort      Sort key.
          * @param string $direction Sort direction.
          *
          * @return int
@@ -22897,20 +22907,22 @@ namespace WCPay\Core\Server\Request {
         /**
          * Metadata setter.
          *
-         * @param  array $metadata Meta data values to be sent along with payment intent creation.
+         * @param array          $metadata Meta data values to be sent along with payment intent creation.
+         * @param \WC_Order|null $order    Payment order being charged, when known.
          */
-        public function set_metadata($metadata)
+        public function set_metadata($metadata, ?\WC_Order $order = null)
         {
         }
         /**
          * Set fingerprint.
          *
-         * @param string $fingerprint Fingerprint data.
+         * @param string         $fingerprint Fingerprint data.
+         * @param \WC_Order|null $order       Payment order being charged, when known.
          *
          * @return void
          * @throws \WCPay\Core\Exceptions\Server\Request\Invalid_Request_Parameter_Exception
          */
-        public function set_fingerprint($fingerprint = '')
+        public function set_fingerprint($fingerprint = '', ?\WC_Order $order = null)
         {
         }
         /**
@@ -23330,106 +23342,6 @@ namespace {
         }
         /**
          * Default content to show below main email content.
-         *
-         * @return string
-         */
-        public function get_default_additional_content(): string
-        {
-        }
-    }
-    /**
-     * Post-KYC Activation Email.
-     *
-     * Sent to merchants on day 7, 14, and 30 after KYC completion when they have not yet made their first sale.
-     */
-    class WC_Payments_Email_Post_Kyc_Activation extends \WC_Email
-    {
-        /**
-         * Stage of the nudge sequence (7, 14, or 30).
-         *
-         * @var int
-         */
-        public $stage = 7;
-        /**
-         * Constructor.
-         */
-        public function __construct()
-        {
-        }
-        /**
-         * Get default subject.
-         *
-         * @return string
-         */
-        public function get_default_subject(): string
-        {
-        }
-        /**
-         * Get default heading.
-         *
-         * @return string
-         */
-        public function get_default_heading(): string
-        {
-        }
-        /**
-         * Hide the heading form field from WC Settings → Emails. The template
-         * renders per-stage hard-coded headings, so a merchant override would
-         * silently flatten all three stages to the same heading.
-         */
-        public function init_form_fields()
-        {
-        }
-        /**
-         * Trigger sending the email.
-         *
-         * Returns whether `$this->send()` actually delivered the message. Returns
-         * false in three cases: invalid stage, opted out (email disabled or no
-         * recipient), or the underlying mailer rejected the send. The caller uses
-         * this signal to decide whether the stage should be considered consumed.
-         *
-         * @param int $stage The stage day (7, 14, or 30).
-         * @return bool True if the mailer reported a successful send, false otherwise.
-         */
-        public function trigger(int $stage): bool
-        {
-        }
-        /**
-         * Returns the absolute URL the email CTA button links to.
-         * Mirrors the in-app notice's "Promote my store" destination, plus
-         * referrer params consumed by the click handler on admin_init.
-         *
-         * @return string
-         */
-        public function get_cta_url(): string
-        {
-        }
-        /**
-         * Label for the email CTA button. Matches the in-app notice's CTA label.
-         *
-         * @return string
-         */
-        public function get_cta_label(): string
-        {
-        }
-        /**
-         * Get content html.
-         *
-         * @return string
-         */
-        public function get_content_html(): string
-        {
-        }
-        /**
-         * Get content plain.
-         *
-         * @return string
-         */
-        public function get_content_plain(): string
-        {
-        }
-        /**
-         * Default additional content.
          *
          * @return string
          */
@@ -23861,6 +23773,20 @@ namespace {
         {
         }
         /**
+         * Sends the express checkout nonces with every response, the way the Store API sends its own `Nonce`.
+         * The page's nonces can stop working mid-flow: the Store API logs the shopper in when it creates their account,
+         * and full-page caches can serve the page after its nonces expired.
+         *
+         * @param \WP_REST_Response $response The response.
+         * @param \WP_REST_Server   $server Server instance.
+         * @param \WP_REST_Request  $request Request used to generate the response.
+         *
+         * @return \WP_REST_Response
+         */
+        public function add_tokenized_cart_nonce_headers($response, $server, $request)
+        {
+        }
+        /**
          * Allows certain "redacted" postcodes for some countries to bypass WC core validation.
          *
          * @param bool   $valid Whether the postcode is valid.
@@ -24280,6 +24206,17 @@ namespace {
          */
         private $account;
         /**
+         * Whether this class's `should_show_express_checkout_button()` last rejected only for a reason
+         * the live cart can still change: the cart is empty, or Amazon Pay is switched on but not
+         * available yet (for example in the cart's current currency).
+         *
+         * Lets `should_load_express_checkout_scripts()` relax that rejection alone, so a `false` from an
+         * override (see `WC_Payments::set_express_checkout_helper()`) still prevents loading.
+         *
+         * @var bool
+         */
+        private $rejected_for_cart_state = \false;
+        /**
          * Whether the [product_page] shortcode context has been worked out for this request.
          *
          * Only ever set once the main query and its host post are available, so a caller that
@@ -24463,13 +24400,21 @@ namespace {
         {
         }
         /**
-         * Checks if Amazon Pay can be used as an express checkout button.
+         * Checks if the merchant switched Amazon Pay on as an express checkout button.
          *
-         * This validates:
-         * - Express checkout is not displayed in the payment methods list
-         * - Amazon Pay feature flag is enabled
-         * - Gateway exists and is available for express checkout
-         * - Tax settings are compatible (Amazon Pay doesn't support taxes based on billing address)
+         * Unlike `can_use_amazon_pay()`, this skips the gateway's runtime availability checks:
+         * currency, Stripe capability status and account state. Block pages need the button
+         * registered even when the page loads in a currency Amazon Pay doesn't support, because
+         * the shopper can switch to one it does without a reload.
+         *
+         * @return boolean
+         */
+        public function is_amazon_pay_enabled_by_merchant()
+        {
+        }
+        /**
+         * Checks if Amazon Pay can be used as an express checkout button for the current request,
+         * including its currency.
          *
          * @return boolean
          */
@@ -24562,7 +24507,23 @@ namespace {
         {
         }
         /**
+         * Checks whether the Express Checkout scripts and params should be loaded on this page.
+         *
+         * Block cart and checkout pages add the first product through the Store API without a reload,
+         * and the block payment methods re-run `canMakePayment()` against the live cart. So on those
+         * pages, a rejection caused only by the cart being empty, or by Amazon Pay being switched on but
+         * not available yet, still loads them; the buttons stay hidden until the cart has something
+         * they can pay for.
+         *
+         * @return bool
+         */
+        public function should_load_express_checkout_scripts()
+        {
+        }
+        /**
          * Checks whether Express Checkout Element Button should be available on this page.
+         *
+         * @phpstan-impure It records a cart-state rejection for `should_load_express_checkout_scripts()`.
          *
          * @return bool
          */
@@ -24826,13 +24787,14 @@ namespace WCPay\Fraud_Prevention {
         {
         }
         /**
-         * Returns fraud prevention data for an order.
+         * Returns fraud prevention data for the customer and optional payment order.
          *
-         * @param string $fingerprint User fingerprint.
+         * @param string         $fingerprint User fingerprint.
+         * @param \WC_Order|null $order       Payment order, or null when adding a payment method.
          *
-         * @return array An array of hashed data for an order.
+         * @return array An array of fraud prevention data for the current customer.
          */
-        public function get_hashed_data_for_customer($fingerprint): array
+        public function get_hashed_data_for_customer($fingerprint, ?\WC_Order $order = null): array
         {
         }
     }
@@ -25854,9 +25816,30 @@ namespace WCPay\Migrations {
         }
     }
     /**
+     * Refreshes WooCommerce's shipping cache version, which is part of every package hash, so rates cached before
+     * store-currency packages were left unmarked are rebuilt rather than reused.
+     *
+     * @since 11.3.0
+     */
+    class Invalidate_Cached_Shipping_Rates
+    {
+        /**
+         * Invalidates the cached rates when upgrading from a version before the store-currency packages were left unmarked.
+         */
+        public function maybe_migrate()
+        {
+        }
+        /**
+         * Refreshes WooCommerce's shipping cache version. Running it again only costs one more rate rebuild per cart.
+         */
+        public function migrate(): void
+        {
+        }
+    }
+    /**
      * Class Link_WooPay_Mutual_Exclusion_Handler
      *
-     * In version 7.3.0, the logic responsible for disabling Stripe Link if WooPay is by default enabled, is moved from the gateways registration step to the migration.
+     * In version 7.3.0, the logic responsible for disabling Link if WooPay is by default enabled, is moved from the gateways registration step to the migration.
      *
      * @since 7.3.0
      */
@@ -26149,6 +26132,29 @@ namespace WCPay\Migrations {
         }
     }
     /**
+     * Cancels the retired experiment's jobs without changing merchant preferences.
+     *
+     * @since 11.3.0
+     */
+    class Retire_Post_Kyc_Activation_Emails
+    {
+        /**
+         * Queue cleanup when upgrading from a release with activation reminders.
+         */
+        public function maybe_migrate()
+        {
+        }
+        /**
+         * Cancel the three retired stage jobs and clear the retired notice caches on the current site.
+         *
+         * A job that survives cancellation completes through the inert
+         * wcpay_post_kyc_activation_email_send handler without sending.
+         */
+        public function migrate(): void
+        {
+        }
+    }
+    /**
      * Class Update_Service_Data_From_Server
      *
      * Ensures that the service data is being updated after the upgrade to UPE.
@@ -26156,6 +26162,7 @@ namespace WCPay\Migrations {
      * If the fees are not present, the plugin shows "missing fees" text next to the UPE payment methods.
      *
      * @since 2.8.0
+     * @deprecated 11.3.0 WC_Payments_Account refreshes the account data on every plugin update.
      */
     class Update_Service_Data_From_Server
     {
@@ -26175,6 +26182,8 @@ namespace WCPay\Migrations {
         }
         /**
          * Checks whether it's worth doing the migration.
+         *
+         * @deprecated 11.3.0
          */
         public function maybe_migrate()
         {
@@ -27199,6 +27208,16 @@ namespace WCPay\MultiCurrency {
         {
         }
         /**
+         * Checks to see if the coupon's minimum and maximum amounts should be converted.
+         *
+         * @param object $coupon Coupon object to test.
+         *
+         * @return bool True if they should be converted.
+         */
+        public function should_convert_coupon_min_max_amount($coupon = null): bool
+        {
+        }
+        /**
          * Checks to see if the product's price should be converted.
          *
          * @param object $product Product object to test.
@@ -27699,9 +27718,24 @@ namespace WCPay\MultiCurrency\Compatibility {
     class WooCommerceSubscriptions extends \WCPay\MultiCurrency\Compatibility\BaseCompatibility
     {
         /**
-         * Our allowed subscription types.
+         * Subscription cart item types whose currency comes from the subscription in the cart item's `subscription_id`.
          */
         const SUBSCRIPTION_TYPES = ['renewal', 'resubscribe', 'switch'];
+        /**
+         * Cart item types that pay an existing order again. Their cart items hold an `order_id` instead of a
+         * `subscription_id`, so they are kept out of SUBSCRIPTION_TYPES.
+         */
+        private const ORDER_PAYMENT_TYPES = ['initial_payment'];
+        /**
+         * Session key identifying the coupon copies in `wcs_renewal_coupons` that this class stored unconverted.
+         *
+         * Holds STORING_SESSION_COUPONS while a cart is being set up, then a hash of the copies stored.
+         */
+        private const UNCONVERTED_SESSION_COUPONS_KEY = 'wcpay_multi_currency_unconverted_session_coupons';
+        /**
+         * Value of UNCONVERTED_SESSION_COUPONS_KEY while a cart is being set up and its coupon copies are stored.
+         */
+        private const STORING_SESSION_COUPONS = 'storing';
         /**
          * Subscription switch cart item.
          *
@@ -27726,6 +27760,12 @@ namespace WCPay\MultiCurrency\Compatibility {
          * @var bool
          */
         private $running_override_selected_currency_filters = false;
+        /**
+         * Currencies of signup orders paid through the cart, keyed by order ID.
+         *
+         * @var array
+         */
+        private $initial_payment_order_currencies = [];
         /**
          * Init the class.
          *
@@ -27781,12 +27821,12 @@ namespace WCPay\MultiCurrency\Compatibility {
         /**
          * Checks to see if the product's price should be converted.
          *
-         * @param bool   $should_convert Whether to convert the product's price or not. Default is true.
-         * @param object $_unused_product        Product object to test.
+         * @param bool        $should_convert Whether to convert the product's price or not. Default is true.
+         * @param object|null $product        Product object to test. Without one, a renewal or resubscribe anywhere in the cart counts.
          *
          * @return bool True if it should be converted.
          */
-        public function should_convert_product_price(bool $should_convert, $_unused_product): bool
+        public function should_convert_product_price(bool $should_convert, $product): bool
         {
         }
         /**
@@ -27798,6 +27838,38 @@ namespace WCPay\MultiCurrency\Compatibility {
          * @return bool True if it should be converted.
          */
         public function should_convert_coupon_amount(bool $should_convert, $coupon): bool
+        {
+        }
+        /**
+         * Checks to see if the coupon's minimum and maximum amounts should be converted.
+         *
+         * @param mixed  $should_convert Whether to convert the coupon's minimum and maximum amounts or not. Default is true.
+         * @param object $coupon         Coupon object to test.
+         *
+         * @return bool True if they should be converted.
+         */
+        public function should_convert_coupon_min_max_amount($should_convert, $coupon = null): bool
+        {
+        }
+        /**
+         * Marks the coupon copies Subscriptions is about to store in the session, while the cart is set up, as unconverted.
+         *
+         * Copies stored by earlier versions hold amounts that were converted when they were stored, so they must not be converted again.
+         *
+         * @return void
+         */
+        public function start_storing_unconverted_session_coupons()
+        {
+        }
+        /**
+         * Records which coupon copies were stored unconverted once the cart is set up.
+         *
+         * A hash of the copies, rather than a flag, so that copies rewritten later by a version without this
+         * code (e.g. after a rollback) aren't taken for unconverted ones.
+         *
+         * @return void
+         */
+        public function finish_storing_unconverted_session_coupons()
         {
         }
         /**
@@ -27864,11 +27936,25 @@ namespace WCPay\MultiCurrency\Compatibility {
          * This checks both the cart itself and the session. This is due to there are times when an item may be present in
          * one place and not the other. We need to make sure that if an item is in either we are not creating double conversions.
          *
-         * @param string $type The type of subscription to look for in the cart.
+         * If a product is passed, only the cart item holding that product object is a match. The objects are compared rather
+         * than the IDs, as the same product can also be in the cart as a regular item.
+         *
+         * @param string      $type    The type of subscription to look for in the cart.
+         * @param object|null $product Optional. The product object the cart item needs to hold.
          *
          * @return mixed False if none found, or the subscription cart item as an array.
          */
-        private function get_subscription_type_from_cart($type)
+        private function get_subscription_type_from_cart($type, $product = null)
+        {
+        }
+        /**
+         * Gets the currency of the signup order being paid through the cart, if there is one.
+         *
+         * The currency is kept per order, because this runs on every price read.
+         *
+         * @return string|false Three letter currency code, or false if the cart is not paying for a signup order.
+         */
+        private function get_initial_payment_order_currency()
         {
         }
         /**
@@ -27881,6 +27967,28 @@ namespace WCPay\MultiCurrency\Compatibility {
         {
         }
         /**
+         * Gets a subscription while the currency override is turned off, as loading it reads the selected currency.
+         *
+         * @param  mixed $the_subscription Post object or post ID of the order.
+         * @return \WC_Subscription|bool The subscription object, or false if it cannot be found.
+         */
+        private function get_subscription_without_override($the_subscription)
+        {
+        }
+        /**
+         * Loads an order or subscription while the currency override is turned off, as loading it reads the selected currency.
+         *
+         * Those nested reads resolve without the override, so whatever FrontendCurrencies cached during the load
+         * is discarded. Otherwise decimals and formats would follow that currency instead of the loaded object's.
+         *
+         * @param callable $load Loads and returns the object.
+         *
+         * @return mixed Whatever $load returns.
+         */
+        private function load_without_override(callable $load)
+        {
+        }
+        /**
          * Checks $_GET superglobal for a switch ID from the `switch-subscription` param if it exists.
          * This `switch-subscription` param is added to the URL when a customer
          * has initiated a switch from the My Account → Subscription page.
@@ -27888,6 +27996,41 @@ namespace WCPay\MultiCurrency\Compatibility {
          * @return \WC_Subscription|bool The subscription object, or false if it cannot be found.
          */
         private function get_subscription_from_superglobal_switch_id()
+        {
+        }
+        /**
+         * Checks to see if Subscriptions is copying a coupon into the session.
+         *
+         * When a cart is set up from an order or subscription (renewal, early renewal, initial payment), the coupons are
+         * copied into the session, and every later query for those coupons is built from that copy, whatever their type.
+         * The copy needs to keep the original amounts, so that they are converted only once, when they are used.
+         *
+         * @return bool True if the coupon is being copied.
+         */
+        private function is_coupon_being_stored_in_session(): bool
+        {
+        }
+        /**
+         * Checks to see if the coupon is built from a session copy stored before the copies were marked as unconverted.
+         *
+         * Earlier versions converted the amounts when the copy was stored, so converting them again would apply the
+         * exchange rate twice. Such copies last until the cart is set up again, emptied, or the session expires.
+         *
+         * @param mixed $coupon Coupon to test.
+         *
+         * @return bool True if the coupon's amounts are already converted.
+         */
+        private function is_coupon_from_converted_session_copy($coupon): bool
+        {
+        }
+        /**
+         * Hashes the coupon copies stored in the session.
+         *
+         * @param mixed $session_coupons The value of `wcs_renewal_coupons`.
+         *
+         * @return string
+         */
+        private function get_session_coupons_hash($session_coupons): string
         {
         }
         /**
@@ -28224,13 +28367,14 @@ namespace WCPay\MultiCurrency {
         /**
          * Create an <option> element with provided currency. With symbol and flag if requested.
          *
-         * @param Currency $currency    Currency to use for <option> element.
-         * @param boolean  $with_symbol Whether to show the currency symbol.
-         * @param boolean  $with_flag   Whether to show the currency flag.
+         * @param Currency $currency      Currency to use for <option> element.
+         * @param boolean  $with_symbol   Whether to show the currency symbol.
+         * @param boolean  $with_flag     Whether to show the currency flag.
+         * @param string   $option_styles Inline CSS for the <option> element, or an empty string for none.
          *
          * @return string Display HTML of currency <option>, as a string.
          */
-        private function render_currency_option(\WCPay\MultiCurrency\Currency $currency, bool $with_symbol, bool $with_flag): string
+        private function render_currency_option(\WCPay\MultiCurrency\Currency $currency, bool $with_symbol, bool $with_flag, string $option_styles = ''): string
         {
         }
         /**
@@ -28343,6 +28487,16 @@ namespace WCPay\MultiCurrency {
     class FrontendCurrencies
     {
         /**
+         * How many innermost backtrace frames to scan when detecting an order being read from the data store.
+         *
+         * The WC_Abstract_Order::__construct() frame that drives the read sits a fixed, shallow distance below
+         * the wc_get_price_decimals filter (the intervening data-store read frames are internal and do not vary
+         * with the surrounding request), so a small cap detects it while keeping the per-call cost bounded.
+         *
+         * @var int
+         */
+        private const ORDER_READ_BACKTRACE_DEPTH = 40;
+        /**
          * Multi-Currency instance.
          *
          * @var MultiCurrency
@@ -28408,6 +28562,40 @@ namespace WCPay\MultiCurrency {
          * @var Currency
          */
         private $store_currency;
+        /**
+         * Id of the user the selected currency was cached for.
+         *
+         * @var int|null
+         */
+        private $cached_user_id;
+        /**
+         * Session the selected currency was cached for.
+         *
+         * @var \WC_Session|null
+         */
+        private $cached_session;
+        /**
+         * Stack of order currencies for orders currently recalculating their totals (innermost last).
+         *
+         * A stack, not a single value, so a nested recalculation of another order does not drop the outer
+         * order's currency when the inner one finishes.
+         *
+         * @var array
+         */
+        private $calculated_order_currencies = [];
+        /**
+         * Whether init_order_currency() is reading the order it was given, so a call nested in that read
+         * returns early instead of reading again.
+         *
+         * @var bool
+         */
+        private $initializing_order_currency = false;
+        /**
+         * Whether an order may currently be loading from the data store.
+         *
+         * @var bool
+         */
+        private $maybe_loading_order = false;
         /**
          * Constructor.
          *
@@ -28565,6 +28753,14 @@ namespace WCPay\MultiCurrency {
         {
         }
         /**
+         * Returns the order id of a single-order page (order pay, order received or view order), if this is one.
+         *
+         * @return int|null The order id from the query vars, or null.
+         */
+        private function get_order_id_from_query_vars()
+        {
+        }
+        /**
          * Fixes the decimals for the store currency when shipping rates are being determined.
          * Our `wc_get_price_decimals` filter returns the decimals for the selected currency during this calculation, which leads to incorrect results.
          *
@@ -28615,6 +28811,48 @@ namespace WCPay\MultiCurrency {
         {
         }
         /**
+         * Flags that an order may be loading from the data store.
+         *
+         * Runs on `woocommerce_order_class`, which `WC_Order_Factory` fires right before it reads an order.
+         * The flag is confirmed and cleared in is_loading_order().
+         *
+         * @param string $classname The order class name.
+         *
+         * @return string The unchanged order class name.
+         */
+        public function flag_order_loading($classname)
+        {
+        }
+        /**
+         * Records the currency of the order whose totals are being recalculated.
+         *
+         * Runs on `woocommerce_order_before_calculate_totals` so amounts recalculated for an existing order
+         * follow the order's own currency rather than the shopper's selected currency.
+         *
+         * A calculate_totals() that throws before its after hook never pops its entry, so stale entries are
+         * reconciled here before recording this order: this calculate_totals() frame is already on the
+         * backtrace, so the valid existing depth is the live frame count minus one. That drops a stale entry
+         * left at the bottom of the stack by an unrelated failed calculation, which the read-time check in
+         * get_currency_code() would otherwise keep (it slices from the front), and makes this order the top
+         * entry.
+         *
+         * @param mixed $_unused_and_taxes Whether taxes are being calculated. Unused.
+         * @param mixed $order             The order recalculating its totals.
+         *
+         * @return void
+         */
+        public function init_calculated_order_currency($_unused_and_taxes, $order)
+        {
+        }
+        /**
+         * Clears the recorded recalculating-order currency.
+         *
+         * @return void
+         */
+        public function clear_calculated_order_currency()
+        {
+        }
+        /**
          * Gets the currency code for us to use.
          *
          * @return string|null Three letter currency code.
@@ -28631,11 +28869,34 @@ namespace WCPay\MultiCurrency {
         {
         }
         /**
+         * Discards the cache if the user or the session the selected currency is stored for was replaced
+         * during the request, e.g. by `wp_set_current_user()` or by a Store API request with a Cart-Token.
+         *
+         * Prices are always converted with the selection of the current user or session, so the cached
+         * codes have to follow it. Otherwise amounts end up labelled with a currency they are not in.
+         *
+         * @return void
+         */
+        private function maybe_discard_cache_of_replaced_user_or_session()
+        {
+        }
+        /**
          * Checks whether currency code used for formatting should be overridden.
          *
          * @return bool
          */
         private function should_use_order_currency(): bool
+        {
+        }
+        /**
+         * Returns whether an order is currently being read from the data store.
+         *
+         * A flag is set by flag_order_loading() right before the read. No hook marks the end of the read,
+         * so the backtrace is consulted here and the flag cleared once the factory is no longer loading.
+         *
+         * @return bool
+         */
+        private function is_loading_order(): bool
         {
         }
     }
@@ -28656,6 +28917,40 @@ namespace WCPay\MultiCurrency {
          * @var MultiCurrency
          */
         protected $multi_currency;
+        /**
+         * The shipping method whose last cost formula we converted to the store currency, so that only its
+         * fees round to the store currency's decimals rather than the selected one's. Null when the last
+         * formula through our filter was left in the selected currency.
+         *
+         * @var \WC_Shipping_Method|null
+         */
+        private $shipping_method_with_converted_cost = null;
+        /**
+         * The shipping method whose `[fee]` shortcode is rendering, or null outside one. The store-currency
+         * decimals and decimal separator apply only inside it, where WC_Shipping_Flat_Rate::fee() rounds and
+         * parses the fee.
+         *
+         * @var \WC_Shipping_Method|null
+         */
+        private $shipping_method_rendering_fee = null;
+        /**
+         * The coupon WooCommerce is re-applying to an existing order, if any.
+         *
+         * @var \WC_Coupon|false|null
+         */
+        protected $order_coupon;
+        /**
+         * The currency of the order that coupon is being re-applied to.
+         *
+         * @var Currency|null
+         */
+        protected $order_coupon_currency;
+        /**
+         * Whether the coupon being re-applied holds a store-currency amount that still needs converting.
+         *
+         * @var bool
+         */
+        protected $order_coupon_needs_conversion = false;
         /**
          * Constructor.
          *
@@ -28758,6 +29053,80 @@ namespace WCPay\MultiCurrency {
         {
         }
         /**
+         * Converts a flat-rate formula's `cost` back to the store currency before evaluation, so the
+         * cart-derived part (already in the selected currency) is not converted twice.
+         *
+         * @param array                   $args        The `qty`/`cost` the formula is evaluated with.
+         * @param string                  $_unused_sum The formula.
+         * @param \WC_Shipping_Method|null $method      The shipping method evaluating the formula.
+         *
+         * @return array
+         */
+        public function convert_shipping_cost_args_to_store_currency($args, $_unused_sum, $method = null)
+        {
+        }
+        /**
+         * Rounds a converted formula's fees to the store currency's decimals. WC_Shipping_Flat_Rate::fee()
+         * rounds to wc_get_price_decimals(), which we otherwise filter to the selected currency and would
+         * truncate the store-currency fee.
+         *
+         * @param int $decimals The decimals WooCommerce would use.
+         *
+         * @return int
+         */
+        public function use_store_currency_decimals_during_shipping_fee($decimals): int
+        {
+        }
+        /**
+         * Reads a `[fee]` shortcode's `percent`, `min_fee` and `max_fee` with the store's decimal separator.
+         * The merchant types them in the store's number format, and WC_Shipping_Flat_Rate::fee() (WC 11.3+)
+         * parses them with wc_get_price_decimal_separator(), which we otherwise switch to the selected currency.
+         *
+         * @param string $separator The decimal separator WooCommerce would use.
+         *
+         * @return string
+         */
+        public function use_store_decimal_separator_during_shipping_fee($separator)
+        {
+        }
+        /**
+         * Marks the start of a shipping method's `[fee]` shortcode. WC_Shipping_Flat_Rate::fee() reads its
+         * attributes with shortcode_atts() first, so this runs only once the fee is actually being worked out,
+         * never for a shortcode that another callback short-circuits.
+         *
+         * A fee() override that does not call shortcode_atts( ..., 'fee' ) keeps the selected currency's
+         * format. One that throws keeps the store's format on until another `[fee]` shortcode finishes or the
+         * next cart calculation starts (see reset_shipping_fee_rendering()).
+         *
+         * @param array $atts The `[fee]` attributes, returned unchanged.
+         *
+         * @return array
+         */
+        public function start_shipping_fee_rendering($atts)
+        {
+        }
+        /**
+         * Marks the end of a shipping method's `[fee]` shortcode.
+         *
+         * @param string $output The shortcode output, returned unchanged.
+         * @param string $tag    The shortcode tag.
+         *
+         * @return string
+         */
+        public function end_shipping_fee_rendering($output, $tag)
+        {
+        }
+        /**
+         * Clears the `[fee]` state before a cart calculation. A fee() override that throws skips the end of its
+         * shortcode, and if its caller catches the exception, the store currency's decimals would otherwise stay
+         * on while the item totals are taken.
+         *
+         * @return void
+         */
+        public function reset_shipping_fee_rendering()
+        {
+        }
+        /**
          * Returns the shipping add rate args with cost converted.
          *
          * @param array              $args   Shipping rate args.
@@ -28780,13 +29149,41 @@ namespace WCPay\MultiCurrency {
         {
         }
         /**
+         * Remembers the coupon WC_Abstract_Order::recalculate_coupons() is about to re-apply to an order,
+         * so that its amount is converted to the currency of the order instead of the selected currency.
+         *
+         * @param \WC_Coupon|false      $coupon       The coupon about to be re-applied.
+         * @param string                $_unused_code The coupon code.
+         * @param \WC_Order_Item_Coupon $coupon_item  The order's coupon line item.
+         * @param \WC_Order              $order        The order the coupon is re-applied to.
+         *
+         * @return \WC_Coupon|false The unmodified coupon.
+         */
+        public function set_order_coupon($coupon, $_unused_code, $coupon_item, $order)
+        {
+        }
+        /**
          * Returns the min or max amount for a coupon.
          *
-         * @param mixed $amount The coupon's min or max amount.
+         * @param mixed  $amount The coupon's min or max amount.
+         * @param object $coupon The coupon object.
          *
          * @return mixed The converted coupon's min or max amount.
          */
-        public function get_coupon_min_max_amount($amount)
+        public function get_coupon_min_max_amount($amount, $coupon = null)
+        {
+        }
+        /**
+         * Adds the selected currency to each shipping package so WooCommerce's package hash changes on a
+         * currency switch and cached shipping rates are rebuilt. WC's hash omits the currency, and the rate
+         * is converted once at build time, so without this the stale rate is reused.
+         *
+         * @param mixed $packages The shipping packages (may be a non-array if a prior filter misbehaved).
+         *
+         * @return mixed The packages, with the selected currency marker added to each non-empty array package unless the
+         *               store currency is selected.
+         */
+        public function add_currency_to_shipping_packages($packages)
         {
         }
         /**
@@ -28931,6 +29328,20 @@ namespace WCPay\MultiCurrency {
          * Option that stores the multi-currency price rendering mode ('speed' or 'cache').
          */
         const RENDERING_MODE_OPTION = 'wcpay_multi_currency_rendering_mode';
+        /**
+         * Session key that stores the currency the saved cart totals were calculated in.
+         */
+        const CART_TOTALS_CURRENCY_SESSION_KEY = 'wcpay_cart_totals_currency';
+        /**
+         * Session key of a hash of the saved cart totals the currency stamp was recorded for. Totals saved while
+         * Multi-Currency didn't run (e.g. while the merchant had it switched off) no longer match it.
+         */
+        const CART_TOTALS_HASH_SESSION_KEY = 'wcpay_cart_totals_hash';
+        /**
+         * Session key of the stale cart totals state whose cached shipping rates were last dropped, so they are dropped
+         * once per stale state rather than on every load.
+         */
+        private const STALE_TOTALS_RATES_DROPPED_SESSION_KEY = 'wcpay_stale_totals_rates_dropped';
         /**
          * Option flag marking that the one-time caching auto-detection has already run.
          */
@@ -29087,6 +29498,39 @@ namespace WCPay\MultiCurrency {
          */
         private $init_completed = false;
         /**
+         * Callbacks added for REST API requests that don't look like Store API requests, keyed by filter name, so they
+         * can be removed if a Store API route ends up handling the request.
+         *
+         * @var array<string, callable>
+         */
+        private $rest_api_overrides = [];
+        /**
+         * The totals WC_Cart_Session::set_session() saved for the main cart during the calculation in progress, or null
+         * if the main cart's totals haven't been saved in it.
+         *
+         * @var array|null
+         */
+        private $main_cart_totals_saved_in_calculation = null;
+        /**
+         * The main cart while its totals are being calculated, or null outside its calculation.
+         *
+         * @var \WC_Cart|null
+         */
+        private $main_cart_in_calculation = null;
+        /**
+         * Whether this request selected the currency before the cart loaded (a switch or a `?currency=` link), so the load
+         * must recalculate stale totals.
+         *
+         * @var bool
+         */
+        private $currency_changed_before_cart_load = false;
+        /**
+         * The REST request that set the Store API flag, so only its own completion clears it, not a nested one's.
+         *
+         * @var \WP_REST_Request|null
+         */
+        private $matched_store_api_request = null;
+        /**
          * Class constructor.
          *
          * @param \WCPay\MultiCurrency\Interfaces\MultiCurrencySettingsInterface     $settings_service     Settings service.
@@ -29130,6 +29574,53 @@ namespace WCPay\MultiCurrency {
          * @return void
          */
         public function init_hooks()
+        {
+        }
+        /**
+         * Treats the request as a Store API request once WordPress has matched it, or a request batched in it, to a
+         * Store API route, even though its URL didn't look like one (see `Utils::set_matched_store_api_route()`).
+         *
+         * Store API routes load and save the shopper's cart, so they must run in the shopper's selected currency:
+         * the store-currency overrides that `init_hooks()` sets up for other REST API requests are removed, and the
+         * frontend price and currency hooks are registered as they would be for a Store API request.
+         *
+         * @param mixed           $response Result to send to the client.
+         * @param mixed           $handler  Route handler used for the request.
+         * @param \WP_REST_Request $request  Request used to generate the response.
+         *
+         * @return mixed The unchanged response.
+         */
+        public function maybe_restore_selected_currency_for_store_api_route($response, $handler, $request)
+        {
+        }
+        /**
+         * Resets the "matched a Store API route" flag once the matched route's callbacks have run, so it does not
+         * outlive the REST request that set it (see `maybe_restore_selected_currency_for_store_api_route()`).
+         *
+         * Only the flag is restored, by design: the shopper-currency hooks and removed overrides stay, so the rest of the
+         * request (and later `batch/v1` sub-requests) keep using the shopper's currency rather than the store default.
+         * Scoping the reset to restore per sub-request would instead run those later sub-requests in the store default.
+         *
+         * The deferred cart-load selection is also detached here so it does not outlive the route that armed it (for
+         * example a route that never loads the cart).
+         *
+         * @param mixed                 $response Result to send to the client.
+         * @param mixed                 $handler  Route handler used for the request.
+         * @param \WP_REST_Request|null $request The request whose callbacks just ran.
+         *
+         * @return mixed The unchanged response.
+         */
+        public function reset_matched_store_api_route($response, $handler = null, $request = null)
+        {
+        }
+        /**
+         * Re-selects the shopper's currency once the cart has loaded from its session, on the Cart-Token session that
+         * renders the response. Armed by `maybe_restore_selected_currency_for_store_api_route()` (which explains the
+         * two-step selection) and detached by `reset_matched_store_api_route()`.
+         *
+         * @return void
+         */
+        public function select_currency_for_matched_store_api_route()
         {
         }
         /**
@@ -29393,12 +29884,13 @@ namespace WCPay\MultiCurrency {
         /**
          * Gets the converted price using the current currency with the rounding and charm pricing settings.
          *
-         * @param mixed  $price The price to be converted.
-         * @param string $type The type of price being converted. One of 'product', 'shipping', 'tax', 'coupon', or 'exchange_rate'.
+         * @param mixed         $price    The price to be converted.
+         * @param string        $type     The type of price being converted. One of 'product', 'shipping', 'tax', 'coupon', or 'exchange_rate'.
+         * @param Currency|null $currency The currency to convert the price to. Defaults to the selected currency.
          *
          * @return float The converted price.
          */
-        public function get_price($price, string $type): float
+        public function get_price($price, string $type, ?\WCPay\MultiCurrency\Currency $currency = null): float
         {
         }
         /**
@@ -29426,6 +29918,82 @@ namespace WCPay\MultiCurrency {
         {
         }
         /**
+         * Records the currency the saved cart totals were calculated in, so a later load can detect
+         * stale totals. Runs in every context, after WC_Cart_Session::set_session().
+         *
+         * @param \WC_Cart|null $cart The cart whose totals were calculated.
+         *
+         * @return void
+         */
+        public function record_cart_totals_currency($cart = null)
+        {
+        }
+        /**
+         * Starts tracking whether the main cart's totals are saved during this calculation.
+         *
+         * @param \WC_Cart|null $cart The cart about to be calculated.
+         *
+         * @return void
+         */
+        public function start_cart_totals_calculation($cart = null)
+        {
+        }
+        /**
+         * Notes the totals WC_Cart_Session::set_session() saved for the main cart during a cart calculation.
+         *
+         * `woocommerce_cart_updated` doesn't say which cart was saved, so a save counts as the main cart's only when the
+         * session now holds the main cart's totals.
+         *
+         * @return void
+         */
+        public function note_cart_totals_saved()
+        {
+        }
+        /**
+         * Clears the cart totals currency stamp and totals hash: when the cart is emptied, so they don't keep an
+         * otherwise empty session alive, and whenever the saved totals are not the ones just calculated.
+         *
+         * @return void
+         */
+        public function clear_cart_totals_currency()
+        {
+        }
+        /**
+         * Returns a hash of saved cart totals, to tell whether they are the totals the currency stamp was recorded for.
+         *
+         * @param mixed $totals The cart totals.
+         *
+         * @return string
+         */
+        private function get_cart_totals_hash($totals): string
+        {
+        }
+        /**
+         * Recalculates the loaded cart when its totals were calculated in a different currency than
+         * the one now in effect, so stale totals cannot be reused under the new currency.
+         *
+         * @return void
+         */
+        public function maybe_recalculate_cart_for_currency()
+        {
+        }
+        /**
+         * Drops the shipping rates WooCommerce cached in the session for the cart's packages.
+         *
+         * @return void
+         */
+        private function clear_cached_shipping_rates()
+        {
+        }
+        /**
+         * Whether the cart is loading for a REST request, including one whose cart loads before `REST_REQUEST` is defined.
+         *
+         * @return bool
+         */
+        private function is_rest_request(): bool
+        {
+        }
+        /**
          * When an order is refunded, a new psuedo order is created to represent the refund.
          * We want to check if the original order was a multi-currency order, and if so, copy the meta data
          * to the new order.
@@ -29441,6 +30009,56 @@ namespace WCPay\MultiCurrency {
          * automatic currency switch.
          */
         public function display_geolocation_currency_update_notice()
+        {
+        }
+        /**
+         * Gets the geolocation notice markup with empty slots for the country and currency names.
+         *
+         * @return string
+         */
+        private function get_geolocation_notice_template(): string
+        {
+        }
+        /**
+         * Whether the visitor sees a currency other than the store's because of their location.
+         *
+         * @param string $currency_code The visitor's selected currency code.
+         *
+         * @return bool
+         */
+        private function is_geolocated_currency_switch(string $currency_code): bool
+        {
+        }
+        /**
+         * Builds the geolocation notice for the visitor's country and the given currency.
+         *
+         * @param Currency $currency The currency the visitor was switched to.
+         *
+         * @return array{country_name: string, currency_name: string, message: string, id: string}
+         */
+        private function get_geolocation_notice(\WCPay\MultiCurrency\Currency $currency): array
+        {
+        }
+        /**
+         * Builds the geolocation notice sentence.
+         *
+         * @param string $country_name  The visitor's country name.
+         * @param string $currency_name The selected currency name.
+         *
+         * @return string
+         */
+        private function get_geolocation_notice_message(string $country_name, string $currency_name): string
+        {
+        }
+        /**
+         * Wraps the geolocation notice sentence in WooCommerce's store notice markup.
+         *
+         * @param string $message   The notice sentence.
+         * @param string $notice_id The notice ID.
+         *
+         * @return string
+         */
+        private function get_geolocation_notice_markup(string $message, string $notice_id): string
         {
         }
         /**
@@ -30335,6 +30953,12 @@ namespace WCPay\MultiCurrency {
     class Utils
     {
         /**
+         * Whether WordPress has matched the request, or a request batched in it, to a Store API route.
+         *
+         * @var bool
+         */
+        private static $matched_store_api_route = false;
+        /**
          * Checks backtrace calls to see if a certain call has been made.
          *
          * @param array $calls Array of the calls to check for.
@@ -30342,6 +30966,31 @@ namespace WCPay\MultiCurrency {
          * @return bool True if found, false if not.
          */
         public function is_call_in_backtrace(array $calls): bool
+        {
+        }
+        /**
+         * Checks whether one of the given calls is within the innermost frames of the current backtrace.
+         *
+         * Like is_call_in_backtrace(), but scans at most $limit frames (innermost first) and stops at the
+         * first match. Use it on hot paths to detect a call that always sits a fixed, shallow distance below
+         * the current frame, so the per-call cost stays bounded regardless of overall stack depth.
+         *
+         * @param array $calls Array of the calls to check for, in the Class->method or Class::method form.
+         * @param int   $limit Maximum number of frames to scan.
+         *
+         * @return bool True if one of the calls is found within the scanned frames, false otherwise.
+         */
+        public function is_call_in_backtrace_within(array $calls, int $limit): bool
+        {
+        }
+        /**
+         * Counts how many frames in the current backtrace match the given call.
+         *
+         * @param string $call Call string in the form rendered by wp_debug_backtrace_summary (for example Class->method).
+         *
+         * @return int The number of matching frames.
+         */
+        public function get_backtrace_call_count(string $call): int
         {
         }
         /**
@@ -30379,6 +31028,19 @@ namespace WCPay\MultiCurrency {
          * @return bool
          */
         public static function is_store_api_request()
+        {
+        }
+        /**
+         * Records whether WordPress has matched the request to a Store API route.
+         *
+         * The URL doesn't always name the route that handles the request, so once a Store API route has been
+         * matched, the request is a Store API request whatever its URL looks like.
+         *
+         * @param bool $matched True once a Store API route has been matched.
+         *
+         * @return void
+         */
+        public static function set_matched_store_api_route(bool $matched)
         {
         }
         /**
@@ -34563,9 +35225,9 @@ namespace WCPay\Payment_Methods {
         {
         }
         /**
-         * Returns payment method ID
+         * Returns whether this is an express checkout payment method.
          *
-         * @return string
+         * @return bool
          */
         public function is_express_checkout()
         {
@@ -34659,7 +35321,7 @@ namespace WCPay\Payment_Methods {
          * @param \WP_User $user User to get payment token from.
          * @param string  $payment_method_id Stripe payment method ID string.
          *
-         * @return \WC_Payment_Token_CC|\WC_Payment_Token_WCPay_SEPA WC object for payment token.
+         * @return \WC_Payment_Token WC object for payment token.
          */
         public function get_payment_token_for_user($user, $payment_method_id)
         {
@@ -35132,6 +35794,35 @@ namespace {
          * @return string Invoice ID.
          */
         public static function get_subscription_invoice_id($subscription)
+        {
+        }
+        /**
+         * Checks whether the amount an invoice collected matches the order total.
+         *
+         * The order can change after Stripe creates the invoice. WooCommerce also keeps fractional line amounts
+         * and rounds only the order total to the store's price decimals, while Stripe rounds each invoice line
+         * to a minor unit. So allow one store price unit of difference per order line.
+         *
+         * @param WC_Order $order            The order.
+         * @param int      $amount_paid      The invoice's amount_paid, in minor units.
+         * @param string   $invoice_currency The invoice's currency.
+         *
+         * @return bool
+         */
+        public static function does_invoice_payment_match_order_total(\WC_Order $order, $amount_paid, $invoice_currency): bool
+        {
+        }
+        /**
+         * Gets the number of decimals the store prices a currency in.
+         *
+         * Multi-Currency prices other currencies with their locale's decimals, but webhooks run without its
+         * frontend filters, so wc_get_price_decimals() only holds for the store currency.
+         *
+         * @param string $currency The currency code.
+         *
+         * @return int
+         */
+        private static function get_price_decimals(string $currency): int
         {
         }
         /**
@@ -36980,49 +37671,6 @@ namespace {
         }
     }
     /**
-     * Class for loading WooPayments Subscription empty state screen.
-     */
-    class WC_Payments_Subscriptions_Empty_State_Manager
-    {
-        use \WC_Payments_Subscriptions_Utilities;
-        /**
-         * WC_Payments_Account instance to get information about the account.
-         *
-         * @var WC_Payments_Account
-         */
-        private $account;
-        /**
-         * WC_Payments_Subscriptions_Empty_State Constructor
-         *
-         * @param WC_Payments_Account $account Account class instance.
-         */
-        public function __construct(\WC_Payments_Account $account)
-        {
-        }
-        /**
-         * Registers the hooks for this class.
-         */
-        public function init_hooks()
-        {
-        }
-        /**
-         * Enqueues the WCPay Subscription empty state scripts and styles.
-         */
-        public function enqueue_scripts_and_styles()
-        {
-        }
-        /**
-         * Replaces the default empty subscriptions state HTML with a wrapper for our content to be placed into.
-         *
-         * @deprecated 6.3.0
-         * @param string $default_empty_state_html The default Subscriptions empty state HTML.
-         * @return string The empty subscriptions sate wrapper.
-         */
-        public function replace_subscriptions_empty_state($default_empty_state_html)
-        {
-        }
-    }
-    /**
      * Subscriptions Event/Webhook Handler class
      */
     class WC_Payments_Subscriptions_Event_Handler
@@ -37781,6 +38429,14 @@ namespace {
             'merchant_refund_reason',
             // Address autocomplete JWT is a credential; keep it out of logs.
             'token',
+            // WooPay order status webhook signing secret and Terminal connection token.
+            'webhook_secret',
+            'secret',
+            // The customer description repeats the billing name and username, so redact it like `name`.
+            'description',
+            'order_key',
+            // Return URLs include the order key.
+            'return_url',
         ];
         const EVENT_AUTHORIZED = 'authorized';
         const EVENT_AUTHORIZATION_VOIDED = 'authorization_voided';
@@ -39124,18 +39780,6 @@ namespace {
          * @return string
          */
         private function uuid()
-        {
-        }
-        /**
-         * Returns a list of fingerprinting metadata to attach to order.
-         *
-         * @param string $fingerprint User fingerprint.
-         *
-         * @return array List of fingerprinting metadata.
-         *
-         * @throws \WCPay\Exceptions\API_Exception If an error occurs.
-         */
-        private function get_fingerprint_metadata($fingerprint = ''): array
         {
         }
         /**
@@ -40520,6 +41164,13 @@ namespace WCPay\WooPay {
         const STORE_API_NAMESPACE_PATTERN = '@^(wc/store(/v[\d]+)?|store-api)$@';
         const WOOPAY_SESSION_KEY = 'woopay-user-data';
         /**
+         * Nonce action for saving the blocks checkout "save my information" choice in the session.
+         *
+         * The `woocommerce` prefix is required: WooCommerce binds nonces whose action starts with it
+         * to the shopper's own session.
+         */
+        const SAVE_USER_NONCE_ACTION = 'woocommerce_payments_woopay_save_user';
+        /**
          * How old a WooPay attestation envelope may be, in seconds.
          *
          * The envelope carries no nonce of its own, so freshness bounds how long a replay of
@@ -40763,6 +41414,36 @@ namespace WCPay\WooPay {
         {
         }
         /**
+         * Whether a WooPay session AJAX request comes from outside the store's own pages.
+         *
+         * The checkout scripts only POST to these actions, so anything else is refused. A POST passes
+         * if the browser marks it same-origin, has no `Origin` (browsers always send one on POST), or
+         * its `Origin` matches the store's scheme, host and port.
+         *
+         * @return bool True when the request must be refused.
+         */
+        private static function is_disallowed_session_request(): bool
+        {
+        }
+        /**
+         * Reduces a URL to a lowercase `scheme://host:port`, filling in the default port.
+         *
+         * @param mixed $url The URL or origin. Mixed, since filter callbacks can return anything.
+         *
+         * @return string The origin, or '' when there is no http(s) origin.
+         */
+        private static function normalize_origin($url): string
+        {
+        }
+        /**
+         * Sends a 403 when is_disallowed_session_request() refuses the request.
+         *
+         * @return void
+         */
+        private static function reject_disallowed_session_request()
+        {
+        }
+        /**
          * Used to initialize woopay session.
          *
          * @return void
@@ -40784,6 +41465,18 @@ namespace WCPay\WooPay {
          * @return void
          */
         public static function ajax_set_woopay_phone_number()
+        {
+        }
+        /**
+         * Keeps the blocks checkout "save my information" choice with the shopper who made it as a guest,
+         * when WooCommerce moves their session to their account, e.g. when creating it during checkout.
+         *
+         * @param string $guest_session_id The former session ID.
+         * @param string $user_session_id  The ID of the session the guest session was moved to.
+         *
+         * @return void
+         */
+        public static function keep_woopay_user_data_on_login($guest_session_id, $user_session_id)
         {
         }
         /**
@@ -41545,6 +42238,17 @@ namespace WCPay\WooPay {
          * @return array
          */
         private static function get_persisted_available_countries()
+        {
+        }
+        /**
+         * Get the "save my information" choice the blocks checkout saved in the session.
+         *
+         * The choice and the phone number are personal to the shopper who gave them, so they only
+         * count in the session that made the choice.
+         *
+         * @return array Empty, unless the choice was made in the current session.
+         */
+        private function get_woopay_session_data(): array
         {
         }
     }
@@ -43310,6 +44014,11 @@ namespace WCPay\Internal {
     class LoggerContext
     {
         /**
+         * Query parameters whose values help identify the request in logged URLs.
+         * All other values are redacted.
+         */
+        private const URL_QUERY_KEYS_TO_KEEP = ['_locale', 'action', 'doing_wp_cron', 'file_id', 'page', 'path', 'redirect_status', 'rest_route', 'section', 'tab', 'view', 'wc-ajax', 'wc_payment_method'];
+        /**
          * Request identifier.
          *
          * @var string
@@ -43394,6 +44103,25 @@ namespace WCPay\Internal {
          * @return void
          */
         private function init_context()
+        {
+        }
+        /**
+         * Redacts the query values of a URL, except the allowed keys.
+         *
+         * @param string $url The URL to redact.
+         *
+         * @return string
+         */
+        private function redact_url_query(string $url): string
+        {
+        }
+        /**
+         * Validates the allow-list returned by third-party filters.
+         *
+         * @param mixed $keys_to_keep Filtered query keys.
+         * @return string[]
+         */
+        private function validate_url_query_keys_to_keep($keys_to_keep): array
         {
         }
     }
@@ -43870,6 +44598,12 @@ namespace WCPay\Internal\Service {
          */
         const SESSION_KEY_PROCESSING_ORDER = 'wcpay_processing_order';
         /**
+         * Key name for saving the ID of the WC Session the processing order_id above was stored in.
+         *
+         * @type string
+         */
+        const SESSION_KEY_PROCESSING_ORDER_OWNER = 'wcpay_processing_order_session';
+        /**
          * HooksProxy instance.
          *
          * @var \WCPay\Internal\Proxy\HooksProxy
@@ -44091,6 +44825,41 @@ namespace WCPay\Internal\Service {
          * @return \stdClass[]
          */
         private function process_item(\WC_Order_Item $item, string $currency): array
+        {
+        }
+        /**
+         * Makes the Level 3 line items add up to the order total, or drops Level 3 data when they can't.
+         *
+         * Stripe needs an exact match. Rounding gaps get a `rounding-fix` line; bigger gaps (deposits, store credit) and
+         * invalid values drop the data. Descriptions are cut to 26 characters, the most card networks keep.
+         *
+         * @param mixed    $level3_data Level 3 data, as returned by the filter.
+         * @param \WC_Order $order       The order being paid for.
+         *
+         * @return array The Level 3 data, or an empty array when none should be sent.
+         */
+        private function reconcile_with_order_total($level3_data, \WC_Order $order): array
+        {
+        }
+        /**
+         * Whether a Level 3 value is a non-negative integer. Quantities from `ceil()` are floats like 2.0.
+         *
+         * @param mixed $value Value to check.
+         *
+         * @return bool
+         */
+        private function is_level3_amount($value): bool
+        {
+        }
+        /**
+         * Whether a Level 3 value is a non-empty string of at most `$max_length` characters.
+         *
+         * @param mixed $value      Value to check.
+         * @param int   $max_length Maximum number of characters.
+         *
+         * @return bool
+         */
+        private function is_level3_string($value, int $max_length): bool
         {
         }
         /**
@@ -44373,6 +45142,14 @@ namespace WCPay\Internal\Service {
         {
         }
         /**
+         * Returns the ID of the current WC session.
+         *
+         * @return string The session ID, or an empty string if there is no session.
+         */
+        public function get_session_id(): string
+        {
+        }
+        /**
          * Checks whether the WC_Session has been initialized.
          *
          * @return bool Whether the WC_Session has been initialized.
@@ -44406,7 +45183,7 @@ namespace WCPay {
 }
 namespace {
     /**
-     * Load customer multi-currency if feature is enabled or if it is the setup page.
+     * Whether this is the Multi-Currency setup flow.
      */
     function wcpay_multi_currency_onboarding_check()
     {
@@ -44488,11 +45265,6 @@ namespace {
     }
     /**
      * Initialize the Jetpack functionalities: connection, identity crisis, etc.
-     *
-     * PSR-11 containers declares to throw an un-throwable interface
-     * (it does not extend Throwable), and Psalm does not accept it.
-     *
-     * @psalm-suppress MissingThrowsDocblock
      */
     function wcpay_jetpack_init()
     {
@@ -44559,5 +45331,5 @@ namespace {
     }
 }
 namespace {
-    \define('WCPAY_VERSION_NUMBER', '11.2.1');
+    \define('WCPAY_VERSION_NUMBER', '11.3.0');
 }

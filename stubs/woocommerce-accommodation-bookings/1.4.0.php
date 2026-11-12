@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-accommodation-bookings 1.3.17.
+ * Generated stub declarations for woocommerce-accommodation-bookings 1.4.0.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -212,7 +212,7 @@ class WC_Accommodation_Booking_Admin_Product_Settings extends \WC_Settings_API
  * Required functions for REST API and Admin functionality.
  *
  * @class   WC_Accommodation_Booking_REST_And_Admin
- * @version 1.3.15
+ * @version 1.4.0
  */
 class WC_Accommodation_Booking_REST_And_Admin
 {
@@ -691,7 +691,7 @@ class WC_Accommodation_Booking
  * WC Accommodation Bookings class
  *
  * @class   WC_Accommodation_Bookings_Plugin
- * @version 1.3.16
+ * @version 1.4.0
  */
 class WC_Accommodation_Bookings_Plugin
 {
@@ -1250,4 +1250,4 @@ class WC_Accommodation_Booking_Addons
     {
     }
 }
-\define('WC_ACCOMMODATION_BOOKINGS_VERSION', '1.3.17');
+\define('WC_ACCOMMODATION_BOOKINGS_VERSION', '1.4.0');

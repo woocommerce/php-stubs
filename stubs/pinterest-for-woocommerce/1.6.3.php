@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for pinterest-for-woocommerce 1.6.2.
+ * Generated stub declarations for pinterest-for-woocommerce 1.6.3.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -30,7 +30,7 @@ namespace {
      * Base Plugin class holding generic functionality
      *
      * @class   Pinterest_For_Woocommerce
-     * @version 1.6.2
+     * @version 1.6.3
      */
     final class Pinterest_For_Woocommerce
     {
@@ -1001,7 +1001,7 @@ namespace Automattic\WooCommerce\Pinterest\API {
      * Base API Methods
      *
      * @class   Base
-     * @version 1.6.0
+     * @version 1.6.3
      */
     class Base
     {
@@ -1053,6 +1053,18 @@ namespace Automattic\WooCommerce\Pinterest\API {
          * @throws \Automattic\WooCommerce\Pinterest\PinterestApiException Pinterest API exception in case of API error in response.
          */
         public static function make_request($endpoint, $method = 'POST', $payload = array(), $api = '', $cache_expiry = false)
+        {
+        }
+        /**
+         * Send a prepared request and handle Pinterest API errors.
+         *
+         * @since 1.6.3
+         * @param array<string, mixed> $request Prepared request.
+         * @param string               $method  Requested HTTP method.
+         * @return mixed Decoded response body.
+         * @throws \Automattic\WooCommerce\Pinterest\PinterestApiException Pinterest API exception in case of API error in response.
+         */
+        protected static function send_prepared_request($request, $method)
         {
         }
         /**
@@ -1462,7 +1474,7 @@ namespace Automattic\WooCommerce\Pinterest\API {
      * API V5 Methods
      *
      * @class   APIV5
-     * @version 1.6.0
+     * @version 1.6.3
      */
     class APIV5 extends \Automattic\WooCommerce\Pinterest\API\Base
     {
@@ -2857,7 +2869,7 @@ namespace Automattic\WooCommerce\Pinterest\API {
      * Endpoint handing Pinterest Tags.
      *
      * @class   Tags
-     * @version 1.6.0
+     * @version 1.6.3
      */
     class Tags extends \Automattic\WooCommerce\Pinterest\API\VendorAPI
     {
@@ -6526,7 +6538,7 @@ namespace Automattic\WooCommerce\Pinterest {
      *
      * @class   Heartbeat
      * @since   1.1.0
-     * @version 1.6.0
+     * @version 1.6.3
      */
     class Heartbeat
     {
@@ -9592,7 +9604,7 @@ namespace Automattic\WooCommerce\Pinterest {
      * Class Tracker responsible for hooking into system events.
      *
      * @class   Tracking
-     * @version 1.6.2
+     * @version 1.6.3
      */
     class Tracking
     {
@@ -9875,7 +9887,8 @@ namespace Automattic\WooCommerce\Pinterest {
         /**
          * Method which iterates over all the attached trackers and delegates the event to them.
          *
-         * Server-side trackers (Conversions API) are skipped for crawler/bot requests.
+         * Server-side trackers (Conversions API) are skipped for crawler/bot requests
+         * and when the current visitor has not given marketing consent.
          * Browser-side rendering (Tag JS) is intentionally NOT skipped, so full-page
          * caches that omit `Vary: User-Agent` do not serve bot-rendered HTML missing
          * Tag JS to real users on a subsequent cache hit. See CrawlerDetector.
@@ -10563,7 +10576,7 @@ namespace Automattic\WooCommerce\Pinterest\Tracking {
      * Generates browser PageVisit events and handles their CAPI beacons.
      *
      * @class   PageVisit
-     * @version 1.6.2
+     * @version 1.6.3
      */
     class PageVisit
     {
@@ -10585,6 +10598,14 @@ namespace Automattic\WooCommerce\Pinterest\Tracking {
          * @return void
          */
         public static function init_hooks()
+        {
+        }
+        /**
+         * Resolve the product shown on arrival, including a complete variation selection.
+         *
+         * @return \WC_Product|false|null Product to report for the visit.
+         */
+        public static function get_page_product()
         {
         }
         /**
@@ -10610,6 +10631,15 @@ namespace Automattic\WooCommerce\Pinterest\Tracking {
         {
         }
         /**
+         * Prints the standalone CAPI beacon with the resolved product ID.
+         *
+         * @param int|null $product_id Product ID resolved for the visit.
+         * @return void
+         */
+        public static function print_beacon_for_product($product_id)
+        {
+        }
+        /**
          * Builds the JavaScript that generates a browser-side PageVisit event ID.
          *
          * @since 1.5.1
@@ -10624,9 +10654,10 @@ namespace Automattic\WooCommerce\Pinterest\Tracking {
          *
          * @since 1.5.1
          *
+         * @param mixed $event_product_id Product ID from the storefront event data, if provided.
          * @return string JavaScript using `eventId`, or an empty string when the Conversions API is disabled.
          */
-        private static function get_beacon_code()
+        private static function get_beacon_code($event_product_id)
         {
         }
         /**
@@ -10650,6 +10681,19 @@ namespace Automattic\WooCommerce\Pinterest\Tracking {
         {
         }
         /**
+         * Sign the product and its route. Include the query because products can share a path.
+         *
+         * The salt-bound token does not expire, so cached pages can keep sending it.
+         *
+         * @since 1.6.3
+         * @param int    $product_id Rendered product ID.
+         * @param string $url        Rendered request URI or validated beacon URL.
+         * @return string
+         */
+        private static function get_product_token(int $product_id, string $url)
+        {
+        }
+        /**
          * Validates that an event source URL is an absolute http(s) URL on this site.
          *
          * Protocol-relative URLs, URLs carrying user info and over-long URLs are rejected.
@@ -10664,14 +10708,14 @@ namespace Automattic\WooCommerce\Pinterest\Tracking {
         {
         }
         /**
-         * Builds PageVisit data from the constrained beacon payload.
+         * Builds the common product data for Tag and CAPI PageVisit events.
          *
-         * @param string $event_id  Browser-generated event ID.
-         * @param int    $product_id Optional product ID.
+         * @param string                 $event_id Browser-generated event ID, if available.
+         * @param \WC_Product|false|null $product  Visited product, if available.
          *
          * @return \Automattic\WooCommerce\Pinterest\Tracking\Data\Product|\Automattic\WooCommerce\Pinterest\Tracking\Data\None PageVisit event data.
          */
-        private static function get_event_data(string $event_id, int $product_id)
+        public static function get_product_event_data(string $event_id, $product)
         {
         }
     }
@@ -10679,7 +10723,7 @@ namespace Automattic\WooCommerce\Pinterest\Tracking {
      * Class adds PinterestTag tracker support.
      *
      * @class   Tag
-     * @version 1.6.0
+     * @version 1.6.3
      */
     class Tag extends \Automattic\WooCommerce\Pinterest\Tracking\Tracker
     {
@@ -10944,7 +10988,23 @@ namespace Automattic\WooCommerce\Pinterest\Tracking {
         {
         }
         /**
+         * Runs event code only when the Pinterest base tag has defined `pintrk`.
+         *
+         * A consent plugin can block the base tag while still letting event scripts run.
+         *
+         * @since 1.6.3
+         *
+         * @param string $code Event JavaScript.
+         * @return string Guarded event JavaScript.
+         */
+        private static function guard_event_code(string $code)
+        {
+        }
+        /**
          * Adds a fragment to trigger Pinterest Tag event on add to cart event.
+         *
+         * The call is guarded because WooCommerce injects fragments with jQuery, which runs the script
+         * even when a consent plugin has blocked the base tag and `pintrk` is undefined.
          *
          * @since 1.4.0
          *
@@ -11352,7 +11412,7 @@ namespace Automattic\WooCommerce\Pinterest {
      *
      * @class   WPConsentAPI
      * @since   1.4.17
-     * @version 1.4.21
+     * @version 1.6.3
      */
     class WPConsentAPI
     {
@@ -11381,11 +11441,34 @@ namespace Automattic\WooCommerce\Pinterest {
         public function should_disable_tracking_for_user_consent(): bool
         {
         }
+        /**
+         * Check if Conversions API events should be skipped based on user marketing consent.
+         *
+         * Stores with a full-page cache may force the Tag on for every visitor and let
+         * the consent plugin block it in the browser. Server-side events still follow
+         * the marketing consent of the current request.
+         *
+         * @since 1.6.3
+         *
+         * @param bool $disable_conversions_api Whether an earlier callback already skips Conversions API events.
+         * @return bool
+         */
+        public function should_disable_conversions_api_for_user_consent($disable_conversions_api = false)
+        {
+        }
+        /**
+         * Follow the API's marketing consent decision, allowing tracking when the API is unavailable.
+         *
+         * @return bool
+         */
+        private function has_marketing_consent(): bool
+        {
+        }
     }
 }
 namespace {
     \define('PINTEREST_FOR_WOOCOMMERCE_PLUGIN_FILE', __FILE__);
-    \define('PINTEREST_FOR_WOOCOMMERCE_VERSION', '1.6.2');
+    \define('PINTEREST_FOR_WOOCOMMERCE_VERSION', '1.6.3');
     /**
      * Main instance of Pinterest_For_Woocommerce.
      *

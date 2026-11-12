@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-services 3.7.5.
+ * Generated stub declarations for woocommerce-services 3.7.6.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -2890,9 +2890,21 @@ namespace {
          */
         private $pre_recalculation_tax_snapshots = array();
         /**
-         * Taxable amounts of order items as they were before an in-request save changed
-         * them, keyed by item id. The REST API saves an edited item before it
-         * recalculates the order, so this is the only place the old amount is visible.
+         * Taxes of orders that can't be edited as they were before the admin saved their
+         * items, keyed by order id. Taken on every such save (Recalculate, Update and any
+         * other request that saves the items), because the save rebuilds the tax lines from
+         * the rate table, with their rounding. The next tax calculation of the order in the
+         * request starts from it. Update recalculates without taxes, so after an Update the
+         * entry stays until a later calculation in the same request uses it.
+         *
+         * @var array
+         */
+        private $pre_save_tax_snapshots = array();
+        /**
+         * Taxable amounts, tax class and tax status of order items as they were before an
+         * in-request save changed them, keyed by item id. The REST API saves an edited item
+         * before it recalculates the order, so this is the only place the old values are
+         * visible.
          *
          * @var array
          */
@@ -2964,6 +2976,22 @@ namespace {
          */
         private $non_taxable_line_items = array();
         /**
+         * Highest rate a line item answered for each rate row, by what identifies the row,
+         * since the current cart or order lookup began. See get_rate_to_store() and
+         * reset_rate_row_memory().
+         *
+         * @var float[]
+         */
+        private $highest_rates_stored = array();
+        /**
+         * Last rate shipping answered for each rate row, by what identifies the row, since
+         * the current cart or order lookup began. See get_rate_to_store() and
+         * reset_rate_row_memory().
+         *
+         * @var float[]
+         */
+        private $shipping_rates_stored = array();
+        /**
          * The tax class each order line item was sent to TaxJar in.
          *
          * Recorded while the TaxJar request for an order is built and read back when the
@@ -3022,6 +3050,11 @@ namespace {
          * cannot be sent to TaxJar.
          */
         private const ORDER_TAX_LOOKUP_BAD_STORE_ADDRESS = 'bad_store_address';
+        /**
+         * Order item props an item's tax depends on: the amounts it is taxed on, and the
+         * tax class and status that decide which rates apply.
+         */
+        private const ORDER_ITEM_TAX_BASE_PROPS = array('total', 'subtotal', 'tax_class', 'tax_status');
         /**
          * WooCommerce's after-calculate-taxes hook for each order item type.
          */
@@ -3239,11 +3272,17 @@ namespace {
         {
         }
         /**
-         * Calculate tax / totals using TaxJar for backend orders
+         * Calculate tax / totals using TaxJar for backend orders.
+         *
+         * Runs before the admin saves an order's items, as Recalculate and Update do. For
+         * an order that can't be edited, TaxJar isn't asked: the order's taxes are kept in
+         * $pre_save_tax_snapshots for preserve_order_taxes_on_recalculation(), and nothing
+         * else is done.
          *
          * Based on the TaxJar plugin.
          * See: https://github.com/taxjar/taxjar-woocommerce-plugin/blob/96b5d57/includes/class-wc-taxjar-integration.php#L557
          *
+         * @param int $order_id The order whose items are about to be saved.
          * @return void
          */
         public function calculate_backend_totals($order_id)
@@ -3586,6 +3625,18 @@ namespace {
         {
         }
         /**
+         * Take the tax off an order item TaxJar answered as exempt.
+         *
+         * When another line on the order was taxed, the order has the rates and the item needs
+         * none. When none was, the item keeps its rates at $0: the order's tax lines come from
+         * them, and an order with none would be looked up again as new on its next edit.
+         *
+         * @param WC_Order_Item_Product $item The order item.
+         */
+        private function clear_exempt_order_item_taxes($item)
+        {
+        }
+        /**
          * Remember the cart item an order item was created from.
          *
          * @internal Hooked to woocommerce_checkout_create_order_line_item.
@@ -3632,9 +3683,13 @@ namespace {
          * Tax an order item at the given rate rows, replacing what WooCommerce found.
          *
          * The percentages come from TaxJar's answer for the item when it is given. Rows are
-         * shared by every product in a tax class, so they hold whichever line was stored
-         * last: an item TaxJar answered as exempt would otherwise pay the rate of a taxed
-         * item beside it.
+         * shared by every product in a tax class, so they hold the highest rate a line
+         * answered (see get_rate_to_store()): an item TaxJar answered as exempt would
+         * otherwise pay the rate of a taxed item beside it.
+         *
+         * Only a taxable item pays item tax, as in WooCommerce. A "Shipping only" product is
+         * sent to TaxJar as taxable because its rate rows carry the shipping tax, so it has
+         * rate ids here, but they are not for the item itself.
          *
          * @param WC_Order_Item_Product $item          The order item.
          * @param array                 $rate_ids      Tax rate ids.
@@ -3764,6 +3819,59 @@ namespace {
          * @return array
          */
         private function get_itemized_tax_rates($taxes, $taxjar_taxes, $options): array
+        {
+        }
+        /**
+         * The rate to store in a rate row for a rate TaxJar answered.
+         *
+         * A row is shared by every line in its tax class at an address, but TaxJar answers per
+         * line, by price. Clothing under $110 in Albany, NY has no state tax, for example, so a
+         * subscription whose first payment is over $110 and whose renewal is under it gets two
+         * answers for one row, in one request.
+         *
+         * A line is charged its own answer whatever the row holds (get_looked_up_rates()). The
+         * row is read by the tax lines of the order and of the subscription, and by a later
+         * failed lookup. So within one cart or order lookup it keeps the highest rate a line
+         * answered, or a tax line would show 0% next to the tax it carries. The memory starts
+         * over with each order lookup (reset_rate_row_memory()), so one order's answers do
+         * not decide another order's rows in the same process.
+         *
+         * Only line items call this. Shipping writes its own answer to its Standard row, which
+         * can be lower than a line's, and WooCommerce charges shipping that row's rate. So once
+         * shipping has answered for a row in this request, this returns shipping's answer, or a
+         * later lookup with no shipping breakdown would charge shipping a line's higher rate.
+         *
+         * @param array  $location  Address the row is for.
+         * @param string $tax_class Tax class of the row.
+         * @param int    $priority  Priority of the row.
+         * @param float  $rate      Rate TaxJar answered, as a percentage.
+         *
+         * @return float
+         */
+        private function get_rate_to_store(array $location, $tax_class, $priority, $rate)
+        {
+        }
+        /**
+         * Forget the rates remembered for the rate rows.
+         *
+         * Called when a lookup starts for an order. A checkout's carts share one memory, as
+         * Subscriptions totals the recurring carts and the main cart in one request, but an
+         * order recalculated by the REST API, WP-CLI or a scheduled job is its own lookup, and
+         * one process can recalculate many orders.
+         */
+        private function reset_rate_row_memory()
+        {
+        }
+        /**
+         * What identifies a rate row for get_rate_to_store().
+         *
+         * @param array  $location  Address the row is for.
+         * @param string $tax_class Tax class of the row.
+         * @param int    $priority  Priority of the row.
+         *
+         * @return string
+         */
+        private static function get_rate_row_key(array $location, $tax_class, $priority)
         {
         }
         /**
@@ -4108,10 +4216,24 @@ namespace {
          *
          * @since 3.7.1
          *
-         * @param WC_Order $order The order being recalculated.
+         * @param WC_Abstract_Order $order The order being recalculated. A refund comes here too.
          * @return bool
          */
         private function should_preserve_order_taxes($order)
+        {
+        }
+        /**
+         * Whether an order can no longer be edited, so its tax is a record of what was charged.
+         *
+         * Only WC_Order has is_editable(), so a refund is never locked here, and
+         * should_preserve_order_taxes() leaves refunds alone before it matters. A checkout
+         * draft is not editable in WooCommerce's sense either, but nothing has been charged
+         * on it: the Store API recalculates it on every cart change, so it is not locked.
+         *
+         * @param mixed $order The order, a refund, or whatever a hook passed.
+         * @return bool
+         */
+        private function order_cannot_be_edited($order)
         {
         }
         /**
@@ -4150,8 +4272,10 @@ namespace {
          * have (there is no rate to re-use). See lookup_order_taxes().
          *
          * The cart/checkout, Store API and admin-AJAX flows have their own handling and are
-         * left untouched, an order with no existing tax lines and nothing to look up is left
-         * to WC, and a VAT-exempt order keeps the zero tax WC gives it.
+         * left untouched, except an admin-AJAX recalculation of an order that can't be
+         * edited. An order with no existing tax lines and nothing to look up is left to WC,
+         * unless it can't be edited and wasn't created in this request: then it stays at no
+         * tax. A VAT-exempt order keeps the zero tax WC gives it.
          *
          * Restoration happens on woocommerce_order_after_calculate_totals, the only post-
          * recalculation hook WC fires on this path. A caller that invokes
@@ -4164,8 +4288,8 @@ namespace {
          *
          * @internal Hooked to woocommerce_order_before_calculate_taxes.
          *
-         * @param array    $args  Args passed to calculate_taxes(). Unused.
-         * @param WC_Order $order The order being recalculated.
+         * @param array             $args  Args passed to calculate_taxes(). Unused.
+         * @param WC_Abstract_Order $order The order being recalculated. A refund comes here too.
          *
          * @since 3.6.8
          */
@@ -4191,23 +4315,28 @@ namespace {
          * - The taxed address changed on an order with refunded tax: TaxJar is not asked,
          *   so the refunds keep matching the order's rates. The cases above apply, and a
          *   note says why the tax was not updated.
+         * - A tax class or tax status changed on an order that can't be edited: the change
+         *   is saved, the tax charged stays, and a note says so.
+         * - An order that can't be edited was charged no tax: it stays at no tax, unless a
+         *   lookup gives it some. One created in this request is taxed as a new order.
          *
          * Everything said about one recalculation goes in a single order note.
          *
          * @internal Hooked to woocommerce_order_after_calculate_totals.
          *
-         * @param bool     $and_taxes Whether taxes were recalculated. Unused.
-         * @param WC_Order $order     The order whose totals were recalculated.
+         * @param bool              $and_taxes Whether taxes were recalculated. Unused.
+         * @param WC_Abstract_Order $order     The order whose totals were recalculated. A refund comes here too.
          */
         public function restore_order_taxes_after_recalculation($and_taxes, $order)
         {
         }
         /**
-         * Remember an order item's taxable amount before a save changes it.
+         * Remember an order item's taxable amount, tax class and tax status before a save
+         * changes them.
          *
          * The REST API saves an edited item before it recalculates the order, so by the
          * time preserve_order_taxes_on_recalculation() runs, the item no longer shows what
-         * it was. Only the first save in a request is kept: that is the amount the order's
+         * it was. Only the first save in a request is kept: that is what the order's
          * recorded tax was based on.
          *
          * @internal Hooked to woocommerce_before_order_item_object_save.
@@ -4217,6 +4346,25 @@ namespace {
          * @since 3.7.1
          */
         public function remember_order_item_base_before_save($item)
+        {
+        }
+        /**
+         * Put back a line's saved tax class when a REST request resets it to its product's
+         * on an order that can't be edited.
+         *
+         * WooCommerce's set_product() gives a line its product's current class, and the REST
+         * API calls it whenever a request sends product_id, as the apps do on every update.
+         * Without this, every app edit would rewrite the class of every line on a paid order.
+         * A class the request sent, or that isn't the one set_product() gives, stays.
+         *
+         * @internal Hooked to woocommerce_rest_set_order_item.
+         *
+         * @param WC_Order_Item $item   The item about to be saved.
+         * @param mixed         $posted The item's data in the request.
+         *
+         * @since 3.7.6
+         */
+        public function keep_saved_tax_class_on_locked_order($item, $posted = \null)
         {
         }
         /**
@@ -4357,14 +4505,20 @@ namespace {
          * Work out which of an order's taxable amounts changed since it was last saved.
          *
          * Covers the three ways an edit reaches a recalculation: an existing item whose
-         * total changed (saved already, or still pending), an item added (no id yet, or
-         * first saved in this request), and an item removed (still saved, but no longer on
-         * the order; or deleted or retyped earlier in this request).
+         * total, tax class or tax status changed (saved already, or still pending), an item
+         * added (no id yet, or first saved in this request), and an item removed (still
+         * saved, but no longer on the order; or deleted or retyped earlier in this request).
          *
          * @param WC_Order $order The order about to be recalculated.
          * @return array {
          *   @type int[] $known_ids        Items saved before this request, still on the order.
-         *   @type int[] $changed_ids      Saved items whose taxable amount changed.
+         *   @type int[] $changed_ids      Saved items whose taxable amount, tax class or tax status changed.
+         *   @type array $reclassed        Changed items whose tax class or tax status changed, keyed by item
+         *                                 id: the tax class they were taxed in.
+         *   @type array $kept_tax         Items whose tax class or tax status changed on an order that can't
+         *                                 be edited, keyed by item id: the tax_class and tax_status they were
+         *                                 taxed with, and their name. These don't count as changed. A line
+         *                                 switched to another product isn't one: it counts as reclassed.
          *   @type array $new_item_taxes   Taxes of new items that arrived already taxed, keyed by spl_object_id().
          *   @type array $removed_rate_ids Rate ids of removed items: 'classes' keyed by tax class, and 'shipping';
          *                                 'untaxed_shipping' is true when a removed shipping line carried no tax.
@@ -4388,10 +4542,10 @@ namespace {
         {
         }
         /**
-         * The amounts a saved order item was taxed on, before this request changed them.
+         * What a saved order item was taxed on, before this request changed it.
          *
          * @param WC_Order_Item $item A saved line item, fee or shipping item.
-         * @return array{total: float|null, subtotal: float|null}
+         * @return array What get_order_item_tax_base() gives for the item as it was saved.
          */
         private function get_order_item_saved_base($item)
         {
@@ -4414,22 +4568,45 @@ namespace {
         {
         }
         /**
-         * Whether a saved order item's taxable amount differs from what it was taxed on.
+         * Which of a saved order item's tax inputs differ from what it was taxed on.
          *
-         * Compared as numbers: a caller that re-sends "10.00" for a stored "10" has not
-         * changed anything.
+         * Amounts are compared as numbers: a caller that re-sends "10.00" for a stored "10"
+         * has not changed anything. A shipping line never shows a tax class or status
+         * change: both come from the store's shipping settings, not from the item.
          *
          * @param WC_Order_Item $item A saved line item, fee or shipping item.
-         * @return bool
+         * @return array The props that moved (see ORDER_ITEM_TAX_BASE_PROPS), with the value each was taxed with.
          */
-        private function order_item_base_moved($item)
+        private function order_item_tax_base_moved($item)
         {
         }
         /**
-         * The amounts an order item's tax is calculated on.
+         * Whether a line item's tax class is the one set_product() gives it.
+         *
+         * That's its product's class, or the parent's when a request sends only the parent's
+         * product_id for a variation line: WooCommerce sets the parent's class, then puts the
+         * variation back. Any other class was set on purpose, not reset.
+         *
+         * @param WC_Order_Item_Product $item A line item.
+         * @return bool
+         */
+        private function order_item_has_tax_class_set_product_gives(\WC_Order_Item_Product $item)
+        {
+        }
+        /**
+         * Whether a line item was switched to another product or variation since it was saved.
+         *
+         * @param WC_Order_Item $item A saved line item, fee or shipping item.
+         * @return bool False for a fee or shipping item.
+         */
+        private function order_item_product_switched($item)
+        {
+        }
+        /**
+         * The props an order item's tax is calculated from, and the product it was for.
          *
          * @param array $data Item data (WC_Order_Item::get_data() shape).
-         * @return array{total: float|null, subtotal: float|null}
+         * @return array{total: float|null, subtotal: float|null, tax_class: string|null, tax_status: string|null, product_id: int|null, variation_id: int|null}
          */
         private static function get_order_item_tax_base($data)
         {
@@ -4452,10 +4629,13 @@ namespace {
          *
          * Items that did not change keep the tax they had. A changed item is taxed at the
          * rates it was charged at (a rate it paid nothing under stays at $0); a new item or
-         * fee at the rates of an existing item in the same tax class; a new shipping line at
-         * the rates of the existing shipping.
+         * fee, or one whose tax class or status changed, at the rates of an existing item in
+         * the same tax class; a new shipping line at the rates of the existing shipping.
+         * On an order that can't be edited, a tax class or status change doesn't count: the
+         * item is taxed as it was before that change. A line switched to another product
+         * does count, as a removed line and an added one would.
          * If the edit removed the last item of that class (or all the shipping), the rates
-         * the removed items were taxed at are used. With no such rate on the order, a new
+         * the removed items were taxed at are used. With no such rate on the order, such an
          * item is left untaxed and the note says so, unless it is shipping on an order
          * whose shipping was not taxed either.
          * A new item that arrives with its tax already set keeps it.
@@ -4470,7 +4650,7 @@ namespace {
          *   @type float    $old_tax Tax before the order changed.
          *   @type float    $new_tax Tax after.
          *   @type bool     $moved   Whether the tax changed.
-         *   @type string[] $untaxed Names of new items left untaxed for want of a rate.
+         *   @type string[] $untaxed Names of items left untaxed for want of a rate: new ones, and ones moved to another class or made taxable.
          * }
          */
         private function reapply_order_tax_rates($order, $snapshot)

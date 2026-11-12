@@ -231,11 +231,11 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "1.6.2": {
-                "source_url": "https://downloads.wordpress.org/plugin/pinterest-for-woocommerce.1.6.2.zip",
-                "source_zip_sha256": "3eb2cd8c04f5317e930e43efc66509537ec98caea04fc40814ef18efdab757e5",
-                "stub_sha256": "01bbbb12769420341ccf5df98dc36086000f9212c32e281a2a58850fac0a2fd0",
-                "generated_at": "2026-11-05T03:07:28Z",
+            "1.6.3": {
+                "source_url": "https://downloads.wordpress.org/plugin/pinterest-for-woocommerce.1.6.3.zip",
+                "source_zip_sha256": "dc152d4a0020c66cbc500dbe99c66659a4b61b0354a7fda3eed349d982fd54d4",
+                "stub_sha256": "33a7a265f80f7d24cc999bd1ec0bf9e5ac1e1e823b8a33195ca9c03a95bba5dd",
+                "generated_at": "2026-11-12T03:05:54Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -405,11 +405,11 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "1.3.17": {
-                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-accommodation-bookings.1.3.17.zip",
-                "source_zip_sha256": "eda80de63b5a5ef3f367e56cb6b6ac6870f0a4c7c460d1ec815fd314d0ec9d77",
-                "stub_sha256": "75dd6e316af3b7ee2153e3e8ecc8a478366fc90f38eddc7a9eb84907da3f58ed",
-                "generated_at": "2026-11-05T03:08:20Z",
+            "1.4.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-accommodation-bookings.1.4.0.zip",
+                "source_zip_sha256": "61d108feda7c9675e3a0aec999d2ea305c93747248041864414f87d327a463fc",
+                "stub_sha256": "a8f6973f51ae5c753e7065784756ce1850f0dfc2e12861b1416e4e779ad94641",
+                "generated_at": "2026-11-12T03:06:58Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -807,6 +807,14 @@
                 "generated_at": "2026-10-23T08:10:18Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "11.2.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-gateway-stripe.11.2.0.zip",
+                "source_zip_sha256": "98703e4529bd0fe3238a1b3707a357f5611147c29c3b7525ca1e84ef52b4a4cf",
+                "stub_sha256": "5726d4470e8d3935e64ebb28468247c94d1107c5a238e7b47c6bdbe511a1556a",
+                "generated_at": "2026-11-12T03:08:52Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-gift-cards": {
@@ -1000,11 +1008,11 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "11.2.1": {
-                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-payments.11.2.1.zip",
-                "source_zip_sha256": "929b6d3a08ffdc787061e859512e7a324d047a61e03539ab0c1d1dbd67bac8de",
-                "stub_sha256": "5d56de240063f6be42425c8d3f7450f06fe480b558728f99971680b24db4ee69",
-                "generated_at": "2026-11-04T03:05:54Z",
+            "11.3.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-payments.11.3.0.zip",
+                "source_zip_sha256": "c4692cf2960255f1f6419763415099a11ecae053e6bd36bef4546c08e0c5984f",
+                "stub_sha256": "4e50c35524dbb629fc9d2223763b1b8d520e3dc7198fd6e81031b83dedf94cb7",
+                "generated_at": "2026-11-12T03:09:51Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -1312,11 +1320,11 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "3.7.5": {
-                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-services.3.7.5.zip",
-                "source_zip_sha256": "d04f3d59d78c51a603fb8c458234bd946695a4f6adb92a1daee9e231bf02e5fa",
-                "stub_sha256": "66355be201d9fa960dfbc050214037442bf0938e9be794536bc26a3f640c06bf",
-                "generated_at": "2026-11-04T03:06:42Z",
+            "3.7.6": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-services.3.7.6.zip",
+                "source_zip_sha256": "8f07cd58ade21541e79a56d9db444eb6c5b6e31052ebfee10ad37cae0ea03a7d",
+                "stub_sha256": "095bedc73ee25da83bfb090dc7d7626ceebcdc374b5b341555ae18d8eb2c9059",
+                "generated_at": "2026-11-12T03:10:51Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -1367,6 +1375,14 @@
                 "source_zip_sha256": "b62060820d4cef2a8466497c4072411b6e1b7644a2b24db01d8c552872300db1",
                 "stub_sha256": "26ed2d61e0f4b13b7ede398ce29f7795002a85689cf15ca0fc618d8a3b3bc58b",
                 "generated_at": "2026-10-31T03:04:53Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "2.5.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-shipping.2.5.1.zip",
+                "source_zip_sha256": "da4e751b343171243e77a2111354734810d9c1acdbcb2a370cbff122316b81e6",
+                "stub_sha256": "e893c476854ec7eea42d17934c7539664ff19efdbe7c5c0903c7bacf19a04d55",
+                "generated_at": "2026-11-12T03:11:48Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -1539,6 +1555,14 @@
                 "source_zip_sha256": "075c297b01ccbbc041c6d52ad9e6163ebacc4318bcc1e11687a567df726e7a08",
                 "stub_sha256": "eb69dd0f7ac361e073ec89ad22ea7edb3359e63dc674f5e7b213f1182b8d1119",
                 "generated_at": "2026-10-23T08:31:55Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "5.4.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-shipstation-integration.5.4.1.zip",
+                "source_zip_sha256": "a9e59afaae3f6cf67d4b6a6c7f979f7a4e1ff6c5a3830fc706b52543dcbcb088",
+                "stub_sha256": "96b3dc1004ec15650ca04ea4a9ebc27985332f2b110f930c9f270ab99bedc0d5",
+                "generated_at": "2026-11-12T03:12:44Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
