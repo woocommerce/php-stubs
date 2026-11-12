@@ -1058,6 +1058,13 @@
                 "generated_at": "2026-10-21T21:37:25Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "1.18.26": {
+                "source_zip_sha256": "02df6338ea458fcc46a3ffa5acf538c64b280fa2cd54eed32fb9b828c4ff061e",
+                "stub_sha256": "341890205167935c0322f178ab023e5d79db642e5d6954cc23bd00f8b3754a68",
+                "generated_at": "2026-11-12T17:50:32Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-pre-orders": {
