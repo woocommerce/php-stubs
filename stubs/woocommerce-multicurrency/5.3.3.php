@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-multicurrency 5.3.2.
+ * Generated stub declarations for woocommerce-multicurrency 5.3.3.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -8756,6 +8756,40 @@ namespace WOOMC\Integration {
         {
         }
         /**
+         * Keep the subscription price in a renewal / resubscribe cart when the product has a custom price.
+         *
+         * WCS sets the subscription price on the cart item's product ({@see \WCS_Cart_Renewal::get_cart_item_from_session()}).
+         * Without this, the custom price check in {@see \WOOMC\AbstractConverter::get_price()} runs first
+         * and replaces it with the CURRENT custom price of the product.
+         *
+         * @since 5.3.3
+         *
+         * @param false|string|int|float $pre_value  Initially passed as "false". May return the actual value.
+         * @param string|int|float       $value      The price.
+         * @param \WC_Product|null       $product    The product object.
+         * @param string                 $price_type Regular, Sale, etc.
+         *
+         * @return string|int|float|false
+         *
+         * @internal     filter.
+         * @noinspection PhpUnusedParameterInspection
+         */
+        public function filter__woocommerce_multicurrency_pre_custom_price($pre_value, $value, $product = null, $price_type = '')
+        {
+        }
+        /**
+         * Is this product in a cart item that renews or resubscribes an existing subscription?
+         *
+         * @since 5.3.3 Extracted from {@see filter__woocommerce_multicurrency_pre_product_get_price()}.
+         *
+         * @param \WC_Product $product The product object.
+         *
+         * @return bool
+         */
+        protected function is_product_in_renewal_cart_item($product)
+        {
+        }
+        /**
          * Conditionally modify the price HTML string.
          *
          * @see   \WC_Subscriptions_Product::get_price_string()
@@ -13059,5 +13093,5 @@ namespace WOOMC\User {
     }
 }
 namespace {
-    \define('WOOCOMMERCE_MULTICURRENCY_VERSION', '5.3.2');
+    \define('WOOCOMMERCE_MULTICURRENCY_VERSION', '5.3.3');
 }

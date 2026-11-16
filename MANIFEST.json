@@ -957,10 +957,10 @@
                 "frameworks": [],
                 "public": true
             },
-            "5.3.2": {
-                "source_zip_sha256": "bfde8daef9ef7ba72cf0d7c36c6a0cb16f630ee0967672bbf62f526d848d05b8",
-                "stub_sha256": "ffcd154731296cc22aba716d001eeb3e046b1168f4de1c8da61e2c4fa3559980",
-                "generated_at": "2026-11-15T03:18:13Z",
+            "5.3.3": {
+                "source_zip_sha256": "27eb7864d3da52d7f80de08935a8225510e30ea769df715df0164378349d29f4",
+                "stub_sha256": "f8a5d86354068f1a90e02d381cca8988fa2d915f9f5edbc0a2d01950bd9a889d",
+                "generated_at": "2026-11-16T23:27:50Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": [],
                 "public": true
