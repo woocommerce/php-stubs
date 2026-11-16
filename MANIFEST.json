@@ -1474,6 +1474,13 @@
                 "generated_at": "2026-10-22T17:24:34Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "4.4.7": {
+                "source_zip_sha256": "be181286b010188b2e573eaa4476f6b170628ae04a63501d705998c41d32ac40",
+                "stub_sha256": "4e8df02011a4c40979c8dbd026f45e7841d441c13cb5276726c47b311dc74756",
+                "generated_at": "2026-11-16T16:42:07Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-shipping-new-zealand-post": {
