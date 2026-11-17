@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-shipping-australia-post 2.8.11.
+ * Generated stub declarations for woocommerce-shipping-australia-post 2.8.12.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -1492,7 +1492,7 @@ namespace {
     }
 }
 namespace {
-    \define('WC_SHIPPING_AUSTRALIA_POST_VERSION', '2.8.11');
+    \define('WC_SHIPPING_AUSTRALIA_POST_VERSION', '2.8.12');
     \define('WC_SHIPPING_AUSTRALIA_POST_PLUGIN_FILE', __FILE__);
     \define('WC_SHIPPING_AUSTRALIA_POST_ABSPATH', \trailingslashit(__DIR__));
     \define('WC_SHIPPING_AUSTRALIA_POST_PLUGIN_URL', \trailingslashit(\plugins_url('', __FILE__)));
