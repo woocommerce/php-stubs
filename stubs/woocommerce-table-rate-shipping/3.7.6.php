@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-table-rate-shipping 3.7.5.
+ * Generated stub declarations for woocommerce-table-rate-shipping 3.7.6.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -122,6 +122,9 @@ namespace WooCommerce\Shipping\Table_Rate {
         /**
          * Get conflicting shipping rates by instance ID.
          *
+         * Returns an empty array when the woocommerce_table_rate_get_shipping_rates filter
+         * returns something other than an array.
+         *
          * @param int $instance_id Shipping method instance ID.
          *
          * @return array
@@ -147,11 +150,10 @@ namespace WooCommerce\Shipping\Table_Rate {
          * Get an array of formatted rate values from the $_POST data.
          * Returns false if $_POST is empty.
          *
-         * No nonce is verified here; that is the caller's responsibility. Both current callers sit
-         * behind a `manage_woocommerce` check — maybe_add_error_notices_on_settings_saved() verifies
-         * the `woocommerce-settings` nonce itself, and wc_table_rate_admin_shipping_rows_process() is
-         * reached only from process_admin_options(). That second caller writes this return value to
-         * the rates table, so do not add a caller without an equivalent gate.
+         * No nonce is verified here; that is the caller's responsibility. The only caller,
+         * wc_table_rate_admin_shipping_rows_process(), is reached only from process_admin_options()
+         * behind a `manage_woocommerce` check, and writes this return value to the rates table, so
+         * do not add a caller without an equivalent gate.
          *
          * @return array|false
          */
@@ -192,6 +194,16 @@ namespace WooCommerce\Shipping\Table_Rate {
     class Shipping_Rates_Import_Export
     {
         /**
+         * Leading characters that make a spreadsheet read a CSV cell as a formula.
+         *
+         * The same list as WC_CSV_Exporter::escape_data(). The importer uses it too, so
+         * the quote the export adds is removed from exactly the cells that received it.
+         *
+         * @since 3.7.6
+         * @var string[]
+         */
+        public const FORMULA_TRIGGERS = array('=', '+', '-', '@', "\t", "\r");
+        /**
          * Constructor.
          */
         public function __construct()
@@ -203,6 +215,26 @@ namespace WooCommerce\Shipping\Table_Rate {
          * @return void
          */
         public function export_settings()
+        {
+        }
+        /**
+         * Escape a CSV value so spreadsheet applications do not run it as a formula.
+         *
+         * Like WC_CSV_Exporter::escape_data(), a value starting with =, +, -, @, tab or
+         * carriage return gets a leading single quote. `$wpdb` returns every column as a
+         * string, so numeric strings such as a negative cost are left as they are.
+         *
+         * A value whose trigger follows leading quotes (`'=x`) gets one more quote too.
+         * The importer removes exactly one quote, so every exported value re-imports
+         * unchanged.
+         *
+         * @param string|null $value Value read from the rates table. Nullable columns
+         *                           such as rate_label and rate_abort_reason can be null;
+         *                           null is returned unchanged.
+         *
+         * @return string|null
+         */
+        private function escape_csv_value($value)
         {
         }
         /**
@@ -285,6 +317,25 @@ namespace WooCommerce\Shipping\Table_Rate {
          * @return string|int
          */
         private function sanitize_rate_value(string $column, $value, string $format, int $precision)
+        {
+        }
+        /**
+         * Remove the single quote the exporter adds in front of formula characters.
+         *
+         * Based on WC_Product_Importer::unescape_data(), but also covers tab and carriage
+         * return, and values whose trigger follows several quotes, because the exporter
+         * escapes those as well. Exactly one quote is removed, so `''=x` imports as `'=x`.
+         *
+         * Files exported before the escaping was added import as before, with one
+         * exception: a value that itself started with a quote followed by a trigger
+         * (`'=x`) was written unescaped, so it now loses that quote and imports as `=x`.
+         * The file does not say which exporter wrote it, so the two cannot be told apart.
+         *
+         * @param string $value Raw value from the CSV cell.
+         *
+         * @return string
+         */
+        private function unescape_csv_value(string $value): string
         {
         }
         /**
@@ -451,6 +502,14 @@ namespace {
          */
         protected $rates_table;
         /**
+         * Rows returned by the rates query, keyed by the md5 of the prepared SQL. Only set
+         * while get_rates() runs, so calls to query_rates() made outside get_rates() always
+         * read the database.
+         *
+         * @var array|null
+         */
+        private $query_rates_cache = \null;
+        /**
          * Constructor.
          *
          * @param int $instance_id Instance ID.
@@ -535,6 +594,19 @@ namespace {
         {
         }
         /**
+         * Output the overlapping rates warning after a settings save whose rates overlap.
+         *
+         * WooCommerce saves the instance (including the rate rows) before it renders the form, so
+         * the stored rates are the ones just submitted. Checking them here, rather than parsing the
+         * request in the constructor, keeps request handling out of a path that also runs on the
+         * storefront, and uses the same data as the per-row conflict markers.
+         *
+         * @return void
+         */
+        private function output_overlapping_rates_notice()
+        {
+        }
+        /**
          * Return admin options as a html string.
          *
          * @return string
@@ -600,12 +672,36 @@ namespace {
         {
         }
         /**
+         * Key for the per class item counts in find_rates().
+         *
+         * The key keeps the type, because count_items_in_class() compares class IDs with ===.
+         * A filter that returns "5" for one product and 5 for another still gets two counts.
+         *
+         * @param mixed $class_id Shipping class ID of a cart line.
+         * @return string
+         */
+        private function get_items_in_class_key($class_id)
+        {
+        }
+        /**
          * Get rates function.
+         *
+         * Rate query results are reused for lines with identical query inputs during
+         * this call only.
          *
          * @param array $package Package to check.
          * @return bool|void
          */
         public function get_rates($package)
+        {
+        }
+        /**
+         * Calculate the rates for a package. Called by get_rates().
+         *
+         * @param array $package Package to check.
+         * @return bool|void
+         */
+        private function find_rates($package)
         {
         }
         /**
@@ -645,10 +741,29 @@ namespace {
         {
         }
         /**
-         * Retrieve the product price from a line item.
+         * Scale a cart line's price to the requested quantity.
+         *
+         * The line totals cover every unit on the line. The per item calculation asks
+         * for the price of a single unit, so the line price is divided between its units.
+         * Not used for items inside a Product Bundle, where the price is the whole bundle's
+         * total and the requested quantity belongs to the bundled item, not to the bundle.
+         *
+         * @param float     $line_price Price of the whole cart line.
+         * @param int|float $qty        Quantity the price is requested for.
+         * @param array     $item       Array of line item data.
+         * @return float
+         */
+        private function get_line_price_for_quantity($line_price, $qty, $item)
+        {
+        }
+        /**
+         * Retrieve the price of a number of units from a line item.
+         *
+         * When the line item has totals, the line price is scaled to $qty units, except
+         * for items inside a Product Bundle, which get the bundle's total.
          *
          * @param object $_product Product object.
-         * @param int    $qty      Line item quantity.
+         * @param int    $qty      Number of units to price.
          * @param array  $item     Array of line item data.
          * @return float
          */
@@ -688,6 +803,10 @@ namespace {
         }
         /**
          * Maybe add error notices when the settings are saved.
+         *
+         * @deprecated 3.7.6 The overlapping rates warning is now printed by admin_options() from the
+         *                   stored rates after a save. This method no longer does anything and is no
+         *                   longer called by the plugin.
          *
          * @return void
          */
@@ -815,6 +934,26 @@ namespace {
         {
         }
         /**
+         * Delete a Table Rate instance's rates and class priorities when the instance is deleted.
+         *
+         * Hooked to both core deletion actions, because some delete paths fire only one of them:
+         * deleting a whole zone fires only woocommerce_delete_shipping_zone_method, and the zone
+         * methods save-changes handler fires only woocommerce_shipping_zone_method_deleted.
+         * WC_Shipping_Zone::delete_shipping_method() (zone screen, REST, WP-CLI) fires both, so
+         * this runs twice there; the second run finds nothing to delete.
+         *
+         * Rates and priorities are keyed by instance ID, which is unique across all shipping
+         * methods, so deleting another method matches nothing. Every delete path also clears
+         * WooCommerce's shipping cache, so this doesn't flush it.
+         *
+         * @since 3.7.6
+         *
+         * @param int $instance_id Shipping method instance ID.
+         */
+        public function delete_instance_data($instance_id)
+        {
+        }
+        /**
          * WooCommerce Deactivated Notice.
          */
         public function woocommerce_deactivated()
@@ -878,7 +1017,7 @@ namespace {
     function woocommerce_table_rate_delete()
     {
     }
-    \define('TABLE_RATE_SHIPPING_VERSION', '3.7.5');
+    \define('TABLE_RATE_SHIPPING_VERSION', '3.7.6');
     \define('TABLE_RATE_SHIPPING_DEBUG', \defined('WP_DEBUG') && \WP_DEBUG && (!\defined('WP_DEBUG_DISPLAY') || \WP_DEBUG_DISPLAY));
     \define('WC_TABLE_RATE_SHIPPING_MAIN_FILE', __FILE__);
     \define('WC_TABLE_RATE_SHIPPING_MAIN_ABSPATH', \dirname(\WC_TABLE_RATE_SHIPPING_MAIN_FILE) . '/');
