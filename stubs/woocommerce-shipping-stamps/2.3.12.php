@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-shipping-stamps 2.3.11.
+ * Generated stub declarations for woocommerce-shipping-stamps 2.3.12.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -1302,7 +1302,7 @@ namespace {
     function woocommerce_shipping_stamps_missing_wc_notice()
     {
     }
-    \define('WC_STAMPS_INTEGRATION_VERSION', '2.3.11');
+    \define('WC_STAMPS_INTEGRATION_VERSION', '2.3.12');
     /**
      * Initializes the extension.
      *
