@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-shipping-royalmail 4.1.3.
+ * Generated stub declarations for woocommerce-shipping-royalmail 4.1.4.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -3668,7 +3668,7 @@ namespace {
 namespace {
     \define('WOOCOMMERCE_SHIPPING_ROYALMAIL_FILE', __FILE__);
     \define('WOOCOMMERCE_SHIPPING_ROYALMAIL_ABSPATH', \trailingslashit(__DIR__));
-    \define('WOOCOMMERCE_SHIPPING_ROYALMAIL_VERSION', '4.1.3');
+    \define('WOOCOMMERCE_SHIPPING_ROYALMAIL_VERSION', '4.1.4');
     /**
      * Initializes extension.
      *

@@ -1532,10 +1532,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "4.1.3": {
-                "source_zip_sha256": "9a7c38ffd8307e41b271a9ad7e587a2b37cb244d31173d378c100983c075c68f",
-                "stub_sha256": "fa1d5ec77fc9e2a08fbe17e8a79bd33b3c2bab560b616bb6b8e82b678c26b70e",
-                "generated_at": "2026-11-11T21:31:39Z",
+            "4.1.4": {
+                "source_zip_sha256": "324dd078d2c35357e5692c740641e4578166959ef205fa0e4f9f3a984ad86025",
+                "stub_sha256": "07f182d5510875ea2e5665de7c4fa13c76360d07a6e454760d356cdb7a52ec44",
+                "generated_at": "2026-11-17T13:16:33Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
