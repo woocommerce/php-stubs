@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-shipping-canada-post 3.3.6.
+ * Generated stub declarations for woocommerce-shipping-canada-post 3.3.7.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -355,6 +355,20 @@ namespace {
          */
         private static $instance;
         /**
+         * User option holding the hash and expiry of the user's pending
+         * registration state. Stored per site, like the credentials.
+         *
+         * @var string
+         */
+        const REGISTRATION_STATE_META_KEY = '_wc_canada_post_registration_state';
+        /**
+         * User option holding the token and credentials of an account waiting
+         * for the user to confirm it, for a return URL without the state.
+         *
+         * @var string
+         */
+        const REGISTRATION_PENDING_META_KEY = '_wc_canada_post_registration_pending';
+        /**
          * Get the class instance.
          *
          * @return WC_Shipping_Canada_Post_Init
@@ -393,17 +407,164 @@ namespace {
         {
         }
         /**
-         * Create a new nonce to verify in the wc_canada_post_api_canada_post_return method.
+         * Start a registration: store a new single-use state for the current user
+         * and return the registration URL that carries it.
          *
-         * @version 2.5.3
+         * Each user has one pending state, so a second Register click replaces
+         * the first.
+         *
+         * @version 3.3.7
          */
         public function wc_canada_post_create_registration_nonce()
         {
         }
         /**
-         * When returning from CP, redirect to settings
+         * Build the WooCommerce.com registration URL.
+         *
+         * @param string $state Registration state to add to the return URL, if any.
+         *
+         * @return string
+         */
+        private function get_registration_url($state = '')
+        {
+        }
+        /**
+         * Hash a registration state for storage.
+         *
+         * @param string $state Raw registration state.
+         *
+         * @return string
+         */
+        private function hash_registration_state($state)
+        {
+        }
+        /**
+         * Check whether a stored registration state is usable.
+         *
+         * @param mixed $stored Value of the registration state user option.
+         *
+         * @return bool
+         */
+        private function is_valid_registration_state($stored)
+        {
+        }
+        /**
+         * Get the user's pending registration state without using it up. An
+         * expired state is removed, with any account waiting for confirmation.
+         *
+         * @param int $user_id User ID.
+         *
+         * @return array|null The state, or null when there is none or it has expired.
+         */
+        private function get_registration_state($user_id)
+        {
+        }
+        /**
+         * Use up a registration state read by get_registration_state(): remove it
+         * and any account waiting for confirmation.
+         *
+         * Call it only once the request has proved it belongs to the state, so a
+         * forged request cannot end the user's registration.
+         *
+         * @param int   $user_id User ID.
+         * @param array $state   The state as read.
+         *
+         * @return bool False when another request removed or replaced the state
+         *              after it was read.
+         */
+        private function use_registration_state($user_id, $state)
+        {
+        }
+        /**
+         * Read the return URL's arguments.
+         *
+         * The return URL already has a query string, so a registration service
+         * that appends `?token-id=...` instead of `&token-id=...` leaves the other
+         * arguments inside `cp_state`. The state has no `?`, so anything after one
+         * is read as more arguments.
+         *
+         * @return array{cp_state: string, token-id: string, registration-status: string}
+         */
+        private function get_return_args()
+        {
+        }
+        /**
+         * When returning from CP, store the merchant credentials and redirect to
+         * settings.
+         *
+         * The return URL must carry the state stored when the current user started
+         * the registration. On plain permalinks, when it comes back without one,
+         * the user checks the account details and confirms on a form before
+         * anything is stored, and the state is only used up when they confirm.
          */
         public function wc_canada_post_api_canada_post_return()
+        {
+        }
+        /**
+         * Ask the user to confirm connecting the account, for a return URL that
+         * came back without the registration state. Shows the account's customer
+         * number and username so the user can tell whether it is theirs.
+         *
+         * @param string $token_id Registration token from the return URL.
+         * @param array  $details  Merchant credentials fetched for the token.
+         *
+         * @return void
+         */
+        private function render_registration_confirmation($token_id, $details)
+        {
+        }
+        /**
+         * Handle the confirmation form: use up the registration state and store
+         * the credentials shown on the form.
+         *
+         * @return void
+         */
+        public function confirm_registration()
+        {
+        }
+        /**
+         * Fetch the merchant credentials for a registration token. Stops with an
+         * error page when they cannot be read.
+         *
+         * @param string $token_id Registration token.
+         *
+         * @return array Credentials keyed by field name.
+         */
+        private function fetch_registration_details($token_id)
+        {
+        }
+        /**
+         * Store merchant credentials.
+         *
+         * @param array $details Credentials from get_registration_details().
+         *
+         * @return void
+         */
+        private function store_registration_details($details)
+        {
+        }
+        /**
+         * Read the merchant credentials from a registration response.
+         *
+         * The customer number, merchant username and merchant password must be
+         * strings or integers that are not empty or only whitespace. The contract
+         * number is optional, since merchants without a contract have none. The
+         * merchant username and password are returned unchanged, without
+         * sanitize_text_field(), so escape the username before printing it.
+         *
+         * @param array|WP_Error $response Response from wp_remote_get().
+         * @return array Credentials keyed by field name, or an empty array when the response is not usable.
+         */
+        private function get_registration_details($response)
+        {
+        }
+        /**
+         * Log why the merchant credentials could not be read. Never pass the
+         * response body, which holds the merchant password.
+         *
+         * @param string $reason Reason the registration response was rejected.
+         */
+        private function log_registration_error($reason)
         {
         }
         /**
@@ -710,6 +871,27 @@ namespace {
      */
     class WC_Shipping_Canada_Post extends \WC_Shipping_Method
     {
+        /**
+         * Heaviest parcel Canada Post accepts, in kg.
+         *
+         * @var int
+         */
+        private const MAX_PARCEL_WEIGHT_KG = 30;
+        /**
+         * Largest rate response body read from the API, in bytes. A price-quotes
+         * document is a few kilobytes; a larger body is cut off, fails the
+         * price-quotes check, and is neither priced nor cached.
+         *
+         * @var int
+         */
+        private const RATE_RESPONSE_SIZE_LIMIT = \MB_IN_BYTES;
+        /**
+         * Prefix of the transients that limit how often a failed rate request is
+         * logged. It must not start with `cp_quote_`, the prefix of cached quotes.
+         *
+         * @var string
+         */
+        private const RATE_FAILURE_LOG_TRANSIENT_PREFIX = 'cp_rate_failure_';
         /**
          * Canada post API endpoints.
          *
@@ -1067,6 +1249,55 @@ namespace {
         {
         }
         /**
+         * Parse a rate response body as a price-quotes document.
+         *
+         * @param string $response Response body.
+         * @return SimpleXMLElement|null The price-quotes element, or null when the body is not a price-quotes document with at least one quote.
+         */
+        private function parse_price_quotes($response)
+        {
+        }
+        /**
+         * Get the first error from a Canada Post messages document, such as the
+         * reply to a request with bad credentials.
+         *
+         * @param string $response Response body.
+         * @return array The error 'code' and 'description', both empty when the body is not a messages document.
+         */
+        private function get_response_error($response)
+        {
+        }
+        /**
+         * Log a rate request that gave no usable quotes, at most once an hour per
+         * reason, so the merchant can see why rates are missing without Debug Mode.
+         * Never pass the response body or the request headers.
+         *
+         * @param string $reason  Throttle key, such as the HTTP status.
+         * @param string $message What went wrong.
+         */
+        private function log_rate_failure($reason, $message)
+        {
+        }
+        /**
+         * Read an amount from a price-quotes element.
+         *
+         * @param SimpleXMLElement $node Element holding the amount.
+         * @return float|null The amount, or null when it is not a finite number.
+         */
+        private function get_quote_amount($node)
+        {
+        }
+        /**
+         * Get the cost of a price quote: the 'due' cost, or the 'base' cost plus
+         * adjustments, depending on the Rate Cost setting.
+         *
+         * @param SimpleXMLElement $quote A price-quote element.
+         * @return float|null The cost, or null when an amount is missing, not a number, or the cost is negative.
+         */
+        private function get_quote_cost($quote)
+        {
+        }
+        /**
          * Calculate shipping rate function.
          *
          * @param array $package Cart package.
@@ -1263,6 +1494,45 @@ namespace {
         {
         }
         /**
+         * Check that a product measurement (a dimension or weight) reads as a positive number.
+         *
+         * Product getters can return non-numeric values: the product form saves
+         * values like "12-" or "-" as typed, and meta written directly or changed
+         * by a `woocommerce_product_get_*` filter bypasses the setters entirely.
+         * Passed on as strings, such values make wc_get_dimension(), round() and
+         * the box packer throw a TypeError on PHP 8.
+         *
+         * The value is read the way wc_get_weight() reads it, with a float cast,
+         * so "12-" still counts as 12 like it always has, while "-", "." and
+         * other values that cast to 0 or less count as missing. Callers must use
+         * the cast value, not the raw one.
+         *
+         * @param mixed $value Measurement as returned by the product getter.
+         *
+         * @return bool
+         */
+        private function is_valid_measurement($value): bool
+        {
+        }
+        /**
+         * Get a product's length, height and width as floats, in the store's dimension unit.
+         *
+         * @param WC_Product $product Product.
+         *
+         * @return float[]|null Length, height and width, or null if any of them is missing or invalid.
+         */
+        private function get_product_dimensions($product): ?array
+        {
+        }
+        /**
+         * How long a Canada Post rate quote is cached, in seconds.
+         *
+         * @return int Seconds; 0 means quotes are not cached.
+         */
+        private function get_quote_cache_expiration(): int
+        {
+        }
+        /**
          * Format box measurements to given precision.
          *
          * @param  int|float|string $value    Measurement.
@@ -1282,7 +1552,7 @@ namespace {
     function wc_canada_post_activation_check()
     {
     }
-    \define('WC_CANADA_POST_VERSION', '3.3.6');
+    \define('WC_CANADA_POST_VERSION', '3.3.7');
     /**
      * Initialize plugin.
      */
