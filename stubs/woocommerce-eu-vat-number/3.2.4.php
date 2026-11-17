@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-eu-vat-number 3.2.3.
+ * Generated stub declarations for woocommerce-eu-vat-number 3.2.4.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -323,6 +323,18 @@ class WC_EU_VAT_Extend_Store_Endpoint
      * @return void
      */
     public function update_order_meta($order, $request)
+    {
+    }
+    /**
+     * Enforces the digital-goods location declaration for Store API checkouts.
+     *
+     * @param string       $billing_country       Billing country from the order request.
+     * @param string|false $ip_country            Country detected from the request IP, or false when unavailable.
+     * @param bool         $location_confirmation Whether the customer confirmed their location.
+     * @param bool         $has_valid_vat_number  Whether this is a validated B2B transaction.
+     * @return void
+     */
+    private function maybe_require_location_confirmation($billing_country, $ip_country, $location_confirmation, $has_valid_vat_number)
     {
     }
     /**
@@ -2332,7 +2344,7 @@ function wc_eu_vat_maybe_add_order_note($order, $vat_number, $is_valid)
 {
 }
 // phpcs:disable WordPress.Files.FileName
-\define('WC_EU_VAT_VERSION', '3.2.3');
+\define('WC_EU_VAT_VERSION', '3.2.4');
 // WRCS: DEFINED_VERSION.
 \define('WC_EU_VAT_FILE', __FILE__);
 \define('WC_EU_ABSPATH', __DIR__ . '/');
