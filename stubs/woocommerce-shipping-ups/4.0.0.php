@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-shipping-ups 3.9.19.
+ * Generated stub declarations for woocommerce-shipping-ups 4.0.0.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -586,12 +586,6 @@ namespace WooCommerce\UPS\API\Legacy {
          */
         private string $request = '';
         /**
-         * Response XML Element.
-         *
-         * @var \SimpleXMLElement|mixed
-         */
-        private $response_xml_element;
-        /**
          * Address_Validator constructor.
          *
          * @param array                  $address_to_validate        The address to validate.
@@ -626,14 +620,6 @@ namespace WooCommerce\UPS\API\Legacy {
          * @return bool
          */
         public function found_potential_match(): bool
-        {
-        }
-        /**
-         * Check if the response XML element is valid.
-         *
-         * @return bool
-         */
-        private function is_valid_response_xml_element(): bool
         {
         }
         /**
@@ -690,7 +676,7 @@ namespace WooCommerce\UPS\API\Legacy {
         {
         }
         /**
-         * Set the address validation response.
+         * Set the address validation response as an array, or a WP_Error when UPS could not validate.
          *
          * @param array|\WP_Error $response The address validation response.
          *
@@ -700,11 +686,23 @@ namespace WooCommerce\UPS\API\Legacy {
         {
         }
         /**
-         * Convert the response string to a SimpleXMLElement.
+         * Describe a UPS failure body: the error description and code when present, else the status description.
          *
-         * @return void
+         * @param mixed $response The decoded response.
+         *
+         * @return string
          */
-        private function convert_response_string_to_xml_element()
+        private function failure_message($response): string
+        {
+        }
+        /**
+         * Read a scalar out of the decoded response, or an empty string.
+         *
+         * @param mixed $value The decoded value.
+         *
+         * @return string
+         */
+        private function text_value($value): string
         {
         }
         /**
@@ -733,6 +731,12 @@ namespace WooCommerce\UPS\API\Legacy {
          * @var int
          */
         private const DEBUG_BODY_LENGTH = 4096;
+        /**
+         * Characters of an unusable charge kept in the debug log.
+         *
+         * @var int
+         */
+        private const DEBUG_CHARGE_LENGTH = 50;
         /**
          * How long a rated response is cached.
          *
@@ -805,6 +809,48 @@ namespace WooCommerce\UPS\API\Legacy {
         {
         }
         /**
+         * Build an XML element with escaped text content.
+         *
+         * @param string $name   The element name.
+         * @param mixed  $value  The text content.
+         * @param string $indent The indentation before the element.
+         *
+         * @return string
+         */
+        private function xml_element(string $name, $value, string $indent = ''): string
+        {
+        }
+        /**
+         * Build the Dimensions element with each side rounded to a whole unit.
+         *
+         * @param array $dimensions Length, width and height in the instance dimension unit.
+         *
+         * @return string
+         */
+        private function get_dimensions_element(array $dimensions): string
+        {
+        }
+        /**
+         * Build the InsuredValue element.
+         *
+         * @param mixed $value The insured amount in the store currency.
+         *
+         * @return string
+         */
+        private function get_insured_value_element($value): string
+        {
+        }
+        /**
+         * Build the origin Address element shared by Shipper and ShipFrom.
+         *
+         * @param bool $with_state Whether to add the origin state.
+         *
+         * @return string
+         */
+        private function get_origin_address_element(bool $with_state): string
+        {
+        }
+        /**
          * Maybe add the delivery confirmation element to the request.
          *
          * @param string $country The country.
@@ -854,13 +900,46 @@ namespace WooCommerce\UPS\API\Legacy {
         {
         }
         /**
-         * Does the body carry rate data: a rating response with status code 1 and a priced RatedShipment?
+         * Does the body carry rate data: a rating response with status code 1 and a positive charge?
          *
          * @param \SimpleXMLElement|false $xml The parsed response body, or false.
          *
          * @return bool
          */
         private function has_rate_data($xml): bool
+        {
+        }
+        /**
+         * Is the body a rating response with status code 1?
+         *
+         * @param \SimpleXMLElement $xml The parsed response body.
+         *
+         * @return bool
+         */
+        private function is_success_status(\SimpleXMLElement $xml): bool
+        {
+        }
+        /**
+         * The first charge in the response that is not a positive number.
+         *
+         * The published charge must be positive. With negotiated rates on, a negotiated total
+         * that is present must be positive too.
+         *
+         * @param \SimpleXMLElement $xml The parsed response body.
+         *
+         * @return array Empty when the charge is usable, otherwise 'kind' (published or negotiated) and 'value'.
+         */
+        private function get_unusable_charge(\SimpleXMLElement $xml): array
+        {
+        }
+        /**
+         * Is the charge a finite number greater than zero?
+         *
+         * @param string $charge The MonetaryValue text.
+         *
+         * @return bool
+         */
+        private function is_positive_charge(string $charge): bool
         {
         }
         /**
@@ -937,6 +1016,24 @@ namespace {
          *                          statically (E_STRICT error), returns DOMDocument on success.
          */
         public function loadXML($source, $options = 0)
+        {
+        }
+    }
+}
+namespace WooCommerce\UPS\API\Legacy {
+    /**
+     * Class Xml_Parser
+     */
+    class Xml_Parser
+    {
+        /**
+         * Parse an XML string into a SimpleXMLElement without resolving external entities.
+         *
+         * @param string $xml The XML string.
+         *
+         * @return \SimpleXMLElement|false False when the string is empty, malformed or carries a DOCTYPE.
+         */
+        public static function load(string $xml)
         {
         }
     }
@@ -1435,11 +1532,49 @@ namespace WooCommerce\UPS\API\REST {
          */
         private string $endpoint = 'https://onlinetools.ups.com/security/v1/oauth/token';
         /**
-         * Array of transient names.
+         * Prefix of the access token transient. The rest of the name is a hash of the credentials.
          *
-         * @var array
+         * @since 4.0.0
+         *
+         * @var string
          */
-        private static array $transient_names = array('access_token' => 'woocommerce_ups_oauth_access_token', 'client_id' => 'woocommerce_ups_oauth_client_id', 'client_secret' => 'woocommerce_ups_oauth_client_secret');
+        const ACCESS_TOKEN_TRANSIENT_PREFIX = 'woocommerce_ups_oauth_access_token_';
+        /**
+         * Transients used before tokens were keyed by credentials.
+         *
+         * @since 4.0.0
+         *
+         * @var string[]
+         */
+        const LEGACY_TRANSIENT_NAMES = array('woocommerce_ups_oauth_access_token', 'woocommerce_ups_oauth_client_id', 'woocommerce_ups_oauth_client_secret');
+        /**
+         * Bump to delete the legacy transients again on the next admin load.
+         *
+         * @since 4.0.0
+         *
+         * @var string
+         */
+        const CACHE_VERSION = '2';
+        /**
+         * Token requests allowed per credential set in one PHP process before a success resets the count.
+         *
+         * @since 4.0.0
+         *
+         * @var int
+         */
+        private const MAX_FAILED_REQUESTS = 2;
+        /**
+         * Consecutive failed token requests in this PHP process, keyed by token transient name.
+         *
+         * Static because WooCommerce builds a new shipping method, and so a new
+         * OAuth object, for each zone and package. A per-object count would let
+         * every one of them retry while the UPS endpoint is down.
+         *
+         * @since 4.0.0
+         *
+         * @var array<string, int>
+         */
+        private static array $failed_requests = array();
         /**
          * The logger.
          *
@@ -1472,18 +1607,48 @@ namespace WooCommerce\UPS\API\REST {
         {
         }
         /**
-         * Maybe delete the cached access token.
-         * This is useful when the user changes the client ID or secret.
+         * Get the access token transient name for a credential set.
+         *
+         * Each credential set gets its own token, so a credential change starts a
+         * fresh cache entry and two sets never evict or read each other's token.
+         *
+         * @since 4.0.0
+         *
+         * @param string $client_id     The client ID.
+         * @param string $client_secret The client secret.
+         *
+         * @return string
          */
-        private function maybe_delete_cached_access_token()
+        public static function get_access_token_transient_name(string $client_id, string $client_secret): string
+        {
+        }
+        /**
+         * Delete every cached access token, including the legacy transients.
+         *
+         * The LIKE DELETE only reaches the options table. The legacy names and the
+         * token for the saved credentials are also deleted by name, so they are
+         * gone from a persistent object cache too. Tokens for other credentials
+         * can stay in an object cache until they expire, but nothing reads them:
+         * their key needs the old client secret.
+         *
+         * @since 4.0.0
+         *
+         * @return bool False only when the query errored.
+         */
+        public static function purge_cached_tokens(): bool
         {
         }
         /**
          * Request access token from the UPS OAuth API.
          *
+         * Each request counts as failed until get_access_token() stores a token
+         * and resets the count.
+         *
+         * @param string $transient_name The token transient name, which identifies the credential set.
+         *
          * @return object|bool
          */
-        private function request_access_token()
+        private function request_access_token(string $transient_name)
         {
         }
     }
@@ -1845,6 +2010,18 @@ namespace WooCommerce\UPS {
         {
         }
         /**
+         * Add the notices that the list does not hold yet.
+         *
+         * @param array  $notices The notices to add to, keyed by type.
+         * @param array  $extra   The notices to add, keyed by type.
+         * @param string $group   Optional. Only add notices of this group.
+         *
+         * @return array
+         */
+        private static function add_missing_notices(array $notices, array $extra, string $group = ''): array
+        {
+        }
+        /**
          * Store API extension schema callback.
          *
          * @return array Registered schema.
@@ -1899,21 +2076,48 @@ namespace {
         {
         }
         /**
-         * Resolve a UPS shipping method instance that applies to the customer's current cart.
+         * Resolve the UPS shipping method instance that applies to the customer's current cart.
          *
          * Address validation state lives on the method instance (per zone instance), so we need
-         * one instance to ask `should_block_invalid_address()`. We use the first UPS instance
-         * matching any shipping package on the current cart.
+         * one instance to ask `should_block_invalid_address()`. A given instance id wins, then the
+         * instance of the first chosen UPS rate. The first UPS instance in the cart's zones is used
+         * only when nothing is chosen.
          *
-         * @return \WC_Shipping_UPS|null
+         * The returned instance is revalidated against its package's destination, which can add the
+         * invalid address notice.
+         *
+         * @param int             $instance_id A known instance id, for example from the order's shipping line.
+         *                                     0 with no package key uses the first chosen UPS rate's instance.
+         *                                     0 with a package key means a UPS rate is chosen there but its
+         *                                     instance is unknown: the first instance of that package that
+         *                                     blocks is returned, or its first instance when none blocks.
+         * @param int|string|null $package_key The package that chose the instance, so validation runs against
+         *                                     its destination. Null looks through every package.
+         *
+         * @return \WC_Shipping_UPS|null Null when the cart needs no shipping or has no UPS instance, or when
+         *                               the instance asked for is not in the zone of the packages searched.
          */
-        private function get_ups_method_for_cart()
+        public function get_ups_method_for_cart(int $instance_id = 0, $package_key = \null)
         {
         }
         /**
-         * Block Store API (block checkout) submission when the destination address
-         * is invalid in strict mode or hard-invalid (PO Box / no suggestion), and
-         * a UPS shipping method is selected on the order.
+         * Re-run address validation for the package so the instance's state reflects the current destination.
+         *
+         * Validation results are cached per address, and some callers run from hooks that did not
+         * calculate rates themselves.
+         *
+         * @param \WC_Shipping_UPS $method  The method instance.
+         * @param array            $package The shipping package.
+         *
+         * @return \WC_Shipping_UPS
+         */
+        private function revalidate_for_package(\WC_Shipping_UPS $method, array $package)
+        {
+        }
+        /**
+         * Block Store API (block checkout) submission when a UPS instance on the order
+         * blocks (strict mode, or hard-invalid: PO Box / no suggestion) for the
+         * destination of a package that chose it.
          *
          * @param \WC_Order $order The order being processed.
          *
@@ -2010,7 +2214,8 @@ namespace {
         {
         }
         /**
-         * Runs the 3.2.0 settings migration and the one-shot quote cache purge.
+         * Runs the 3.2.0 settings migration, the one-shot quote cache purge and the
+         * one-shot deletion of the legacy OAuth transients.
          *
          * @version 3.2.0
          * @since   3.2.0
@@ -2028,6 +2233,18 @@ namespace {
          * @return void
          */
         private function maybe_purge_quote_cache()
+        {
+        }
+        /**
+         * Delete the OAuth transients used before tokens were keyed by credentials.
+         *
+         * One of them held the plain client secret.
+         *
+         * @since 4.0.0
+         *
+         * @return void
+         */
+        private function maybe_delete_legacy_oauth_transients()
         {
         }
         /**
@@ -2555,7 +2772,25 @@ namespace {
         {
         }
         /**
-         * If the conditions are met, display the notices.
+         * Whether the customer chose a UPS rate of another instance and no package chose this one.
+         *
+         * The check spans all packages, not only the one being calculated: with package 0 on this
+         * instance and package 1 on another, this instance keeps its notices for both packages.
+         *
+         * False when the instance of a chosen UPS rate is unknown (id 0), and when no chosen instance
+         * is among the methods loaded for this package. The choice is then left over from another
+         * zone and WooCommerce replaces it after the rates are calculated.
+         *
+         * @return bool
+         */
+        private function is_another_instance_chosen(): bool
+        {
+        }
+        /**
+         * Print this instance's notices on the classic cart and checkout pages.
+         *
+         * Clears them without printing during order placement and when no UPS rate is chosen. When
+         * the customer chose another UPS instance, the address notices are dropped and the rest print.
          *
          * @return void
          */
@@ -3195,6 +3430,34 @@ namespace {
         {
         }
         /**
+         * Get the instance ids of the chosen UPS rates, keyed by the package that chose them.
+         *
+         * A calculated rate counts when its method id is ups, whatever its id, and gives its own
+         * instance id. That covers the fallback rate and rates whose id was changed by a filter.
+         * When the rate is not among the calculated rates, only the ids `ups_fallback` and `ups:...`
+         * count; `ups_fallback` and `ups:{service}` then give 0, meaning the instance is unknown.
+         *
+         * @return int[] Package key => instance id, 0 when the instance is unknown. Empty when there
+         *               is no session or no package chose a UPS rate.
+         */
+        public static function get_chosen_ups_instance_ids(): array
+        {
+        }
+        /**
+         * Find a rate by package key and rate id in the calculated packages, then in the session copy.
+         *
+         * WooCommerce empties the calculated packages while it calculates, so the session copy
+         * answers during rate calculation.
+         *
+         * @param int|string $package_key The package key.
+         * @param string     $rate_id     The rate id.
+         *
+         * @return WC_Shipping_Rate|null Null when neither holds the rate.
+         */
+        private static function get_package_rate($package_key, string $rate_id)
+        {
+        }
+        /**
          * Does the passed country support address validation?
          *
          * @param string $country The country code.
@@ -3327,7 +3590,7 @@ namespace {
     }
 }
 namespace {
-    \define('WC_SHIPPING_UPS_VERSION', '3.9.19');
+    \define('WC_SHIPPING_UPS_VERSION', '4.0.0');
     // WRCS: DEFINED_VERSION.
     \define('WC_SHIPPING_UPS_PLUGIN_DIR', __DIR__);
     \define('WC_SHIPPING_UPS_PLUGIN_URL', \untrailingslashit(\plugins_url('', __FILE__)));
