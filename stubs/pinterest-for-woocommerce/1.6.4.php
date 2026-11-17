@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for pinterest-for-woocommerce 1.6.3.
+ * Generated stub declarations for pinterest-for-woocommerce 1.6.4.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -30,7 +30,7 @@ namespace {
      * Base Plugin class holding generic functionality
      *
      * @class   Pinterest_For_Woocommerce
-     * @version 1.6.3
+     * @version 1.6.4
      */
     final class Pinterest_For_Woocommerce
     {
@@ -163,6 +163,28 @@ namespace {
          * @return void
          */
         public function init_plugin()
+        {
+        }
+        /**
+         * Suppress only Pinterest's untested WooCommerce notice, preserving all other decisions.
+         *
+         * @since 1.6.4
+         *
+         * @param mixed  $show Whether the compatibility notice should be shown.
+         * @param string $slug Plugin-specific compatibility notice slug.
+         * @return mixed
+         */
+        public function should_show_compatibility_notice($show, $slug)
+        {
+        }
+        /**
+         * Remove warnings stored by earlier versions before WooCommerce renders them.
+         *
+         * @since 1.6.4
+         *
+         * @return void
+         */
+        public function remove_untested_woocommerce_notice()
         {
         }
         /**
@@ -11468,7 +11490,7 @@ namespace Automattic\WooCommerce\Pinterest {
 }
 namespace {
     \define('PINTEREST_FOR_WOOCOMMERCE_PLUGIN_FILE', __FILE__);
-    \define('PINTEREST_FOR_WOOCOMMERCE_VERSION', '1.6.3');
+    \define('PINTEREST_FOR_WOOCOMMERCE_VERSION', '1.6.4');
     /**
      * Main instance of Pinterest_For_Woocommerce.
      *

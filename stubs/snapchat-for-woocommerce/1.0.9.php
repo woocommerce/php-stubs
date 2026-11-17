@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for snapchat-for-woocommerce 1.0.8.
+ * Generated stub declarations for snapchat-for-woocommerce 1.0.9.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -5123,7 +5123,7 @@ namespace SnapchatForWooCommerce\Utils {
     }
 }
 namespace {
-    \define('SNAPCHAT_FOR_WOOCOMMERCE_VERSION', '1.0.8');
+    \define('SNAPCHAT_FOR_WOOCOMMERCE_VERSION', '1.0.9');
     \define('SNAPCHAT_FOR_WOOCOMMERCE_FILE', __FILE__);
     \define('SNAPCHAT_FOR_WOOCOMMERCE_PLUGIN_DIR', \plugin_dir_path(__FILE__));
     \define('SNAPCHAT_FOR_WOOCOMMERCE_PLUGIN_URL', \plugin_dir_url(__FILE__));

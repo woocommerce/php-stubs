@@ -120,6 +120,14 @@
                 "generated_at": "2026-10-23T07:37:06Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "3.10.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/google-listings-and-ads.3.10.1.zip",
+                "source_zip_sha256": "8ef3bfe458406147f0343904c2cac2191d0c126e5b2913382bf2b94c7c57d9ca",
+                "stub_sha256": "34689a042f821468691c89c495184b982cd4f30f6e655ad2564990f064967bd7",
+                "generated_at": "2026-11-17T03:03:54Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "gtm-kit": {
@@ -241,11 +249,11 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "1.6.3": {
-                "source_url": "https://downloads.wordpress.org/plugin/pinterest-for-woocommerce.1.6.3.zip",
-                "source_zip_sha256": "dc152d4a0020c66cbc500dbe99c66659a4b61b0354a7fda3eed349d982fd54d4",
-                "stub_sha256": "33a7a265f80f7d24cc999bd1ec0bf9e5ac1e1e823b8a33195ca9c03a95bba5dd",
-                "generated_at": "2026-11-12T03:05:54Z",
+            "1.6.4": {
+                "source_url": "https://downloads.wordpress.org/plugin/pinterest-for-woocommerce.1.6.4.zip",
+                "source_zip_sha256": "9eff9ddc6eb9c1eb485220c38b7134d9ace42ef378f98cf83fd411f4584db731",
+                "stub_sha256": "5fd741e365a2727f157cc7a07238e2061c978bf3c7faafae7b60a71c7ddb3ff6",
+                "generated_at": "2026-11-17T03:04:48Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -336,6 +344,14 @@
                 "generated_at": "2026-10-23T07:52:44Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "1.0.8": {
+                "source_url": "https://downloads.wordpress.org/plugin/reddit-for-woocommerce.1.0.8.zip",
+                "source_zip_sha256": "2e5f01febe8ba16725b27f9532de243c9364625b64db997d81ecc02f66e7aae7",
+                "stub_sha256": "99df6905164f0dc239efc7d9b7e817835df1eef19ddd1b07eaa5a30e94e18aee",
+                "generated_at": "2026-11-17T03:05:32Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "snapchat-for-woocommerce": {
@@ -347,11 +363,11 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "1.0.8": {
-                "source_url": "https://downloads.wordpress.org/plugin/snapchat-for-woocommerce.1.0.8.zip",
-                "source_zip_sha256": "dff3fd5b94ce3d6efeb4a26d8ad3902194106a3d275ae1c4c7e7c7925d366c67",
-                "stub_sha256": "a8c7377363ed080b993c7b9f3f25f12d4d237c1415ce2a3dc6c5f3bf9cd9480e",
-                "generated_at": "2026-11-04T03:05:09Z",
+            "1.0.9": {
+                "source_url": "https://downloads.wordpress.org/plugin/snapchat-for-woocommerce.1.0.9.zip",
+                "source_zip_sha256": "01b0a1aadcd5297deb7723c0902b27c1e4e855c7adf7ead8d186d9f221de7426",
+                "stub_sha256": "050641d2a0717d4a000490a617652fbd3330f44b922a2364610f71c222bd8311",
+                "generated_at": "2026-11-17T03:06:14Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
