@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-warranty 2.8.1.
+ * Generated stub declarations for woocommerce-warranty 2.8.2.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -1120,6 +1120,17 @@ namespace {
          * @return array $actions
          */
         public function my_orders_request_button($actions, $order)
+        {
+        }
+        /**
+         * Whether WooCommerce is printing an order's details table, whose Actions row lists the account order actions.
+         *
+         * WooCommerce prints it from woocommerce_view_order (View order, and the [woocommerce_order_tracking] page)
+         * and woocommerce_thankyou (order received). The endpoints cover themes that print the table directly.
+         *
+         * @return bool
+         */
+        private function is_rendering_order_details()
         {
         }
         /**
@@ -2857,6 +2868,81 @@ namespace {
     {
     }
     /**
+     * Replace the store's own price decimal separator with a dot.
+     *
+     * Only that separator is replaced. wc_format_decimal() also strips any other comma, so on a store
+     * that writes "12.50" (WooCommerce's default) it would read a typed "12,50" as 1250.
+     *
+     * @since 2.8.2
+     *
+     * @param string $amount Amount as the merchant typed it.
+     *
+     * @return string
+     */
+    function warranty_translate_decimal_separator($amount)
+    {
+    }
+    /**
+     * Remove the store's own thousand separator from the whole-number part of an amount.
+     *
+     * Only an amount that contains the store's decimal separator is changed, and only before its
+     * last one, so "1.250,00" on a store that writes "1.250,00" reads as 1250. An amount with no
+     * decimal part is left alone: "150.000" can be a grouped number or a dot decimal, and on a
+     * store that writes "12.50" a typed "12,50" must not become 1250.
+     *
+     * @since 2.8.2
+     *
+     * @param string $amount Amount as the merchant typed it.
+     *
+     * @return string
+     */
+    function warranty_strip_thousand_separator($amount)
+    {
+    }
+    /**
+     * Format a posted add-on warranty cost for saving, with a dot as its decimal separator.
+     *
+     * @since 2.8.2
+     *
+     * @param mixed $amount Add-on cost as the merchant typed it.
+     *
+     * @return string The cost with a dot decimal, or the sanitized input when it is not a number.
+     */
+    function warranty_format_addon_amount($amount)
+    {
+    }
+    /**
+     * Read a stored add-on warranty cost as a number.
+     *
+     * Before 2.8.2 a cost was saved as typed, so a comma-decimal store can hold "2,50". Reading it
+     * here keeps those costs right without a data migration.
+     *
+     * @since 2.8.2
+     *
+     * @param mixed $amount Stored add-on cost.
+     *
+     * @return float
+     */
+    function warranty_get_addon_amount($amount)
+    {
+    }
+    /**
+     * Format a stored add-on warranty cost for an admin input, in the store's own format.
+     *
+     * A cost saved before 2.8.2 can hold the store's separators, such as "1.250,00". Localizing it as
+     * stored would show "1,250,00", which reads as 1,25 when the form is saved again, so it is
+     * normalized first and the field shows "1250,00".
+     *
+     * @since 2.8.2
+     *
+     * @param mixed $amount Stored add-on cost.
+     *
+     * @return string
+     */
+    function warranty_localize_addon_amount($amount)
+    {
+    }
+    /**
      * Validate an amount a caller asked to move against the balance still available.
      *
      * The parameters are untyped because the amount arrives from a public request handler.
@@ -3187,6 +3273,64 @@ namespace {
     {
     }
     /**
+     * Check if a user may manage a warranty request from the admin screens.
+     *
+     * The order's customer also passes warranty_user_has_access(), which is what lets a customer act
+     * on their own request from the front end. This check leaves the order out so that branch never
+     * applies: Product Vendors roles hold manage_warranties, and a vendor who placed the order must
+     * not manage a request they do not fully own through it.
+     *
+     * @internal
+     *
+     * @since 2.8.2
+     *
+     * @param WP_User $user       WP User.
+     * @param int     $request_id Warranty request ID.
+     *
+     * @return bool
+     */
+    function warranty_user_can_manage_request($user, $request_id)
+    {
+    }
+    /**
+     * Check if a user may set the return tracking code on a warranty request.
+     *
+     * The order's customer sets it from the warranty page. Store managers, and vendors who own every
+     * item on the request, pass as they do on the admin screens.
+     *
+     * The warranty page offers the form only once the store has asked for a code and until one is
+     * given, so a submission outside that window is refused too.
+     *
+     * @internal
+     *
+     * @since 2.8.2
+     *
+     * @param WP_User $user       WP User.
+     * @param int     $request_id Warranty request ID.
+     *
+     * @return bool
+     */
+    function warranty_user_can_update_tracking($user, $request_id)
+    {
+    }
+    /**
+     * Check a shipping provider key against the provider list.
+     *
+     * The tracking forms send the provider's sanitize_title() key, and the warranty page looks that
+     * key up in the same list to build the tracking link, so any other value breaks that page.
+     *
+     * @internal
+     *
+     * @since 2.8.2
+     *
+     * @param mixed $provider Provider key from the request.
+     *
+     * @return bool
+     */
+    function warranty_is_tracking_provider($provider)
+    {
+    }
+    /**
      * The one message every rejected return-form submission shows.
      *
      * Bad keys, emails, order numbers and items all get this same text, so the form cannot be used
@@ -3308,7 +3452,7 @@ namespace {
      *
      * The parameters are untyped because the indexes arrive from request data.
      *
-     * @since 2.8.0
+     * @since 2.8.1
      *
      * @param WP_User             $user    WP User.
      * @param WC_Order|false|null $order   WC_Order object, false or null.
@@ -3328,7 +3472,7 @@ namespace {
      *
      * The parameters are untyped because they arrive from request data.
      *
-     * @since 2.8.0
+     * @since 2.8.1
      *
      * @param WP_User $user     WP User.
      * @param mixed   $order_id Order ID.
@@ -3508,7 +3652,7 @@ namespace {
     function warranty_get_order_from_request_id($request_id)
     {
     }
-    \define('WOOCOMMERCE_WARRANTY_VERSION', '2.8.1');
+    \define('WOOCOMMERCE_WARRANTY_VERSION', '2.8.2');
     // WRCS: DEFINED_VERSION.
     \define('WOOCOMMERCE_WARRANTY_FILE', __FILE__);
     \define('WOOCOMMERCE_WARRANTY_ABSPATH', \trailingslashit(__DIR__));
