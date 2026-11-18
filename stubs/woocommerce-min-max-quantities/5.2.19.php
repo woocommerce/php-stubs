@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-min-max-quantities 5.2.18.
+ * Generated stub declarations for woocommerce-min-max-quantities 5.2.19.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -865,7 +865,7 @@ class WC_MMQ_Store_API
  * Registers read-only Min/Max Quantities abilities.
  *
  * @class    WC_Min_Max_Quantities_Abilities
- * @version  5.2.9
+ * @version  5.2.19
  */
 class WC_Min_Max_Quantities_Abilities
 {
@@ -899,7 +899,7 @@ class WC_Min_Max_Quantities_Abilities
  * Container class for a product or variations quantity rules
  *
  * @class    WC_Min_Max_Quantities_Quantity_Rules
- * @version  5.2.15
+ * @version  5.2.19
  */
 class WC_Min_Max_Quantities_Quantity_Rules
 {
@@ -963,7 +963,7 @@ class WC_Min_Max_Quantities_Quantity_Rules
     /**
      * Remove saved product rules and rules inherited by its variations.
      *
-     * Exact eviction also handles saves within the shared version's one-second interval.
+     * Exact eviction leaves the shared version, and other products' cached rules, untouched.
      *
      * @since 5.2.13
      * @param WC_Product $product Saved product.
@@ -1871,7 +1871,7 @@ class WC_Min_Max_Quantities_WC_Payments_Compatibility
 /**
  * Min Max Quantities class.
  *
- * @version  5.2.18
+ * @version  5.2.19
  */
 class WC_Min_Max_Quantities
 {
@@ -1880,7 +1880,7 @@ class WC_Min_Max_Quantities
      *
      * @var string
      */
-    public $min_wc_version = '11.1.0';
+    public $min_wc_version = '11.2.0';
     /**
      * Minimum order quantity.
      *
@@ -2412,4 +2412,4 @@ class WC_Min_Max_Quantities
     {
     }
 }
-\define('WC_MIN_MAX_QUANTITIES', '5.2.18');
+\define('WC_MIN_MAX_QUANTITIES', '5.2.19');

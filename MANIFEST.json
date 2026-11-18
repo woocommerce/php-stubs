@@ -956,10 +956,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "5.2.18": {
-                "source_zip_sha256": "8be53dbe6a3ca10143583e2d3b150e07d34f01b7f9b59fa8bac2cbb162b1e133",
-                "stub_sha256": "e8a7936c946d0835de42c92991179e50c36200ee22a8e84a39ce1bf5b868cefd",
-                "generated_at": "2026-11-11T08:58:55Z",
+            "5.2.19": {
+                "source_zip_sha256": "ee45699ac9a780ec5659a34e2f8240c72d119e697263c0d9d9345919017dfba0",
+                "stub_sha256": "d95d200c6775e7ed5230699cb0425d5bf841cce2fd21068acbc063e061c3ee12",
+                "generated_at": "2026-11-18T09:51:33Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
