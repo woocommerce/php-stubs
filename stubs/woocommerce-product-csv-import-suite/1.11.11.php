@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-product-csv-import-suite 1.11.10.
+ * Generated stub declarations for woocommerce-product-csv-import-suite 1.11.11.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -175,7 +175,7 @@ class WC_PCSVIS_System_Status_Tools
  * Exports products or product variations to a CSV file.
  *
  * @class   WC_PCSVIS_Exporter
- * @version 1.11.8
+ * @version 1.11.11
  */
 class WC_PCSVIS_Exporter
 {
@@ -239,7 +239,7 @@ class WC_PCSVIS_Exporter
  * WooCommerce CSV Importer class for managing parsing of CSV files.
  *
  * @class   WC_CSV_Parser
- * @version 1.11.8
+ * @version 1.11.11
  */
 class WC_CSV_Parser
 {
@@ -393,7 +393,7 @@ class WC_PCSVIS_Product_Data_Store extends \WC_Product_Data_Store_CPT
  * Imports products from a CSV file.
  *
  * @class   WC_PCSVIS_Product_Import
- * @version 1.11.8
+ * @version 1.11.11
  */
 class WC_PCSVIS_Product_Import extends \WP_Importer
 {
@@ -995,7 +995,7 @@ class WC_PCSVIS_Product_Variation_Import extends \WC_PCSVIS_Product_Import
  * Main CSV Import class
  *
  * @class   WC_Product_CSV_Import_Suite
- * @version 1.11.7
+ * @version 1.11.11
  */
 class WC_Product_CSV_Import_Suite
 {
@@ -1201,7 +1201,7 @@ function woocommerce_product_csv_import_suite_missing_wc_notice()
 {
 }
 \define('WC_PCSVIS_FILE', __FILE__);
-\define('WC_PCSVIS_VERSION', '1.11.10');
+\define('WC_PCSVIS_VERSION', '1.11.11');
 /**
  * Initializes the extension.
  *

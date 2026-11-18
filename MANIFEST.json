@@ -1283,10 +1283,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "1.11.10": {
-                "source_zip_sha256": "b1f410fec953a02a41269f79be8ea6d045b6391c9272a204f8183c548a188b84",
-                "stub_sha256": "8be7b62087b5128037e992bbac2e4f5d5258b9ca70e737dc38398dd07a6de14f",
-                "generated_at": "2026-11-11T08:22:49Z",
+            "1.11.11": {
+                "source_zip_sha256": "75f921e56278beb67e4ac64610f8b1d252d2a3cdbf48883922517cf3a3a1bfca",
+                "stub_sha256": "eb23c8ec1626edafd579fea45db32cf704e17b0652b040e5908d945e7aa9fa21",
+                "generated_at": "2026-11-18T10:22:20Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
