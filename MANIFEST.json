@@ -878,6 +878,13 @@
                 "generated_at": "2026-11-11T09:29:41Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "2.11.1": {
+                "source_zip_sha256": "991714dade26cb1002fa1657a8c35e5a1542703d7fbb6c6a7dc207a19e421e3d",
+                "stub_sha256": "611168d2efaa045b52e8f3794e7e48e4f61d6a92270ebe5051ed6abfc701efb8",
+                "generated_at": "2026-11-18T10:27:31Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-google-analytics-integration": {
