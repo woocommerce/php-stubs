@@ -525,6 +525,13 @@
                 "generated_at": "2026-11-11T09:09:12Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "3.16.0": {
+                "source_zip_sha256": "c1c3eb920e1ec35303906eaf02e76746fad4b1af47c61aaeeb3d8391d2b0c77e",
+                "stub_sha256": "db14db5d80b1fe7905724e16b1cacd11ee9203af36c395167d00c8eb92bd8a90",
+                "generated_at": "2026-11-18T10:58:21Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-box-office": {
