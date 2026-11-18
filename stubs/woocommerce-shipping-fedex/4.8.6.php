@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-shipping-fedex 4.8.5.
+ * Generated stub declarations for woocommerce-shipping-fedex 4.8.6.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -1267,6 +1267,34 @@ namespace WooCommerce\FedEx {
         {
         }
         /**
+         * Log context for a failed address validation call.
+         *
+         * Error-level entries are written even when debug mode is off, so the shopper's
+         * address and the response body are left out.
+         *
+         * @param array      $request_body Address validation request.
+         * @param int|string $status       HTTP status, or '?' when there was no response.
+         * @param mixed      $error_code   FedEx or transport error code. Anything that is not a scalar is logged as ''.
+         *
+         * @return array
+         */
+        private static function get_address_validation_error_context($request_body, $status, $error_code)
+        {
+        }
+        /**
+         * The code of the first error in a decoded FedEx error body.
+         *
+         * The body may come in an unexpected shape, for example with errors as an object
+         * instead of a list, so every step is checked.
+         *
+         * @param mixed $response_body Decoded response body.
+         *
+         * @return string The code, or '' when there is none.
+         */
+        private static function get_first_error_code($response_body)
+        {
+        }
+        /**
          * Get residential/business classification from FedEx address validation response.
          *
          * @param string $classification The classification returned from FedEx (MIXED, UNKNOWN, BUSINESS, RESIDENTIAL).
@@ -1464,6 +1492,190 @@ namespace WooCommerce\FedEx {
          * @since 4.8.0
          */
         protected function locate_rate_reply_details($response_body)
+        {
+        }
+    }
+    /**
+     * Masks or removes sensitive values in FedEx requests and responses before they
+     * are shown as debug notices or written to the WooCommerce log.
+     *
+     * @internal Not a public extension API; it may change without notice.
+     *
+     * @since 4.8.6
+     */
+    final class Debug_Redactor
+    {
+        /**
+         * For notices shown to store managers: mask account numbers, drop credentials.
+         */
+        public const MODE_NOTICE = 'notice';
+        /**
+         * For the log: as notice mode, and also drop street lines and contact details.
+         */
+        public const MODE_LOG = 'log';
+        /**
+         * Returned in place of a JSON string that cannot be decoded, or whose redacted copy cannot be encoded.
+         */
+        public const UNENCODABLE = '[JSON omitted: it could not be redacted]';
+        /**
+         * Returned in place of data nested deeper than MAX_DEPTH.
+         */
+        public const TOO_DEEP = '[omitted: nested too deeply]';
+        /**
+         * Returned in place of an object that was already walked in the same call,
+         * such as an object that refers to itself or one object found under two keys.
+         */
+        public const REPEATED = '[omitted: object already shown]';
+        /**
+         * Deepest level that is walked. Real FedEx payloads stay far below it.
+         */
+        private const MAX_DEPTH = 64;
+        /**
+         * Normalized keys removed in every mode.
+         *
+         * @var string[]
+         */
+        private const CREDENTIAL_KEYS = array('authorization', 'bearer', 'token', 'accesstoken', 'refreshtoken', 'idtoken', 'authtoken', 'clientid', 'freightclientid', 'clientsecret', 'apikey', 'xapikey', 'password');
+        /**
+         * Normalized keys masked in every mode, in addition to keys that contain
+         * "accountnumber" or end in "accountno".
+         *
+         * @var string[]
+         */
+        private const ACCOUNT_KEYS = array('account', 'freightnumber', 'meternumber');
+        /**
+         * Normalized keys removed in log mode only.
+         *
+         * @var string[]
+         */
+        private const CONTACT_KEYS = array('contact', 'personname', 'companyname', 'phonenumber', 'phoneextension', 'faxnumber', 'emailaddress');
+        /**
+         * Return a redacted copy of the data. The input is never modified.
+         *
+         * Arrays and objects are walked recursively and objects come back as stdClass.
+         * Each object is walked once; a later reference to it, and a cycle, become REPEATED.
+         * JSON strings are decoded, redacted and encoded again. Other values are returned unchanged.
+         *
+         * @param mixed  $data Data to redact.
+         * @param string $mode One of the MODE_* constants.
+         *
+         * @return mixed
+         *
+         * @since 4.8.6
+         */
+        public static function redact($data, $mode = self::MODE_LOG)
+        {
+        }
+        /**
+         * Redacted, escaped print_r() output for a debug notice.
+         *
+         * @param mixed $data Data to show.
+         *
+         * @return string
+         *
+         * @since 4.8.6
+         */
+        public static function for_notice($data)
+        {
+        }
+        /**
+         * Redact one value at the given depth.
+         *
+         * @param mixed             $data  Data to redact.
+         * @param string            $mode  Mode.
+         * @param int               $depth Current depth.
+         * @param \SplObjectStorage $seen  Objects already walked in this call.
+         *
+         * @return mixed
+         */
+        private static function redact_value($data, $mode, $depth, \SplObjectStorage $seen)
+        {
+        }
+        /**
+         * Redact the entries of an array, or the properties of an object.
+         *
+         * @param array             $entries Entries.
+         * @param string            $mode    Mode.
+         * @param int               $depth   Current depth.
+         * @param \SplObjectStorage $seen    Objects already walked in this call.
+         *
+         * @return array
+         */
+        private static function redact_entries(array $entries, $mode, $depth, \SplObjectStorage $seen)
+        {
+        }
+        /**
+         * For a FedEx key/value pair, what to do with its 'value' entry.
+         *
+         * A pair such as array( 'key' => 'accountNumber', 'value' => '...' ), used in error
+         * parameterList entries, is treated as if the value were under that key.
+         *
+         * @param array  $data Array, or the properties of an object.
+         * @param string $mode Mode.
+         *
+         * @return string|null 'remove', 'mask' or 'keep', or null when $data is not a pair.
+         */
+        private static function pair_action(array $data, $mode)
+        {
+        }
+        /**
+         * What to do with the value under a key: 'remove', 'mask' or 'keep'.
+         *
+         * Keys are matched case-insensitively with every character other than a letter or
+         * a digit ignored, so account_number, accountNumber, ACCOUNT.NUMBER and
+         * "Account Number" are treated alike.
+         *
+         * @param string $key  Key.
+         * @param string $mode Mode.
+         *
+         * @return string
+         */
+        private static function key_action($key, $mode)
+        {
+        }
+        /**
+         * Mask every scalar under an account number key to its last four characters.
+         *
+         * Handles both a bare value and the REST shape array( 'value' => ... ).
+         *
+         * @param mixed             $value Value.
+         * @param int               $depth Current depth.
+         * @param \SplObjectStorage $seen  Objects already walked in this call.
+         *
+         * @return mixed
+         */
+        private static function mask($value, $depth, \SplObjectStorage $seen)
+        {
+        }
+        /**
+         * Whether the object was already walked in this call. If not, remember it.
+         *
+         * The storage keeps a reference to each object, so an object freed during
+         * the walk cannot pass its id on to a new object.
+         *
+         * @param object            $item Object.
+         * @param \SplObjectStorage $seen Objects already walked in this call.
+         *
+         * @return bool
+         */
+        private static function already_seen($item, \SplObjectStorage $seen)
+        {
+        }
+        /**
+         * Redact a JSON encoded string. Anything that does not start like a JSON object or array is returned as is.
+         *
+         * A string that starts like JSON but does not decode (truncated, invalid UTF-8 or
+         * nested too deeply), or whose redacted copy cannot be encoded again (a number that
+         * decodes to INF, for example), is replaced with a placeholder, never returned unredacted.
+         *
+         * @param string            $data  String.
+         * @param string            $mode  Mode.
+         * @param int               $depth Current depth.
+         * @param \SplObjectStorage $seen  Objects already walked in this call.
+         *
+         * @return string
+         */
+        private static function redact_json_string($data, $mode, $depth, \SplObjectStorage $seen)
         {
         }
     }
@@ -2001,6 +2213,9 @@ namespace {
          * See if we need to install any upgrades
          * and call the install.
          *
+         * Runs only for users who can manage WooCommerce.
+         *
+         * @return void
          * @version 3.4.0
          * @since   3.4.0
          */
@@ -2017,16 +2232,21 @@ namespace {
         {
         }
         /**
-         * Show the user a notice for plugin updates.
+         * Show users who can manage WooCommerce a notice for plugin updates.
          *
+         * @return void
          * @since 3.4.0
          */
         public function upgrade_notice()
         {
         }
         /**
-         * Turn of the dismissible upgrade notice.
+         * Turn off the dismissible upgrade notice.
          *
+         * Requires a valid nonce and the manage_woocommerce capability. Ends the
+         * request with a JSON response.
+         *
+         * @return void
          * @since 3.4.0
          */
         public function dismiss_upgrade_notice()
@@ -2637,6 +2857,14 @@ namespace {
          */
         public $box_packer_library;
         /**
+         * Whether the box packer returned no packages for the items it was given.
+         *
+         * Set by box_shipping(). Reset by calculate_shipping() and by every get_fedex_packages() call.
+         *
+         * @var bool
+         */
+        private $packing_failed = \false;
+        /**
          * Class constructor.
          *
          * @param int $instance_id Shipping instance ID.
@@ -2704,6 +2932,19 @@ namespace {
          * @param bool   $is_user_notification Flag allowing to show notification for customer even if debug mode is not activated.
          */
         public function notify($message, $type = 'notice', $is_user_notification = \false)
+        {
+        }
+        /**
+         * Whether debug notices may be shown to the current user.
+         *
+         * Debug notices include FedEx requests and responses, so they are limited to
+         * users who can manage WooCommerce even when debug mode is on.
+         *
+         * @return bool
+         *
+         * @since 4.8.6
+         */
+        public function should_show_debug_notices()
         {
         }
         /**
@@ -3199,7 +3440,9 @@ namespace {
         {
         }
         /**
-         * Checking if using Production environment or not.
+         * Whether the parcel API uses the Production environment, from the saved setting.
+         *
+         * @return bool
          */
         public function is_production()
         {
@@ -3379,7 +3622,7 @@ namespace WooCommerce\FedEx {
     const CARRIER_CODE_SMARTPOST = 'FXSP';
 }
 namespace {
-    \define('WC_SHIPPING_FEDEX_VERSION', '4.8.5');
+    \define('WC_SHIPPING_FEDEX_VERSION', '4.8.6');
     // WRCS: DEFINED_VERSION.
     \define('WC_SHIPPING_FEDEX_FILE', __FILE__);
     \define('WC_SHIPPING_FEDEX_ABSPATH', \trailingslashit(__DIR__));

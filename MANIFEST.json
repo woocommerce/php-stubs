@@ -1524,10 +1524,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "4.8.5": {
-                "source_zip_sha256": "1d8e7069f7f2c27f60dce5b056b3f2a5d85cea4741638904749aea96dc1f4614",
-                "stub_sha256": "4db2d3d18d6f62798b3daa5644603a7da9fb11fb344dc3a38e99f40557d5eb31",
-                "generated_at": "2026-11-11T07:37:13Z",
+            "4.8.6": {
+                "source_zip_sha256": "d68b142c65804eaebcce4df18e7ae27f15acd1aad0e5e06ce198251d878e4515",
+                "stub_sha256": "56fe2b2955cd73b530295d438973a486c6f2c5343966181e841b26458ed7432f",
+                "generated_at": "2026-11-18T11:14:00Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
