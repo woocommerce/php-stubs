@@ -1280,6 +1280,13 @@
                 "generated_at": "2026-11-11T09:14:19Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "8.7.1": {
+                "source_zip_sha256": "1a82c4f4ad4ae1b11611b78675f2442878c1a28b4128aab5676cc74e21deffee",
+                "stub_sha256": "1ddaa54b9b98bde87a4dedde316e96bbd9c5a246537f6b61982260be7879dc14",
+                "generated_at": "2026-11-18T10:37:57Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-product-csv-import-suite": {
