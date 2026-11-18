@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-coupon-campaigns 1.2.43.
+ * Generated stub declarations for woocommerce-coupon-campaigns 1.2.44.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -29,7 +29,7 @@ class WC_Coupon_Campaign_Checklist extends \Walker_Category_Checklist
  * The coupon campaign filter class.
  *
  * @class   WC_Coupon_Campaign_Filter
- * @version 1.2.41
+ * @version 1.2.44
  */
 class WC_Coupon_Campaign_Filter
 {
@@ -259,7 +259,7 @@ class WC_Coupon_Campaigns_Privacy extends \WC_Abstract_Privacy
  * Coupon Campaigns class.
  *
  * @class   WC_Coupon_Campaigns
- * @version 1.2.43
+ * @version 1.2.44
  */
 class WC_Coupon_Campaigns
 {
@@ -797,4 +797,4 @@ class WC_Report_Campaigns extends \WC_Admin_Report
 function wc_coupon_campaigns_tracking()
 {
 }
-\define('WC_COUPON_CAMPAIGNS_VERSION', '1.2.43');
+\define('WC_COUPON_CAMPAIGNS_VERSION', '1.2.44');
