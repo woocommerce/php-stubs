@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-shipstation-integration 5.4.1.
+ * Generated stub declarations for woocommerce-shipstation-integration 5.4.2.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -3205,6 +3205,766 @@ namespace WooCommerce\Shipping\ShipStation\Checkout {
 }
 namespace WooCommerce\Shipping\ShipStation {
     /**
+     * Creates and protects the ShipStation API user.
+     *
+     * WooCommerce runs a request authenticated by an API key as the key's owner.
+     * The plugin's keys belong to this user, which holds only the two capabilities
+     * the ShipStation routes check, so a key grants no more than the store manager
+     * who generated it already has. The account is not tied to a member of staff
+     * and cannot sign in.
+     *
+     * One user serves the whole install (the whole network on multisite). Its role
+     * is registered and assigned per site: when a key is generated there, when the
+     * site's keys are moved, or when a REST request runs as the user.
+     *
+     * @internal Not part of the plugin's public API.
+     *
+     * @since 5.4.2
+     */
+    final class API_User
+    {
+        /**
+         * Role given to the API user.
+         *
+         * @var string
+         */
+        const ROLE = 'wc_shipstation_api';
+        /**
+         * Capabilities of the role: what wc_rest_check_manager_permissions() asks for
+         * on the "system_status" and "attributes" contexts the ShipStation routes use.
+         *
+         * @var string[]
+         */
+        const CAPABILITIES = array('manage_woocommerce', 'manage_product_terms');
+        /**
+         * User meta that marks the API user. The value is '1'.
+         *
+         * @var string
+         */
+        const USER_META = '_wc_shipstation_api_user';
+        /**
+         * Start of the API user's login. A marked user with another login is not the API user.
+         *
+         * @var string
+         */
+        const LOGIN_PREFIX = 'shipstation-';
+        /**
+         * Network option caching the API user's id.
+         *
+         * @var string
+         */
+        const USER_ID_OPTION = 'woocommerce_shipstation_api_user_id';
+        /**
+         * Network option listing the ids of deleted API users, so their keys can be
+         * given to the replacement while keys of other deleted users stay refused.
+         *
+         * @var string
+         */
+        const FORMER_IDS_OPTION = 'woocommerce_shipstation_api_user_former_ids';
+        /**
+         * Per-site option set once the site's existing keys were moved to the API user.
+         *
+         * @var string
+         */
+        const SYNCED_OPTION = 'woocommerce_shipstation_api_user_synced';
+        /**
+         * Per-site option, not autoloaded, with what the key sync did on this site:
+         * 'moved' maps each moved key id to its previous owner (the record needed to
+         * undo the move; 0 when an earlier move changed the row and could not save
+         * its record), 'skipped' lists key ids left alone because their owner could
+         * not use them, 'fingerprints' maps each of those key ids to the key's
+         * truncated_key, so a new key that gets a recorded id is not taken for it,
+         * and 'move_error' and 'repair_error' hold the error code of the last failed
+         * one-time move and repair, or ''. The full message goes to the log.
+         *
+         * @var string
+         */
+        const STATE_OPTION = 'woocommerce_shipstation_api_user_state';
+        /**
+         * Per-site transient set after a failed key move, so it is retried hourly and not on every request.
+         *
+         * @var string
+         */
+        const RETRY_TRANSIENT = 'woocommerce_shipstation_api_user_retry';
+        /**
+         * Option row that serialises creating the API user. Lives in the main site's options table.
+         *
+         * @var string
+         */
+        const LOCK_OPTION = 'woocommerce_shipstation_api_user_lock';
+        /**
+         * Seconds after which a creation lock left by a dead request is ignored.
+         *
+         * @var int
+         */
+        const LOCK_TTL_SECONDS = 30;
+        /**
+         * Value of the creation lock row this request wrote, or '' when it holds no lock.
+         *
+         * @var string
+         */
+        private static $lock_token = '';
+        /**
+         * Hook the one-time key move and the account protections.
+         *
+         * @since 5.4.2
+         *
+         * @return void
+         */
+        public static function register(): void
+        {
+        }
+        /**
+         * Hook the account protections alone. They do not need WooCommerce, so the
+         * account stays protected while WooCommerce is inactive.
+         *
+         * @since 5.4.2
+         *
+         * @return void
+         */
+        public static function register_protection(): void
+        {
+        }
+        /**
+         * Remove every hook this class adds. Used by the tests.
+         *
+         * @internal
+         *
+         * @since 5.4.2
+         *
+         * @return void
+         */
+        public static function unregister(): void
+        {
+        }
+        /**
+         * Whether a user id is the ShipStation API user.
+         *
+         * The marker alone is not enough: a marked row carried in by an import or a
+         * site clone must not turn a real account into the API user.
+         *
+         * @since 5.4.2
+         *
+         * @param mixed $user_id User id.
+         *
+         * @return bool
+         */
+        public static function is_api_user($user_id): bool
+        {
+        }
+        /**
+         * Id of the existing API user, or 0 when there is none.
+         *
+         * The network option is only a cache. A cached id counts only while that
+         * user is still the API user; otherwise the user is looked up by marker.
+         *
+         * @since 5.4.2
+         *
+         * @return int
+         */
+        public static function get_user_id(): int
+        {
+        }
+        /**
+         * Make sure the API user exists and holds exactly the ShipStation role on this site.
+         *
+         * @since 5.4.2
+         *
+         * @return int|\WP_Error User id, or why there is no usable API user.
+         */
+        public static function ensure()
+        {
+        }
+        /**
+         * Move this site's plugin-generated keys to the API user and record the result.
+         *
+         * Only the owner changes, so the key and secret saved in ShipStation keep
+         * working. Does nothing, and creates no user, on a site without such keys.
+         *
+         * Keys with the plugin's secret prefix, and keys this method moved or left
+         * alone before, are always looked at. Keys from before 5.0.8 have no prefix. They are known by
+         * the description the plugin gave them, or by the legacy pointer option
+         * while the row it names still mentions ShipStation (after a database
+         * restore the pointer can name a key made for something else). A key the
+         * merchant made by hand can match too, so these are moved only when
+         * $include_legacy is true, which the one-time move in maybe_sync() passes.
+         *
+         * A key is left alone when its owner lacks a capability the routes check, or
+         * was deleted and was not an API user: that key is refused today, and moving
+         * it would make it work again for whoever still holds it.
+         *
+         * A repair runs on every settings view and in the daily key job. While no
+         * API user exists and the retry time is not over (after a failed creation,
+         * or while the keys table is missing), it does nothing and returns true.
+         *
+         * A callback of another plugin that throws during the sync is reported as an
+         * error, like any other failure.
+         *
+         * @since 5.4.2
+         *
+         * @param bool $include_legacy Whether to also move unprefixed keys from before 5.0.8.
+         *
+         * @return true|\WP_Error
+         */
+        public static function sync_keys(bool $include_legacy = false)
+        {
+        }
+        /**
+         * Move this site's existing keys once. Runs on admin requests and in the daily key job.
+         *
+         * @since 5.4.2
+         *
+         * @return void
+         */
+        public static function maybe_sync(): void
+        {
+        }
+        /**
+         * Run the one-time move on an admin request by someone who manages WooCommerce.
+         *
+         * WordPress also fires admin_init for signed-out admin-ajax.php and
+         * admin-post.php requests. A visitor must not be the one who creates the API user and
+         * moves the keys; the daily key job covers stores nobody signs in to.
+         *
+         * @internal
+         *
+         * @since 5.4.2
+         *
+         * @return void
+         */
+        public static function maybe_sync_on_admin_request(): void
+        {
+        }
+        /**
+         * Error codes of the last failed one-time move and repair on this site, '' where it worked.
+         *
+         * @since 5.4.2
+         *
+         * @return array{move:string,repair:string}
+         */
+        public static function get_errors(): array
+        {
+        }
+        /**
+         * Ids of this site's keys left alone because their owner could not use them.
+         * The key list shows them, prefixed or not, and can delete them. It marks them
+         * refused, except a key whose owner still passes the order and inventory routes.
+         *
+         * @since 5.4.2
+         *
+         * @return int[]
+         */
+        public static function get_skipped_key_ids(): array
+        {
+        }
+        /**
+         * Ids of this site's keys the plugin moved to the API user. Keys from before
+         * 5.0.8 among them have no prefix, so the key list shows them by this record.
+         *
+         * @since 5.4.2
+         *
+         * @return int[]
+         */
+        public static function get_moved_key_ids(): array
+        {
+        }
+        /**
+         * Put the API user back to exactly the ShipStation role when a REST request
+         * runs as that user: without the role, for example after the user was
+         * removed from this site, or with a capability someone added.
+         *
+         * @since 5.4.2
+         *
+         * @return void
+         */
+        public static function repair_current_user(): void
+        {
+        }
+        /**
+         * Put the API user back to exactly the ShipStation role before any REST
+         * request it makes is routed, not only a ShipStation one: a capability added
+         * to the role would otherwise reach the other WooCommerce routes until the
+         * next ShipStation request.
+         *
+         * @internal
+         *
+         * @since 5.4.2
+         *
+         * @param mixed $result Response to short-circuit with, or null.
+         *
+         * @return mixed
+         */
+        public static function repair_before_rest_dispatch($result)
+        {
+        }
+        /**
+         * Whether the user holds the ShipStation role and nothing else on this site,
+         * and the role holds exactly its capabilities.
+         *
+         * @param int $user_id API user id.
+         *
+         * @return bool
+         */
+        private static function holds_exactly_the_role(int $user_id): bool
+        {
+        }
+        /**
+         * First capability of the role the current user lacks, or '' when it has them all.
+         *
+         * @return string
+         */
+        private static function first_missing_capability(): string
+        {
+        }
+        /**
+         * Refuse a sign-in as the API user.
+         *
+         * On wp_authenticate_user this runs before the password is checked, so a
+         * right and a wrong password get the same answer. On authenticate it catches
+         * a user resolved by any other sign-in method.
+         *
+         * @internal
+         *
+         * @since 5.4.2
+         *
+         * @param \WP_User|\WP_Error|null $user Sign-in result so far.
+         *
+         * @return \WP_User|\WP_Error|null
+         */
+        public static function deny_login($user)
+        {
+        }
+        /**
+         * Refuse a password reset for the API user.
+         *
+         * @internal
+         *
+         * @since 5.4.2
+         *
+         * @param bool|\WP_Error $allow   Whether the reset is allowed.
+         * @param int           $user_id User asking for the reset.
+         *
+         * @return bool|\WP_Error
+         */
+        public static function deny_password_reset($allow, $user_id)
+        {
+        }
+        /**
+         * Turn application passwords off for the API user.
+         *
+         * @internal
+         *
+         * @since 5.4.2
+         *
+         * @param bool    $available Whether application passwords are available.
+         * @param \WP_User $user      User being checked.
+         *
+         * @return bool
+         */
+        public static function deny_application_passwords($available, $user)
+        {
+        }
+        /**
+         * Stop every user, super admins included, from deleting the API user,
+         * removing it from a site, changing its role, or switching to it.
+         *
+         * The plural capabilities are covered too: WooCommerce's customers endpoint
+         * checks delete_users with the user id. Editing stays allowed, because
+         * WooCommerce checks edit_user before an administrator may edit or revoke a
+         * key on its REST API keys screen.
+         *
+         * @internal
+         *
+         * @since 5.4.2
+         *
+         * @param string[] $caps    Primitive capabilities required.
+         * @param string   $cap     Capability being checked.
+         * @param int      $user_id User the check is for.
+         * @param array    $args    Extra arguments; the first is the target user id.
+         *
+         * @return string[]
+         */
+        public static function protect_user($caps, $cap, $user_id, $args)
+        {
+        }
+        /**
+         * Leave the API user out of a bulk role change or delete on the Users screens.
+         *
+         * WordPress shows its checkbox to anyone who can list users, then checks each
+         * selected user inside the loop and stops at the API user, after the users
+         * before it were already changed. Only removes an id: users.php still checks
+         * the nonce and every remaining user.
+         *
+         * @internal
+         *
+         * @since 5.4.2
+         *
+         * @return void
+         */
+        public static function skip_in_bulk_actions(): void
+        {
+        }
+        /**
+         * Leave the API user out of a bulk role change or removal on Network Admin >
+         * Sites > Edit > Users.
+         *
+         * That screen stops at the API user on a role change, after the users before
+         * it were already changed. Its removal checks no single user, so it would
+         * take the API user off the site, from the bulk list or from a single
+         * `user` id in the URL. When only the API user was selected, the list is
+         * dropped, so the screen says no user was selected instead of reporting a
+         * change.
+         *
+         * @internal
+         *
+         * @since 5.4.2
+         *
+         * @return void
+         */
+        public static function skip_in_site_bulk_actions(): void
+        {
+        }
+        /**
+         * Drop the API user's id from a bulk action's list of users, and remember to say so.
+         *
+         * @param string   $field          Request field holding the selected user ids.
+         * @param string[] $actions        Bulk actions to filter.
+         * @param bool     $drop_if_empty  Whether to remove the field when only the API user was selected.
+         *
+         * @return void
+         */
+        private static function leave_out_of_bulk_action(string $field, array $actions, bool $drop_if_empty = false): void
+        {
+        }
+        /**
+         * Say once that a bulk action left out the API user.
+         *
+         * @internal
+         *
+         * @since 5.4.2
+         *
+         * @return void
+         */
+        public static function skipped_in_bulk_notice(): void
+        {
+        }
+        /**
+         * Keep the role out of role pickers, so it cannot be given to another user.
+         *
+         * @internal
+         *
+         * @since 5.4.2
+         *
+         * @param array<string, array> $roles Editable roles, keyed by role name.
+         *
+         * @return array<string, array>
+         */
+        public static function hide_role($roles)
+        {
+        }
+        /**
+         * Log that the API user is being deleted, and remember its id. Its keys stop
+         * working: WooCommerce deletes them when the user is deleted from a single
+         * site, and a network delete leaves them without an owner until the next key sync gives them to the
+         * replacement.
+         *
+         * @internal
+         *
+         * @since 5.4.2
+         *
+         * @param int $user_id User being deleted.
+         *
+         * @return void
+         */
+        public static function log_deletion($user_id): void
+        {
+        }
+        /**
+         * Keep the API user out of the network's super admin list, on read and on save.
+         *
+         * A super admin passes every capability check whatever its role. The network
+         * user-edit screen grants super admin without a per-user capability check,
+         * and the list can also be written directly, which fires no grant action.
+         * Filtering the read covers an entry saved while the plugin was inactive.
+         *
+         * @internal
+         *
+         * @since 5.4.2
+         *
+         * @param mixed $logins Super admin logins.
+         *
+         * @return mixed
+         */
+        public static function drop_from_super_admins($logins)
+        {
+        }
+        /**
+         * Clear any role or capability but the ShipStation role from the API user,
+         * on whichever site it was written.
+         *
+         * Some screens and WP-CLI set a role without the per-user capability check
+         * protect_user() answers, and a role or capability can also be added with
+         * add_cap() or by writing the meta row. Watching the stored row covers every
+         * one of those paths, including a stale WP_User object that writes its old
+         * roles back. The user is left with no role until its next REST request, or
+         * a key sync, gives the ShipStation role back.
+         *
+         * @internal
+         *
+         * @since 5.4.2
+         *
+         * @param int    $meta_id  Meta row id.
+         * @param int    $user_id  User the meta belongs to.
+         * @param string $meta_key Meta key.
+         * @param mixed  $value    Meta value written.
+         *
+         * @return void
+         */
+        public static function guard_capabilities($meta_id, $user_id, $meta_key, $value): void
+        {
+        }
+        /**
+         * Find the keys to move, make sure the API user exists, and move them.
+         *
+         * @param bool $include_legacy Whether to also move unprefixed keys from before 5.0.8.
+         *
+         * @return true|\WP_Error
+         */
+        private static function move_keys(bool $include_legacy)
+        {
+        }
+        /**
+         * Whether a key owner's keys may move to the API user: the owner holds every
+         * capability the routes check, so the key works today, or the owner was a
+         * deleted API user. A key of any other deleted user is refused today and
+         * must stay refused.
+         *
+         * @param int   $owner_id   Key owner.
+         * @param int[] $former_ids Ids of deleted API users.
+         *
+         * @return bool
+         */
+        private static function owner_may_move(int $owner_id, array $former_ids): bool
+        {
+        }
+        /**
+         * Ids of deleted API users.
+         *
+         * @return int[]
+         */
+        private static function get_former_user_ids(): array
+        {
+        }
+        /**
+         * Record the id of a deleted API user.
+         *
+         * @param int $user_id Deleted API user.
+         *
+         * @return void
+         */
+        private static function remember_former_user(int $user_id): void
+        {
+        }
+        /**
+         * Descriptions the plugin gave its keys before 5.0.8.
+         *
+         * The description was stored in the language of the person who generated
+         * the key, so every installed language is tried, not only the current one.
+         *
+         * @return string[]
+         */
+        private static function legacy_descriptions(): array
+        {
+        }
+        /**
+         * Read the sync state of this site.
+         *
+         * @return array{moved:array<int,int>,skipped:int[],fingerprints:array<int,string>,move_error:string,repair_error:string}
+         */
+        private static function get_state(): array
+        {
+        }
+        /**
+         * Whether a key row is one the key sync moved or left alone: its id is
+         * recorded, and so is its truncated key, or no fingerprint was recorded for it.
+         *
+         * @since 5.4.2
+         *
+         * @param int    $key_id        Row id.
+         * @param string $truncated_key Row truncated_key.
+         *
+         * @return bool
+         */
+        public static function is_recorded_key(int $key_id, string $truncated_key): bool
+        {
+        }
+        /**
+         * Whether a state records a key row, by id and fingerprint.
+         *
+         * @param array  $state         State from get_state().
+         * @param int    $key_id        Row id.
+         * @param string $truncated_key Row truncated_key.
+         *
+         * @return bool
+         */
+        private static function is_recorded(array $state, int $key_id, string $truncated_key): bool
+        {
+        }
+        /**
+         * Record the fingerprint of every moved and skipped key, and drop the rest.
+         *
+         * @param array              $state     State from get_state().
+         * @param array<int, string> $truncated Truncated keys read in this sync, by key id.
+         *
+         * @return array
+         */
+        private static function with_fingerprints(array $state, array $truncated): array
+        {
+        }
+        /**
+         * Read the sync state from the database, not from this request's options cache.
+         *
+         * @return array{moved:array<int,int>,skipped:int[],fingerprints:array<int,string>,move_error:string,repair_error:string}
+         */
+        private static function get_fresh_state(): array
+        {
+        }
+        /**
+         * Forget a deleted key, so a new key that gets its id is not taken for a plugin key.
+         *
+         * @since 5.4.2
+         *
+         * @param int $key_id Deleted key id.
+         *
+         * @return void
+         */
+        public static function forget_key(int $key_id): void
+        {
+        }
+        /**
+         * Save the sync state of this site.
+         *
+         * @param array{moved:array<int,int>,skipped:int[],fingerprints:array<int,string>,move_error:string,repair_error:string} $state State from get_state().
+         *
+         * @return bool Whether the stored state holds every moved and skipped key, and every fingerprint, of the given one.
+         */
+        private static function save_state(array $state): bool
+        {
+        }
+        /**
+         * Write to the plugin log. WooCommerce, and so its logger, can be inactive
+         * while the account protections still run.
+         *
+         * @param string $level   Logger method: info, warning or error.
+         * @param string $message Message.
+         *
+         * @return void
+         */
+        private static function log(string $level, string $message): void
+        {
+        }
+        /**
+         * Register the role on this site, or put its capabilities back.
+         *
+         * The display name is stored as given, so it is not translated here.
+         *
+         * @return bool Whether anything changed.
+         */
+        private static function ensure_role(): bool
+        {
+        }
+        /**
+         * Leave the user with the ShipStation role and nothing else on this site.
+         *
+         * @param int $user_id API user id.
+         *
+         * @return bool Whether anything changed.
+         */
+        private static function reset_user_role(int $user_id): bool
+        {
+        }
+        /**
+         * Create the API user, one request at a time.
+         *
+         * WordPress saves the marker a few queries after the user row, so two
+         * requests checking for a marked user at the same moment would each create
+         * one. A lock row makes the second request wait for the first.
+         *
+         * @return int|\WP_Error
+         */
+        private static function create_user()
+        {
+        }
+        /**
+         * Insert the API user row.
+         *
+         * Another plugin's callback can throw after the row is inserted and before
+         * the marker is saved (wp_set_password, the user meta hooks, user_register),
+         * and a filter can drop the marker. The row is then found by its login and
+         * finished, or deleted when it cannot be marked, so a failed attempt leaves
+         * no unmarked account behind.
+         *
+         * @return int|\WP_Error
+         */
+        private static function insert_user()
+        {
+        }
+        /**
+         * Delete an account this request created for the API user but could not mark.
+         *
+         * @param int $user_id Account created by insert_user().
+         *
+         * @return bool Whether the account is gone.
+         */
+        private static function delete_unmarked_user(int $user_id): bool
+        {
+        }
+        /**
+         * Lowest id among the users that are the API user, or 0. Reads the database, not a cached query.
+         *
+         * @return int
+         */
+        private static function find_marked_user_id(): int
+        {
+        }
+        /**
+         * Take the creation lock: insert a row that the options table's unique
+         * option_name index allows only once. Written directly so that no options
+         * cache answers for it, and to the main site's table so that every site of
+         * a network shares it.
+         *
+         * @return bool|\WP_Error Whether this request holds the lock, or why the lock row could not be written.
+         */
+        private static function acquire_creation_lock()
+        {
+        }
+        /**
+         * Release the creation lock this request holds. A lock another request took
+         * over, after this one went stale, has another value and is left alone.
+         *
+         * @return void
+         */
+        private static function release_creation_lock(): void
+        {
+        }
+        /**
+         * Options table that holds the creation lock: the main site's.
+         *
+         * @return string
+         */
+        private static function lock_table(): string
+        {
+        }
+        /**
+         * Whether WooCommerce's API keys table exists on this site.
+         *
+         * @return bool|null Null when the check itself failed.
+         */
+        private static function keys_table_exists(): ?bool
+        {
+        }
+    }
+    /**
      * Auth_Controller Class
      *
      * Manages authentication data display and WooCommerce API key generation.
@@ -3236,11 +3996,13 @@ namespace WooCommerce\Shipping\ShipStation {
         /**
          * Plaintext prefix prepended to every plugin-generated consumer_secret.
          *
-         * Stored verbatim in `consumer_secret char(43)`, so this prefix is the
-         * single source of truth for "did this plugin create this row?", used by
-         * the inline credentials section, the settings-tab key list, and the per-row
-         * delete ({@see delete_plugin_key_row()}) to identify our rows without
-         * false-positive risk against merchant-created keys.
+         * Stored verbatim in `consumer_secret char(43)`, so this prefix tells which
+         * rows this plugin minted, without false-positive risk against
+         * merchant-created keys. The inline credentials section, the settings-tab
+         * key list and the per-row delete ({@see delete_plugin_key_row()}) use it.
+         * The key list and the delete also accept unprefixed rows from before 5.0.8
+         * that the ShipStation API user key sync moved or left alone
+         * ({@see API_User::get_moved_key_ids()}, {@see API_User::get_skipped_key_ids()}).
          *
          * Length budget: prefix (8) + `wc_rand_hash()` tail (35) = 43, exactly
          * filling `char(43)`. A longer total would silently truncate on insert
@@ -3384,19 +4146,6 @@ namespace WooCommerce\Shipping\ShipStation {
          * @return array|null ['key_id' => int, 'truncated_key' => string] for the most recent plugin-prefixed row, or null if none exists.
          */
         private function find_plugin_prefixed_api_key_row(): ?array
-        {
-        }
-        /**
-         * Return the first admin user ID to assign as the API key owner.
-         *
-         * WooCommerce REST auth runs every request under the key owner's capabilities.
-         * Tying the key to the triggering user is unsafe: that user may later lose their
-         * role or be deleted, causing every REST endpoint to return rest_forbidden.
-         * Using the first administrator keeps the key stable.
-         *
-         * @return int
-         */
-        private function get_admin_user_id(): int
         {
         }
         /**
@@ -3572,21 +4321,50 @@ namespace WooCommerce\Shipping\ShipStation {
          * List every plugin-generated key row (both sets), newest first.
          *
          * Rows are identified by the set prefixes on the plaintext
-         * `consumer_secret`; merchant-created keys never appear here. Powers the
-         * settings-tab key list from which the merchant retires old pairs.
+         * `consumer_secret`, plus the keys from before 5.0.8 that were moved to the
+         * ShipStation API user or left alone because their owner could not use
+         * them, which have no prefix. Other merchant-created keys never appear here.
+         * A hand-made key described "ShipStation Integration" can be among the
+         * moved or skipped rows, because the one-time move cannot tell it apart.
+         * Powers the settings-tab key list from which the merchant retires old pairs.
          *
          * @since 5.2.0
          *
-         * @return array[] Each: ['key_id' => int, 'transports' => string[], 'transport_last_seen' => array<string,string>, 'description' => string, 'truncated_key' => string, 'last_access' => string|null].
+         * @return array[] Each: ['key_id' => int, 'user_id' => int, 'transports' => string[], 'transport_last_seen' => array<string,string>, 'description' => string, 'truncated_key' => string, 'last_access' => string|null, 'is_prefixed' => bool].
          */
         public static function get_plugin_key_rows(): array
         {
         }
         /**
+         * Whether the current user may delete a key row through the plugin's key list.
+         *
+         * A prefixed row is the plugin's. A row from before 5.0.8 is deletable while
+         * the ShipStation API user owns it after the move. A row the key sync left
+         * alone may still work on other routes as its owner, so it follows
+         * WooCommerce's revoke rule: the current user can edit the owner, which
+         * includes the owner itself. A key whose owner was deleted works nowhere, so
+         * anyone who manages the key list may delete it.
+         *
+         * @internal The row values must come from the database, as in {@see delete_plugin_key_row()}.
+         *
+         * @since 5.4.2
+         *
+         * @param int  $key_id      Row id.
+         * @param int  $owner_id    Row owner.
+         * @param bool $is_prefixed Whether the row's consumer secret has a plugin prefix.
+         *
+         * @return bool
+         */
+        public static function current_user_may_delete_key_row(int $key_id, int $owner_id, bool $is_prefixed): bool
+        {
+        }
+        /**
          * Delete one plugin-generated key row by id.
          *
-         * The WHERE clause re-checks the set prefixes, so a merchant-created row
-         * can never be deleted through this path no matter what id is posted.
+         * Checks {@see current_user_may_delete_key_row()} first, so a row that is
+         * neither prefixed nor recorded by the API user key sync can never be
+         * deleted through this path no matter what id is posted, and the delete is
+         * bound to the owner that was checked.
          *
          * @since 5.2.0
          *
@@ -9363,6 +10141,7 @@ namespace {
      *  - Connection_Change_Notice::SEEN_URL_OPTION / PENDING_OPTION
      *  - Auth_Controller::KEY_META_OPTION / GEN_LOCK_OPTION
      *  - WPCOM_Connection::DISCONNECT_INTENT_OPTION / CONNECTED_URL_OPTION
+     *  - API_User::SYNCED_OPTION
      *
      * @return void
      */
@@ -9383,7 +10162,7 @@ namespace {
     \define('WC_SHIPSTATION_ABSPATH', \trailingslashit(__DIR__));
     \define('WC_SHIPSTATION_PLUGIN_DIR', \plugin_dir_path(__FILE__));
     \define('WC_SHIPSTATION_PLUGIN_URL', \plugin_dir_url(__FILE__));
-    \define('WC_SHIPSTATION_VERSION', '5.4.1');
+    \define('WC_SHIPSTATION_VERSION', '5.4.2');
     /**
      * Load WooCommerce ShipStation Instance.
      */

@@ -1368,11 +1368,11 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "3.7.6": {
-                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-services.3.7.6.zip",
-                "source_zip_sha256": "8f07cd58ade21541e79a56d9db444eb6c5b6e31052ebfee10ad37cae0ea03a7d",
-                "stub_sha256": "095bedc73ee25da83bfb090dc7d7626ceebcdc374b5b341555ae18d8eb2c9059",
-                "generated_at": "2026-11-12T03:10:51Z",
+            "3.7.7": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-services.3.7.7.zip",
+                "source_zip_sha256": "ddcf905b12e014ddd27979e022c3db39a8f704e5fb9fdd515cbd1ae55b784484",
+                "stub_sha256": "c4e9be77431b3d9fad28bc8ab6d279407587665269b2746cfd191e6a4fdced86",
+                "generated_at": "2026-11-18T03:04:07Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -1613,11 +1613,11 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "5.4.1": {
-                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-shipstation-integration.5.4.1.zip",
-                "source_zip_sha256": "a9e59afaae3f6cf67d4b6a6c7f979f7a4e1ff6c5a3830fc706b52543dcbcb088",
-                "stub_sha256": "96b3dc1004ec15650ca04ea4a9ebc27985332f2b110f930c9f270ab99bedc0d5",
-                "generated_at": "2026-11-12T03:12:44Z",
+            "5.4.2": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-shipstation-integration.5.4.2.zip",
+                "source_zip_sha256": "ed6838785475fa4b12bf76e18de5d91d9cdbe417efcc6d540d479d67f9c6bed7",
+                "stub_sha256": "734c6970f370b8ec4c1a2ceef11e2c4c9fe7520c52f7cf9bf12d72accaf51033",
+                "generated_at": "2026-11-18T03:05:11Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }

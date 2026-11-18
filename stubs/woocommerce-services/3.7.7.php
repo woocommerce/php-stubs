@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-services 3.7.6.
+ * Generated stub declarations for woocommerce-services 3.7.7.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -34,6 +34,19 @@ namespace {
          * @var WC_Connect_Loader
          */
         protected $wc_connect_loader;
+        /**
+         * Time limit in seconds for the requests an admin waits on when a label screen loads.
+         * If the server is too slow, the screen carries on with what the store has saved.
+         *
+         * @var int
+         */
+        private const LABEL_SCREEN_REQUEST_TIMEOUT = 10;
+        /**
+         * Whether the heartbeat in is_alive_cached() already failed in this page request.
+         *
+         * @var bool
+         */
+        private $is_alive_failed_in_request = \false;
         public function __construct(\WC_Connect_Service_Schemas_Validator $validator, \WC_Connect_Loader $wc_connect_loader)
         {
         }
@@ -272,6 +285,17 @@ namespace {
          * @return true|WP_Error
          */
         public function is_alive_cached()
+        {
+        }
+        /**
+         * Run a request with the label screen's time limit.
+         *
+         * The callback runs first on the filter, so a store's own callback can still set the limit.
+         *
+         * @param callable $send_request Sends the request.
+         * @return mixed What $send_request returned.
+         */
+        private function with_label_screen_timeout($send_request)
         {
         }
         /**
@@ -1518,6 +1542,68 @@ namespace {
         {
         }
         /**
+         * Refuse a WooCommerce core options update that could lead to an accepted Terms of
+         * Service when the current user may not accept the terms.
+         *
+         * The core wc-admin/options route lets any shop manager write wc_connect_options,
+         * which holds the acceptance and the flag that makes the owner's next admin page
+         * accept it, and woocommerce_setup_jetpack_opted_in, which pre_wc_init() turns into
+         * an accepted ToS on the next request. Such a user may not change wc_connect_options
+         * there at all; writing back the stored value is allowed. Without an owner (not
+         * connected, or a site-only connection) the opt-in stays writable, as WooCommerce
+         * sets it in its tax task before the store connects. The handler is matched rather
+         * than the route, so every way of reaching it is covered, and the whole request is
+         * refused.
+         *
+         * Hooked to rest_dispatch_request, which runs after the route's permission check, so
+         * a user without access to the route gets WooCommerce's own error.
+         *
+         * @internal
+         *
+         * @since 3.7.7
+         *
+         * @param mixed           $dispatch_result Result from an earlier filter, or null to dispatch.
+         * @param WP_REST_Request $request         Request used to generate the response.
+         * @param string          $route           Route matched for the request.
+         * @param array           $handler         Route handler used for the request.
+         * @return mixed The incoming result, null to let the request run, or a WP_Error to refuse it.
+         */
+        public static function restrict_tos_change_through_core_options($dispatch_result, $request, $route, $handler)
+        {
+        }
+        /**
+         * Sort array keys at every level, so values that differ only in key order compare equal.
+         *
+         * @param mixed $value Value to normalize.
+         * @return mixed
+         */
+        private static function sort_keys_recursively($value)
+        {
+        }
+        /**
+         * Reduce an option name to the form the guard compares, or null when it is not ASCII.
+         *
+         * WooCommerce 11.1 lets an administrator write option names it does not allow-list on
+         * a production site, and the database collation resolves " WC_Connect_Options" or
+         * "ｗｃ_connect_options" to wc_connect_options. ASCII names are lowercased and
+         * stripped to a-z, 0-9 and the underscore; non-ASCII names are left to the caller.
+         *
+         * @param int|string $name Option name as sent.
+         * @return string|null
+         */
+        private static function normalize_option_name($name)
+        {
+        }
+        /**
+         * Whether a REST handler is the WooCommerce core options update.
+         *
+         * @param array|mixed $handler Route handler used for the request.
+         * @return bool
+         */
+        private static function is_core_options_update_handler($handler)
+        {
+        }
+        /**
          * Whether the WooCommerce Tax connection banner may render on the given screen.
          *
          * The banner only offers WooCommerce Tax, so it is confined to where WooCommerce
@@ -1791,6 +1877,12 @@ namespace {
          * @var WC_Connect_Logger
          */
         protected $logger;
+        /**
+         * Result of the fetch made in this page request, or null if there was none yet.
+         *
+         * @var bool|null
+         */
+        private $fetch_result_in_request = \null;
         public function __construct(\WC_Connect_Service_Settings_Store $service_settings_store, \WC_Connect_API_Client $api_client, \WC_Connect_Logger $logger)
         {
         }
@@ -1800,6 +1892,18 @@ namespace {
          * @return bool Were payment methods successfully retrieved?
          */
         public function fetch_payment_methods_from_connect_server()
+        {
+        }
+        /**
+         * Fetch stored payment methods from the server, at most once in a page request.
+         *
+         * A single label screen builds its account settings several times. Each page request
+         * still fetches, so a card added or removed elsewhere shows up on the next page. A failed
+         * fetch is remembered too, so a server that's down holds up the page only once.
+         *
+         * @return bool Were payment methods successfully retrieved?
+         */
+        public function fetch_payment_methods_once()
         {
         }
         protected function potentially_update_selected_payment_method_from_payment_methods($payment_methods)
@@ -2843,6 +2947,12 @@ namespace {
          */
         private $error_cache_time;
         /**
+         * How long a failed cart lookup is remembered, in seconds.
+         *
+         * @var int
+         */
+        private $failed_lookup_cache_time;
+        /**
          * @var array
          */
         private $response_rate_ids;
@@ -3024,6 +3134,12 @@ namespace {
          */
         private $failed_lookups_in_request = array();
         /**
+         * Whether the lookups running now are for a cart, so a shopper is waiting on them.
+         *
+         * @var bool
+         */
+        private $is_cart_lookup = \false;
+        /**
          * Words in rate row names, translated into the site's language, by site locale.
          *
          * Filled only by a request that had to switch to the site's language to build them.
@@ -3045,6 +3161,14 @@ namespace {
          * cannot be sent to TaxJar, as opposed to TaxJar failing to answer.
          */
         private const ORDER_TAX_LOOKUP_BAD_ADDRESS = 'bad_address';
+        /**
+         * Time limit in seconds for a cart lookup. A shopper is waiting on it, and each
+         * checkout step can wait this long. Placing the order and order lookups keep the
+         * API client's limit.
+         *
+         * @var int
+         */
+        private const CART_LOOKUP_TIMEOUT = 10;
         /**
          * Returned by lookup_order_taxes() when it failed because the store's own address
          * cannot be sent to TaxJar.
@@ -4150,6 +4274,53 @@ namespace {
          * @return mixed|WP_Error
          */
         public function smartcalcs_cache_request($json, $from_state)
+        {
+        }
+        /**
+         * Whether a cart lookup failed moments ago and should not be sent again yet.
+         *
+         * Each checkout step is its own request, so without this every step waits for the
+         * same failing server. Placing the order always asks: its total is what the shopper
+         * pays, and the server may be back. Order lookups always ask too, because no shopper
+         * is waiting on them.
+         *
+         * @param string $cache_key Cache key of the lookup.
+         * @return bool
+         */
+        private function is_failed_lookup_remembered($cache_key)
+        {
+        }
+        /**
+         * Whether this request is placing an order.
+         *
+         * Classic checkout fires its action before it totals the cart. Block checkout totals
+         * the cart before its action on WooCommerce 11.0 and after it from 11.1, so the
+         * request is checked as well. The action still covers an order placed by a checkout
+         * request dispatched from code, which has no route of its own.
+         *
+         * @return bool
+         */
+        private function is_placing_order()
+        {
+        }
+        /**
+         * Time limit for a cart lookup, in seconds.
+         *
+         * @return int
+         */
+        private function get_cart_lookup_timeout()
+        {
+        }
+        /**
+         * Send a lookup, with a short time limit when a shopper is waiting on a cart total.
+         *
+         * Placing the order keeps the long limit. A failure there charges $0 tax and cannot be
+         * collected later, and the earlier steps skip a failed lookup, so it costs one wait.
+         *
+         * @param string $json Request body.
+         * @return mixed What smartcalcs_request() returned.
+         */
+        private function send_lookup($json)
         {
         }
         /**
