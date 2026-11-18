@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-product-recommendations 4.5.2.
+ * Generated stub declarations for woocommerce-product-recommendations 4.5.3.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -2363,7 +2363,7 @@ class WC_PRL_Admin_Menus
  * Admin notices handling.
  *
  * @class    WC_PRL_Admin_Notices
- * @version  4.5.0
+ * @version  4.5.3
  */
 class WC_PRL_Admin_Notices
 {
@@ -7393,7 +7393,7 @@ class WC_PRL_Install
  * Locations Collection class.
  *
  * @class    WC_PRL_Locations
- * @version  4.5.0
+ * @version  4.5.3
  */
 class WC_PRL_Locations
 {
@@ -7969,7 +7969,7 @@ class WC_PRL_Templates
  * Product Recommendations Helper Functions.
  *
  * @class    WC_PRL_Tracker
- * @version  4.5.1
+ * @version  4.5.3
  */
 class WC_PRL_Tracker
 {
@@ -8072,6 +8072,31 @@ class WC_PRL_Tracker
      * @return array
      */
     private static function get_amplifiers_data()
+    {
+    }
+    /**
+     * Gets every stored value of a post meta key.
+     *
+     * @since 4.5.3
+     *
+     * @param string $meta_key Meta key.
+     * @return array<string|null>
+     */
+    private static function get_meta_values($meta_key)
+    {
+    }
+    /**
+     * Counts the rows that use each type at least once.
+     *
+     * Each row is a serialized list of entries, each with a type `id`, as saved for deployment conditions and engine filters and amplifiers.
+     *
+     * @since 4.5.3
+     *
+     * @param array<WC_PRL_Condition|WC_PRL_Filter|WC_PRL_Amplifier> $types Supported types.
+     * @param array<string|null>                                     $rows  Serialized rows.
+     * @return array<string, int> Row count per type ID.
+     */
+    private static function count_type_usage($types, $rows)
     {
     }
     /**
@@ -8317,7 +8342,7 @@ class WC_PRL_Compatibility
  * Functions related to core back-compatibility.
  *
  * @class    WC_PRL_Core_Compatibility
- * @version  4.5.0
+ * @version  4.5.3
  */
 class WC_PRL_Core_Compatibility
 {
@@ -11976,7 +12001,7 @@ class WC_PRL_Location_Shop extends \WC_PRL_Location
  * Main plugin class.
  *
  * @class    WC_Product_Recommendations
- * @version  4.5.2
+ * @version  4.5.3
  */
 class WC_Product_Recommendations
 {
@@ -11985,13 +12010,13 @@ class WC_Product_Recommendations
      *
      * @var string
      */
-    private $version = '4.5.2';
+    private $version = '4.5.3';
     /**
      * Min required WC version.
      *
      * @var string
      */
-    private $wc_min_version = '11.1.0';
+    private $wc_min_version = '11.2.0';
     /**
      * Whether 'initialize_plugin()' loaded the plugin and its registries.
      *
