@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-shipping 2.5.1.
+ * Generated stub declarations for woocommerce-shipping 2.5.2.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -2221,7 +2221,13 @@ namespace Automattic\WCShipping\LegacyAPIControllers {
         {
         }
         /**
-         * Validate the requester's permissions
+         * Requires the labels capability for every address type.
+         *
+         * Each request makes a signed Connect Server call, so the route must never be open to anonymous
+         * callers. Kept even though it matches the base class, so a change to the base default can't open it.
+         *
+         * @param WP_REST_Request $request The request.
+         * @return bool
          */
         public function check_permission($request)
         {
@@ -4461,6 +4467,21 @@ namespace Automattic\WCShipping\Connect {
          */
         public const MISSING_EU_PRODUCT_IDS = 'missing_eu_product_ids';
         /**
+         * The carrier could not process a label void, typically because its
+         * payment system was unavailable. Returned as a 503 by
+         * `POST /shipping/label/{id}/refund`; no refund record is kept, so the
+         * label is still refundable and the message tells the merchant to try
+         * again later.
+         */
+        public const CARRIER_REFUND_UNAVAILABLE = 'carrier_refund_unavailable';
+        /**
+         * The carrier declined a label void: the void window has passed, the
+         * parcel has been shipped, or the carrier reported the refund as rejected.
+         * Returned as a 400 by `POST /shipping/label/{id}/refund`; the message
+         * names the reason where the carrier gave one.
+         */
+        public const CARRIER_REFUND_REJECTED = 'carrier_refund_rejected';
+        /**
          * Error codes that must reach the client with their code, message and
          * status intact instead of being collapsed into a generic server error.
          *
@@ -4471,7 +4492,7 @@ namespace Automattic\WCShipping\Connect {
          * check which Connect Server endpoints can emit it and confirm the routes
          * relaying it are ones whose status may change.
          */
-        public const PASSTHROUGH = array(self::MISSING_UPSDAP_TOS_ACCEPTANCE, self::ORIGIN_ADDRESS_LIMIT_REACHED, self::MISSING_EU_PRODUCT_IDS);
+        public const PASSTHROUGH = array(self::MISSING_UPSDAP_TOS_ACCEPTANCE, self::ORIGIN_ADDRESS_LIMIT_REACHED, self::MISSING_EU_PRODUCT_IDS, self::CARRIER_REFUND_UNAVAILABLE, self::CARRIER_REFUND_REJECTED);
         /**
          * Whether a Connect Server error code should be surfaced verbatim.
          *
@@ -5520,6 +5541,14 @@ namespace Automattic\WCShipping\Integrations {
     {
         protected $rest_base = 'tos';
         public function register_routes()
+        {
+        }
+        /**
+         * Only the WordPress.com connection owner may accept the Terms of Service.
+         *
+         * @return bool|\WP_Error
+         */
+        public function check_permission()
         {
         }
         public function post($request)
@@ -9596,10 +9625,11 @@ namespace Automattic\WCShipping\PackageAssignment {
         /**
          * Run the boxpacker against the configured boxes/items and return the
          * resulting list of `WooCommerce\BoxPacker\Package` objects. Wrapped in
-         * an output buffer because the dvdoug packer's
-         * `Abstract_Packer::maybe_display_packing_error()` echoes
-         * "Packing error: ..." straight to stdout for any user with
-         * `manage_options`, which would corrupt the JSON REST response.
+         * an output buffer so that nothing the packer prints can corrupt the JSON
+         * REST response. Up to box-packer 1.4.0,
+         * `Abstract_Packer::maybe_display_packing_error()` echoed
+         * "Packing error: ..." for any user with `manage_options`; since 1.4.1 it
+         * writes to the WooCommerce log (source `box-packer`) instead.
          *
          * The captured stdout is logged (with the order id for context) instead
          * of being discarded, so production packing diagnostics survive into the
@@ -12901,6 +12931,39 @@ namespace Automattic\WCShipping {
 }
 namespace Automattic\WCShipping\WPCOMConnection {
     /**
+     * Who may connect the store to WordPress.com and accept the Terms of Service.
+     *
+     * Both actions change store-wide state, so they need more than `manage_woocommerce`,
+     * which WooCommerce also grants to Shop managers. `manage_options` is the capability
+     * the Jetpack Connection package itself requires to connect a site.
+     */
+    final class ConnectionPermissions
+    {
+        /**
+         * Capability required to connect the store or accept the Terms of Service.
+         */
+        const CAPABILITY = 'manage_options';
+        /**
+         * Whether the current user may register the store with WordPress.com.
+         *
+         * @return bool
+         */
+        public static function user_can_connect_site()
+        {
+        }
+        /**
+         * Whether the current user may accept the Terms of Service on a connected store.
+         *
+         * Outside Jetpack development mode, the user must be the WordPress.com
+         * connection owner.
+         *
+         * @return bool
+         */
+        public static function user_can_accept_tos()
+        {
+        }
+    }
+    /**
      * Class WPCOMConnectionRESTController.
      */
     class WPCOMConnectionRESTController extends \Automattic\WCShipping\WCShippingRESTController
@@ -12917,6 +12980,16 @@ namespace Automattic\WCShipping\WPCOMConnection {
          * @return void
          */
         public function register_routes()
+        {
+        }
+        /**
+         * Only users who can manage the site may connect it to WordPress.com. On an
+         * already connected site, only the connection owner may accept the Terms of
+         * Service through this route.
+         *
+         * @return bool|\WP_Error
+         */
+        public function check_permission()
         {
         }
         /**
@@ -12945,7 +13018,7 @@ namespace {
     function wcshipping_resolve_fulfillment_classes(): void
     {
     }
-    \define('WCSHIPPING_VERSION', '2.5.1');
+    \define('WCSHIPPING_VERSION', '2.5.2');
     // WRCS: DEFINED_VERSION.
     \define('WCSHIPPING_PLUGIN_FILE', __FILE__);
     \define('WCSHIPPING_PLUGIN_DIR', __DIR__);

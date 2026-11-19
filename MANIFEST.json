@@ -438,6 +438,14 @@
                 "generated_at": "2026-11-12T03:06:58Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "1.4.1": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-accommodation-bookings.1.4.1.zip",
+                "source_zip_sha256": "859a494589e28ae0c1609c11b6557bf6dfbafe3e58d546895c36072027b8dc41",
+                "stub_sha256": "a9c4ef976d4fe36f251d7e17d9a18e97556baca55ba7d956816c76f4ab926815",
+                "generated_at": "2026-11-19T03:04:04Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-all-products-for-subscriptions": {
@@ -1475,11 +1483,11 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "2.5.1": {
-                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-shipping.2.5.1.zip",
-                "source_zip_sha256": "da4e751b343171243e77a2111354734810d9c1acdbcb2a370cbff122316b81e6",
-                "stub_sha256": "e893c476854ec7eea42d17934c7539664ff19efdbe7c5c0903c7bacf19a04d55",
-                "generated_at": "2026-11-12T03:11:48Z",
+            "2.5.2": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-shipping.2.5.2.zip",
+                "source_zip_sha256": "28848f08257c77eda0b914fd556f5adc4ca78a712bded3e107ee152451f630c1",
+                "stub_sha256": "e1f8b039f1f96c043b99b96cef1e08e4857e69b03b2b477d836211251671ad33",
+                "generated_at": "2026-11-19T03:04:52Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
