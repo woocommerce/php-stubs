@@ -18,10 +18,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "6.9.6": {
-                "source_zip_sha256": "9887c084ff595a108dc284b5c9b93d43e4fc4b4305d0ce8b2786ed5663f8f83e",
-                "stub_sha256": "755bd092540426086e9c745948dfa76e58298d300fa14feeb4f3cc8e0bcf2617",
-                "generated_at": "2026-11-10T13:09:42Z",
+            "6.9.7": {
+                "source_zip_sha256": "3726b5cae01ba297bd642a3471bd39ab0a7d0c1cf3c60394db4ef8a815fe2897",
+                "stub_sha256": "68be8a0b54d153568c2bf34f09dc0b4cba76358197326ee61494c01040b28de7",
+                "generated_at": "2026-11-24T11:22:11Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }

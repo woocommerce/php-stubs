@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for automatewoo 6.9.6.
+ * Generated stub declarations for automatewoo 6.9.7.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -48614,13 +48614,13 @@ namespace {
 }
 namespace {
     \define('AUTOMATEWOO_SLUG', 'automatewoo');
-    \define('AUTOMATEWOO_VERSION', '6.9.6');
+    \define('AUTOMATEWOO_VERSION', '6.9.7');
     // WRCS: DEFINED_VERSION.
     \define('AUTOMATEWOO_FILE', __FILE__);
     \define('AUTOMATEWOO_PATH', __DIR__);
     \define('AUTOMATEWOO_MIN_PHP_VER', '7.4.0');
     \define('AUTOMATEWOO_MIN_WP_VER', '7.0');
-    \define('AUTOMATEWOO_MIN_WC_VER', '11.1');
+    \define('AUTOMATEWOO_MIN_WC_VER', '11.2');
     // phpcs:disable WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
     // phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed
     /**
