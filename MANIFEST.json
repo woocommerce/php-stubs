@@ -1408,6 +1408,13 @@
                 "generated_at": "2026-10-22T17:13:10Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
+            },
+            "2.6.3": {
+                "source_zip_sha256": "d79889a1c254020138d26ccdc8852f5575ebcb13ce2d4f03a87b5e71ee5bd740",
+                "stub_sha256": "56ff2dbfefb1a962f46b016a2206dd739b549d4599e5001d960d1ed8bac94224",
+                "generated_at": "2026-11-24T04:55:13Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
             }
         },
         "woocommerce-services": {
