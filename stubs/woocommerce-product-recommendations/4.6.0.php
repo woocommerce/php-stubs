@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-product-recommendations 4.5.3.
+ * Generated stub declarations for woocommerce-product-recommendations 4.6.0.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -3594,7 +3594,7 @@ class WC_PRL_Amplifier_Conversion_Rate extends \WC_PRL_Amplifier
  * WC_PRL_Amplifier_Frequently_Bought_Together class for amplifying products based on their price.
  *
  * @class    WC_PRL_Amplifier_Frequently_Bought_Together
- * @version  4.5.0
+ * @version  4.6.0
  */
 class WC_PRL_Amplifier_Frequently_Bought_Together extends \WC_PRL_Amplifier
 {
@@ -3715,7 +3715,7 @@ class WC_PRL_Amplifier_Freshness extends \WC_PRL_Amplifier
  * WC_PRL_Amplifier_Others_Also_Bought class for amplifying products based on their price.
  *
  * @class    WC_PRL_Amplifier_Others_Also_Bought
- * @version  4.5.0
+ * @version  4.6.0
  */
 class WC_PRL_Amplifier_Others_Also_Bought extends \WC_PRL_Amplifier
 {
@@ -5059,7 +5059,7 @@ final class WC_PRL_Amplifier_Generator
  * Amplifiers Collection class.
  *
  * @class    WC_PRL_Amplifiers
- * @version  4.5.0
+ * @version  4.6.0
  */
 class WC_PRL_Amplifiers
 {
@@ -5194,6 +5194,26 @@ class WC_PRL_Amplifiers
      * @return mixed
      */
     public function get_calibration_option($key, $amplifier_code, $calibration_type = \null)
+    {
+    }
+    /**
+     * Logs the scores a significance amplifier calculated for a source product, with the calibration settings in effect.
+     *
+     * Call this only when wc_prl_debug_enabled() is true.
+     *
+     * @since 4.6.0
+     *
+     * @param string                       $amplifier_code   The amplifier code (fgt or oab).
+     * @param WC_PRL_Deployment|string     $calibration_type A deployment object or a preset name.
+     * @param int                          $source_id        The source product ID.
+     * @param array<int, mixed>            $step_results     Return values of steps 1 to 4, keyed by step index.
+     * @param array<int|string, float|int> $scores           The score of every candidate, keyed by product ID.
+     * @param int                          $significant      Number of candidates that passed the scoring threshold.
+     * @param string                       $log_context      The log source.
+     *
+     * @return void
+     */
+    public function log_significance_scores($amplifier_code, $calibration_type, $source_id, $step_results, $scores, $significant, $log_context)
     {
     }
 }
@@ -9032,10 +9052,18 @@ class WC_PRL_Condition_Cart_Total extends \WC_PRL_Condition
  * Date condition class.
  *
  * @class    WC_PRL_Condition_Date
- * @version  4.5.0
+ * @version  4.6.0
  */
 class WC_PRL_Condition_Date extends \WC_PRL_Condition
 {
+    /**
+     * Year value of a date that repeats every year.
+     *
+     * @since  4.6.0
+     *
+     * @var string
+     */
+    const EVERY_YEAR = 'every';
     /**
      * Constructor.
      */
@@ -9050,6 +9078,16 @@ class WC_PRL_Condition_Date extends \WC_PRL_Condition
      * @return bool
      */
     public function check($data, $deployment)
+    {
+    }
+    /**
+     * Get the timestamp that dates are compared against.
+     *
+     * @since  4.6.0
+     *
+     * @return int
+     */
+    protected function get_current_time()
     {
     }
     /*
@@ -12001,7 +12039,7 @@ class WC_PRL_Location_Shop extends \WC_PRL_Location
  * Main plugin class.
  *
  * @class    WC_Product_Recommendations
- * @version  4.5.3
+ * @version  4.6.0
  */
 class WC_Product_Recommendations
 {
@@ -12010,7 +12048,7 @@ class WC_Product_Recommendations
      *
      * @var string
      */
-    private $version = '4.5.3';
+    private $version = '4.6.0';
     /**
      * Min required WC version.
      *
