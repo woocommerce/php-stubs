@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-product-addons 8.5.1.
+ * Generated stub declarations for woocommerce-product-addons 8.5.2.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -8,7 +8,7 @@
  * Product AddOns edit-order functions and filters.
  *
  * @class    WC_Product_Addons_Admin_Ajax
- * @version  8.5.1
+ * @version  8.5.2
  */
 class WC_Product_Addons_Admin_Ajax
 {
@@ -38,7 +38,7 @@ class WC_Product_Addons_Admin_Ajax
      * @param  WC_Product            $product  Product.
      * @param  WC_Order              $order    Order.
      *
-     * @return bool True on success, including products without add-ons; false on validation failure.
+     * @return bool True on success, including products without add-ons; false when validation fails or the posted values cannot be used.
      */
     public static function store_product_addons($item, $product, $order)
     {
@@ -2077,7 +2077,7 @@ class WC_Product_Addons_Cart_Ajax
  * WC_Product_Addons_Cart class.
  *
  * @class    WC_Product_Addons_Cart
- * @version  8.5.1
+ * @version  8.5.2
  */
 class WC_Product_Addons_Cart
 {
@@ -2093,6 +2093,33 @@ class WC_Product_Addons_Cart
      * @var array<string>
      */
     private $trusted_file_values = array();
+    /**
+     * File fields processed while preparing an order edit, or null outside an edit.
+     *
+     * @var WC_Product_Addons_Field_File_Upload[]|null
+     */
+    private $order_edit_uploads = \null;
+    /**
+     * Prepare and validate the cart data for an order edit before any order writes.
+     *
+     * @since 8.5.2
+     * @param int      $product_id Product ID.
+     * @param callable $prepare    Callback that returns usable values or false.
+     * @phpstan-param callable(array<string, mixed>): (array<string, mixed>|false) $prepare
+     * @return array<string, mixed>|false
+     */
+    public function prepare_order_edit($product_id, $prepare)
+    {
+    }
+    /**
+     * Discard uploads created while preparing a rejected order edit.
+     *
+     * @since 8.5.2
+     * @return void
+     */
+    private function discard_order_edit_uploads()
+    {
+    }
     /**
      * Order currently being edited by an authorized merchant.
      *
@@ -2441,6 +2468,16 @@ class WC_Product_Addons_Cart
     {
     }
     /**
+     * Check the stored date parts before passing them to the date picker.
+     *
+     * @since 8.5.2
+     * @param mixed $meta Add-on metadata.
+     * @return bool
+     */
+    public function has_datepicker_meta($meta)
+    {
+    }
+    /**
      * Grabs the value of a product addon from order item meta.
      *
      * @param  array  $ids   Array of addon meta that include id, name and value.
@@ -2596,7 +2633,7 @@ class WC_PAO_Compatibility
 /**
  * Product_Addon_Display class.
  *
- * @version 8.5.1
+ * @version 8.5.2
  */
 class WC_Product_Addons_Display
 {
@@ -2985,7 +3022,7 @@ class WC_Product_Addons_Global_Add_On_Groups_Ability implements \Automattic\WooC
 /**
  * WC_Product_Addons_Helper class.
  *
- * @version 8.4.7
+ * @version 8.5.2
  */
 class WC_Product_Addons_Helper
 {
@@ -3194,6 +3231,16 @@ class WC_Product_Addons_Helper
      * @return float
      */
     public static function wc_pao_get_gmt_offset()
+    {
+    }
+    /**
+     * Check whether an offset can represent a real time-zone shift.
+     *
+     * @since 8.5.2
+     * @param mixed $offset GMT offset in hours.
+     * @return bool
+     */
+    public static function is_valid_datepicker_offset($offset)
     {
     }
     /**
@@ -4655,7 +4702,7 @@ class WC_Product_Addons_Field_Custom extends \WC_Product_Addons_Field
  * Date picker field
  *
  * @since   6.8.0
- * @version 8.4.5
+ * @version 8.5.2
  */
 class WC_Product_Addons_Field_Datepicker extends \WC_Product_Addons_Field
 {
@@ -4714,7 +4761,7 @@ class WC_Product_Addons_Field_Datepicker extends \WC_Product_Addons_Field
 /**
  * File Upload field
  *
- * @version 8.4.5
+ * @version 8.5.2
  */
 class WC_Product_Addons_Field_File_Upload extends \WC_Product_Addons_Field
 {
@@ -4752,6 +4799,12 @@ class WC_Product_Addons_Field_File_Upload extends \WC_Product_Addons_Field
      */
     private static $processed_uploads = array();
     /**
+     * Local upload created by this field instance.
+     *
+     * @var array{file: string, key: string, index: bool}|null
+     */
+    private $new_upload = \null;
+    /**
      * Constructor.
      *
      * @param array $addon         Add-on definition.
@@ -4785,6 +4838,15 @@ class WC_Product_Addons_Field_File_Upload extends \WC_Product_Addons_Field
      * @return array
      */
     public function handle_upload($file)
+    {
+    }
+    /**
+     * Discard a new upload when its order edit fails validation.
+     *
+     * @since 8.5.2
+     * @return void
+     */
+    public function discard_new_upload()
     {
     }
     /**
@@ -5760,4 +5822,4 @@ function woocommerce_product_addons_deactivation()
 function woocommerce_product_addons_init()
 {
 }
-\define('WC_PRODUCT_ADDONS_VERSION', '8.5.1');
+\define('WC_PRODUCT_ADDONS_VERSION', '8.5.2');

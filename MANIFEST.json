@@ -1249,10 +1249,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "8.5.1": {
-                "source_zip_sha256": "820613469ba9515a18d10e54bb2eb20a961e70a88ade122cbc6a86e3883c0a30",
-                "stub_sha256": "2656135eee46026cc4bdbbd4c37385df87b9f45c8fe4f4eae2dc27f9e4dc5bbe",
-                "generated_at": "2026-11-18T10:06:58Z",
+            "8.5.2": {
+                "source_zip_sha256": "5581e34b121790806138b8497682ca8557c645160a0a041e07296c2aa0eb34d1",
+                "stub_sha256": "882d83e99fdebd71e05c2296be9f6288c0ffcc3db228590363fb3ce8490351df",
+                "generated_at": "2026-11-25T09:07:09Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
