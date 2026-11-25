@@ -189,11 +189,11 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "5.45.2": {
-                "source_url": "https://downloads.wordpress.org/plugin/mailpoet.5.45.2.zip",
-                "source_zip_sha256": "6e1ba8c05ab244c709f7831bcd333b3fd833e19df92ee85ea1ab999b1f6d7224",
-                "stub_sha256": "e77f76e7c43765e4f4d35b91dd6ff880a290aef3220fde51c3350418e752a2a3",
-                "generated_at": "2026-11-11T03:03:38Z",
+            "5.46.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/mailpoet.5.46.0.zip",
+                "source_zip_sha256": "6df201bfd1759861dda9ddbe037c33f537c803c659b64d260ed19db831a90d06",
+                "stub_sha256": "ab85b613f3a7db8f1a3d097f0c4b420fdd6c5a096e97495aebf9419b57f53e31",
+                "generated_at": "2026-11-25T03:03:59Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -948,6 +948,14 @@
                 "source_zip_sha256": "b358078e61fae91fde91d75a6be7fca667c151935291b40d8aa0711464072597",
                 "stub_sha256": "5c7e1d16a0c12c8507a40a4d9e34506b2970a470a59bfbb7620ba4bd9447f240",
                 "generated_at": "2026-10-23T08:12:33Z",
+                "generator": "php-stubs/generator v0.9.0",
+                "frameworks": []
+            },
+            "2.4.5": {
+                "source_url": "https://downloads.wordpress.org/plugin/woocommerce-google-analytics-integration.2.4.5.zip",
+                "source_zip_sha256": "47a6ddbdd3f2248a6718f70a254fa309d43543e9a70ba2274741c3f041a0db0d",
+                "stub_sha256": "5c80c552ece7d95fa84fa0d2fe436e5591f7cfe15a75175213a6fa26e0d8e410",
+                "generated_at": "2026-11-25T03:04:59Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }

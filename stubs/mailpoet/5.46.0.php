@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for mailpoet 5.45.2.
+ * Generated stub declarations for mailpoet 5.46.0.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -425,7 +425,16 @@ namespace MailPoet\API\JSON\ResponseBuilders {
         public function buildForListing(array $subscribers): array
         {
         }
-        private function buildListingItem(\MailPoet\Entities\SubscriberEntity $subscriber, string $engagementScoreType): array
+        /**
+         * When each unsubscribed subscriber last unsubscribed, for those with a record of it.
+         *
+         * @param \MailPoet\Entities\SubscriberEntity[] $subscribers
+         * @return array<int, string> Dates keyed by subscriber id.
+         */
+        private function getUnsubscribedDates(array $subscribers): array
+        {
+        }
+        private function buildListingItem(\MailPoet\Entities\SubscriberEntity $subscriber, string $engagementScoreType, ?string $unsubscribedAt): array
         {
         }
         public function build(\MailPoet\Entities\SubscriberEntity $subscriberEntity): array
@@ -1297,6 +1306,9 @@ namespace MailPoet\API\JSON\v1 {
         {
         }
         /**
+         * A time zone campaign goes as a whole: its other unstarted batches are deleted too, e.g. one paused for the
+         * sender domain, which the hold does not mark.
+         *
          * @param \MailPoet\Entities\ScheduledTaskEntity[]|null $heldTasks Loaded when not given.
          */
         private function deleteHeldCampaignQueues(\MailPoet\Entities\NewsletterEntity $newsletter, ?array $heldTasks = null): void
@@ -2506,18 +2518,24 @@ namespace MailPoet\Abilities {
         }
     }
     /**
-     * Registers read-only MailPoet abilities through the core Abilities API,
-     * independent of WooCommerce.
+     * Registers MailPoet abilities through the core Abilities API, independent of
+     * WooCommerce. The abilities for newsletter drafts stay behind the
+     * mcp_write_abilities feature flag.
      */
     class AbilitiesRegistrar
     {
         public const CATEGORY = 'mailpoet';
         public const ABILITY_NAMES = [\MailPoet\Abilities\SendingStatusAbility::NAME, \MailPoet\Abilities\UnsubscribeTrendAbility::NAME, \MailPoet\Abilities\RecentNewslettersAbility::NAME];
+        private const EXPERIMENTAL_ABILITIES = [\MailPoet\Abilities\CreateNewsletterDraftAbility::class, \MailPoet\Abilities\NewsletterDraftOptionsAbility::class, \MailPoet\Abilities\GetNewsletterDraftAbility::class, \MailPoet\Abilities\UpdateNewsletterDraftAbility::class];
         /** @var \MailPoet\WP\Functions */
         private $wp;
+        /** @var \MailPoet\Features\FeaturesController */
+        private $featuresController;
         /** @var Ability[] */
         private $abilities;
-        public function __construct(\MailPoet\WP\Functions $wp, \MailPoet\Abilities\SendingStatusAbility $sendingStatusAbility, \MailPoet\Abilities\UnsubscribeTrendAbility $unsubscribeTrendAbility, \MailPoet\Abilities\RecentNewslettersAbility $recentNewslettersAbility)
+        /** @var \MailPoet\DI\ContainerWrapper */
+        private $container;
+        public function __construct(\MailPoet\WP\Functions $wp, \MailPoet\Features\FeaturesController $featuresController, \MailPoet\Abilities\SendingStatusAbility $sendingStatusAbility, \MailPoet\Abilities\UnsubscribeTrendAbility $unsubscribeTrendAbility, \MailPoet\Abilities\RecentNewslettersAbility $recentNewslettersAbility, \MailPoet\DI\ContainerWrapper $container)
         {
         }
         public function init(): void
@@ -2532,6 +2550,12 @@ namespace MailPoet\Abilities {
         public static function getReadOnlyMeta(): array
         {
         }
+        public static function getWriteMeta(bool $destructive = false): array
+        {
+        }
+        private static function getMeta(bool $readonly, bool $destructive, bool $idempotent): array
+        {
+        }
     }
     interface Ability
     {
@@ -2543,6 +2567,656 @@ namespace MailPoet\Abilities {
          * Arguments for wp_register_ability() without the category, which the registrar adds.
          */
         public function getRegistrationArgs(): array;
+    }
+    /** @phpstan-import-type PreparedDraft from NewsletterDrafts */
+    class CreateNewsletterDraftAbility implements \MailPoet\Abilities\Ability
+    {
+        public const NAME = 'mailpoet/create-newsletter-draft';
+        private const CLIENT_REFERENCE_META_KEY = '_mailpoet_client_reference';
+        // Every status except trash, so a trashed draft doesn't block a new one. "any" won't do
+        // because it leaves out "sent", and a retry would then create a second newsletter.
+        private const CLIENT_REFERENCE_POST_STATUSES = ['draft', 'pending', 'private', 'publish', 'future', \MailPoet\Entities\NewsletterEntity::STATUS_SENT];
+        /** @var NewsletterDrafts */
+        private $drafts;
+        /** @var \MailPoet\Newsletter\NewsletterSaveController */
+        private $saveController;
+        /** @var \MailPoet\Newsletter\NewsletterDeleteController */
+        private $deleteController;
+        /** @var \MailPoet\Newsletter\NewslettersRepository */
+        private $newslettersRepository;
+        /** @var \MailPoet\EmailEditor\Integrations\MailPoet\Templates\TemplatesController */
+        private $templatesController;
+        /** @var \MailPoet\Logging\LoggerFactory */
+        private $loggerFactory;
+        /** @var \MailPoet\WP\Functions */
+        private $wp;
+        public function __construct(\MailPoet\Abilities\NewsletterDrafts $drafts, \MailPoet\Newsletter\NewsletterSaveController $saveController, \MailPoet\Newsletter\NewsletterDeleteController $deleteController, \MailPoet\Newsletter\NewslettersRepository $newslettersRepository, \MailPoet\EmailEditor\Integrations\MailPoet\Templates\TemplatesController $templatesController, \MailPoet\Logging\LoggerFactory $loggerFactory, \MailPoet\WP\Functions $wp)
+        {
+        }
+        public function getName(): string
+        {
+        }
+        public function getRegistrationArgs(): array
+        {
+        }
+        public function hasPermission(): bool
+        {
+        }
+        /**
+         * @param array|null $input
+         * @return array|\WP_Error
+         */
+        public function execute($input = null)
+        {
+        }
+        /** @param PreparedDraft $prepared */
+        private function createDraft(array $prepared, ?string $clientReference): ?\MailPoet\Entities\NewsletterEntity
+        {
+        }
+        private function deleteNewsletter(\MailPoet\Entities\NewsletterEntity $newsletter): void
+        {
+        }
+        private function logFailure(\Throwable $error): void
+        {
+        }
+        private function findByClientReference(string $clientReference): ?\MailPoet\Entities\NewsletterEntity
+        {
+        }
+        private function getInputSchema(): array
+        {
+        }
+        private function getOutputSchema(): array
+        {
+        }
+    }
+    class GetNewsletterDraftAbility implements \MailPoet\Abilities\Ability
+    {
+        public const NAME = 'mailpoet/get-newsletter-draft';
+        /** @var NewsletterDrafts */
+        private $drafts;
+        /** @var NewsletterDraftReader */
+        private $reader;
+        /** @var \MailPoet\WP\Functions */
+        private $wp;
+        public function __construct(\MailPoet\Abilities\NewsletterDrafts $drafts, \MailPoet\Abilities\NewsletterDraftReader $reader, \MailPoet\WP\Functions $wp)
+        {
+        }
+        public function getName(): string
+        {
+        }
+        public function getRegistrationArgs(): array
+        {
+        }
+        public function hasPermission(): bool
+        {
+        }
+        /**
+         * @param array|null $input
+         * @return array|\WP_Error
+         */
+        public function execute($input = null)
+        {
+        }
+        private function getOutputSchema(): array
+        {
+        }
+    }
+    /**
+     * Turns the flat blocks an agent sends into the block markup of a newsletter.
+     * The markup has to match what the core blocks save, otherwise the editor offers block recovery.
+     *
+     * @phpstan-type DraftError array{field: string, message: string}
+     * @phpstan-type BlockColors array{attributes: array<string, string>, classes: string[], styles: string[], errors: string[]}
+     */
+    class NewsletterDraftBlocks
+    {
+        public const TYPE_HEADING = 'heading';
+        public const TYPE_PARAGRAPH = 'paragraph';
+        public const TYPE_BUTTON = 'button';
+        public const TYPE_IMAGE = 'image';
+        public const TYPE_LIST = 'list';
+        public const TYPE_QUOTE = 'quote';
+        public const TYPE_SPACER = 'spacer';
+        public const TYPE_SECTION = 'section';
+        public const ALIGNMENTS = ['left', 'center', 'right'];
+        private const NESTED_TYPES = [self::TYPE_HEADING, self::TYPE_PARAGRAPH, self::TYPE_BUTTON, self::TYPE_IMAGE, self::TYPE_LIST, self::TYPE_QUOTE, self::TYPE_SPACER];
+        private const HEADING_MAX_LENGTH = 300;
+        private const BUTTON_TEXT_MAX_LENGTH = 100;
+        private const DEFAULT_HEADING_LEVEL = 2;
+        private const SECTION_PADDING = '20px';
+        private const URL_PROTOCOLS = ['http', 'https'];
+        private const PARAGRAPH_LINK_PROTOCOLS = ['http', 'https', 'mailto'];
+        private const PARAGRAPH_HTML = ['strong' => [], 'em' => [], 'a' => ['href' => true]];
+        // The form of a personalization tag: [namespace/slug], with optional arguments.
+        private const PERSONALIZATION_TAG_PATTERN = '/\[[a-zA-Z0-9-]+\/[a-zA-Z0-9\/-]+(?:\s+[^\]]+)?\]/';
+        private const REQUIRED_FIELDS = [self::TYPE_HEADING => ['text'], self::TYPE_PARAGRAPH => ['text'], self::TYPE_BUTTON => ['text', 'url'], self::TYPE_IMAGE => ['url', 'alt'], self::TYPE_LIST => ['items'], self::TYPE_QUOTE => ['text'], self::TYPE_SPACER => ['height'], self::TYPE_SECTION => ['blocks']];
+        private const OPTIONAL_FIELDS = [self::TYPE_HEADING => ['level', 'align', 'text_color', 'background_color'], self::TYPE_PARAGRAPH => ['align', 'text_color', 'background_color'], self::TYPE_BUTTON => ['align', 'text_color', 'background_color'], self::TYPE_IMAGE => [], self::TYPE_LIST => ['ordered', 'text_color', 'background_color'], self::TYPE_QUOTE => ['text_color', 'background_color'], self::TYPE_SPACER => [], self::TYPE_SECTION => ['text_color', 'background_color']];
+        /** @var \MailPoet\WP\Functions */
+        private $wp;
+        /** @var \MailPoet\Newsletter\Shortcodes\Shortcodes */
+        private $shortcodes;
+        public function __construct(\MailPoet\WP\Functions $wp, \MailPoet\Newsletter\Shortcodes\Shortcodes $shortcodes)
+        {
+        }
+        /**
+         * The schema of the blocks field. Sections hold one level of other blocks, so the inner blocks
+         * are spelled out once: the core validator has no recursive references.
+         */
+        public function getBlocksSchema(): array
+        {
+        }
+        /** @param string[] $types */
+        private function getBlockSchema(array $types): array
+        {
+        }
+        /**
+         * @param array<int, array<string, mixed>> $blocks
+         * @return array{markup: string, errors: DraftError[], warnings: string[]}
+         */
+        public function prepare(array $blocks): array
+        {
+        }
+        /**
+         * @param array<int, array<string, mixed>> $blocks
+         * @param DraftError[] $errors
+         * @param string[] $warnings
+         * @return string[]
+         */
+        private function prepareBlocks(array $blocks, string $parentField, array &$errors, array &$warnings): array
+        {
+        }
+        public function sanitizeText(string $text, bool &$removed): string
+        {
+        }
+        public function getRemovedContentWarning(string $field): string
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @param DraftError[] $errors
+         * @param string[] $warnings
+         * @return string|string[] the block markup, or the errors
+         */
+        private function prepareBlock(array $block, string $field, bool &$removed, array &$errors, array &$warnings)
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @return string[]
+         */
+        private function validateFields(string $type, array $block): array
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @return BlockColors
+         */
+        private function prepareColors(array $block): array
+        {
+        }
+        /** @param array<string, mixed> $block */
+        private function stringField(array $block, string $field): string
+        {
+        }
+        /** @param array<string, mixed> $block */
+        private function intField(array $block, string $field, int $default): int
+        {
+        }
+        /** @param array<string, mixed> $attributes */
+        private function openingDelimiter(string $name, array $attributes): string
+        {
+        }
+        /**
+         * @param string[] $classes
+         * @param string[] $styles
+         */
+        private function htmlAttributes(array $classes, array $styles): string
+        {
+        }
+        /** @param string[] $styles */
+        private function styleAttribute(array $styles): string
+        {
+        }
+        /**
+         * @param BlockColors $colors
+         * @return array<string, mixed>
+         */
+        private function colorAttributes(array $colors): array
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @param BlockColors $colors
+         * @return string|string[]
+         */
+        private function buildHeading(array $block, array $colors, bool &$removed)
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @param BlockColors $colors
+         * @return string|string[]
+         */
+        private function buildParagraph(array $block, array $colors, bool &$removed)
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @param BlockColors $colors
+         * @return string|string[]
+         */
+        private function buildButton(array $block, array $colors, bool &$removed)
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @return string|string[]
+         */
+        private function buildImage(array $block, bool &$removed)
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @param BlockColors $colors
+         * @return string|string[]
+         */
+        private function buildList(array $block, array $colors, bool &$removed)
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @param BlockColors $colors
+         * @return string|string[]
+         */
+        private function buildQuote(array $block, array $colors, bool &$removed)
+        {
+        }
+        /** @param array<string, mixed> $block */
+        private function buildSpacer(array $block): string
+        {
+        }
+        /**
+         * @param string[] $inner
+         * @param BlockColors $colors
+         */
+        private function buildSection(array $inner, array $colors): string
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @return string[]
+         */
+        private function alignClass(array $block): array
+        {
+        }
+        private function sanitizeInlineHtml(string $text, bool &$removed): string
+        {
+        }
+        /** @return string[] */
+        private function validateText(string $text, ?int $maxLength): array
+        {
+        }
+        /** @return string[] */
+        private function validateUrl(string $url): array
+        {
+        }
+        private function sanitizeUrl(string $url, bool &$removed): string
+        {
+        }
+        /**
+         * Repeats until nothing changes, because removing one piece can form another.
+         */
+        private function sanitize(string $text, callable $filter, bool &$removed): string
+        {
+        }
+        /**
+         * Block delimiters and personalization tags are HTML comments, and wp_kses keeps comments.
+         * The regular expression matches from "<!--" to the nearest "-->", or to the end of an
+         * unterminated comment.
+         */
+        private function removeComments(string $text): string
+        {
+        }
+        /**
+         * Sending replaces shortcodes in the rendered email, and rendering decodes entities. In links,
+         * the email editor replaces personalization tags after decoding entities and URL encoding, and
+         * the layers can be mixed. So every decoded form counts, layer by layer, but a decoded form is
+         * used only when it contains a tag, because decoding changes the text around it.
+         */
+        private function removeTags(string $text): string
+        {
+        }
+        /** @return string[] */
+        private function findTags(string $text): array
+        {
+        }
+        /**
+         * The email renderer runs registered WordPress shortcodes, also in attributes, after it has
+         * decoded the text. Core's pattern matches only the registered ones, and with none registered
+         * it would match other text in brackets.
+         *
+         * @return string[]
+         */
+        private function findWordPressShortcodes(string $text): array
+        {
+        }
+        private function wrapInGroup(string $content): string
+        {
+        }
+    }
+    class NewsletterDraftOptionsAbility implements \MailPoet\Abilities\Ability
+    {
+        public const NAME = 'mailpoet/get-newsletter-draft-options';
+        private const RECENT_DRAFTS_LIMIT = 10;
+        /** @var NewsletterDrafts */
+        private $drafts;
+        /** @var \MailPoet\Newsletter\NewslettersRepository */
+        private $newslettersRepository;
+        /** @var \MailPoet\WP\Functions */
+        private $wp;
+        public function __construct(\MailPoet\Abilities\NewsletterDrafts $drafts, \MailPoet\Newsletter\NewslettersRepository $newslettersRepository, \MailPoet\WP\Functions $wp)
+        {
+        }
+        public function getName(): string
+        {
+        }
+        public function getRegistrationArgs(): array
+        {
+        }
+        public function hasPermission(): bool
+        {
+        }
+        /** @param array|null $input */
+        public function execute($input = null): array
+        {
+        }
+        /**
+         * Themes can define palette colors as CSS variables, which mean nothing in an email.
+         *
+         * @return array<int, array{name: string, color: string}>
+         */
+        private function getSiteColors(): array
+        {
+        }
+        private function getOutputSchema(): array
+        {
+        }
+    }
+    /**
+     * Reads the block markup of a newsletter back into the flat blocks agents work with.
+     *
+     * An update replaces all the blocks, so a block this format can't hold would be lost. The blocks
+     * are therefore returned only when building them again gives the same content, and a draft with
+     * anything more, such as a pattern, a personalization tag or extra styling, gives null.
+     */
+    class NewsletterDraftReader
+    {
+        /** @var NewsletterDraftBlocks */
+        private $draftBlocks;
+        /** @var \MailPoet\WP\Functions */
+        private $wp;
+        public function __construct(\MailPoet\Abilities\NewsletterDraftBlocks $draftBlocks, \MailPoet\WP\Functions $wp)
+        {
+        }
+        /** @return array<int, array<string, mixed>>|null */
+        public function read(string $content): ?array
+        {
+        }
+        /** @return array<int, array<string, mixed>> */
+        private function parse(string $content): array
+        {
+        }
+        /**
+         * Nameless blocks are the HTML between blocks: usually whitespace, but it can be real content.
+         *
+         * @param array<int, array<string, mixed>> $blocks
+         */
+        private function hasContentOutsideBlocks(array $blocks): bool
+        {
+        }
+        /**
+         * @param array<int, array<string, mixed>> $blocks
+         * @return array<int, array<string, mixed>>
+         */
+        private function removeNamelessBlocks(array $blocks): array
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @return array<int, array<string, mixed>>
+         */
+        private function getInnerBlocks(array $block): array
+        {
+        }
+        /**
+         * What decides whether two blocks are the same. Editors save block attributes in another order,
+         * and the HTML is compared as tags and text, not as it's written: editors don't escape quotes
+         * or ">" in text, kses adds a space before "/>", and since WordPress 7.2 kses writes the
+         * attributes in another order and leaves out the "/" of tags like <img>. Alignment has several
+         * spellings in the attributes across WordPress versions, while its class stays in the HTML.
+         *
+         * @param array<int, array<string, mixed>> $blocks
+         * @return array<int, array<string, mixed>>
+         */
+        private function comparable(array $blocks): array
+        {
+        }
+        /** @return array<int, mixed> */
+        private function getHtmlTokens(string $html): array
+        {
+        }
+        /**
+         * @param array<mixed> $values
+         * @return array<mixed>
+         */
+        private function sortKeys(array $values): array
+        {
+        }
+        /**
+         * All or nothing: one block the format can't hold makes the whole list unreadable.
+         *
+         * @param array<int, array<string, mixed>> $blocks
+         * @return array<int, array<string, mixed>>|null
+         */
+        private function toFlatBlocks(array $blocks): ?array
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @return array<string, mixed>|null
+         */
+        private function toFlatBlock(array $block): ?array
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @return array<string, mixed>
+         */
+        private function readHeading(array $block): array
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @return array<string, mixed>
+         */
+        private function readParagraph(array $block): array
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @return array<string, mixed>|null
+         */
+        private function readImage(array $block): ?array
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @return array<string, mixed>|null
+         */
+        private function readButton(array $block): ?array
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @return array<string, mixed>|null
+         */
+        private function readList(array $block): ?array
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @return array<string, mixed>|null
+         */
+        private function readQuote(array $block): ?array
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @return array<string, mixed>
+         */
+        private function readSpacer(array $block): array
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @return array<string, mixed>|null
+         */
+        private function readSection(array $block): ?array
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @return array<string, string>
+         */
+        private function readAlignment(array $block): array
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @return array<string, string>
+         */
+        private function readColors(array $block): array
+        {
+        }
+        /**
+         * @param array<string, mixed> $block
+         * @param string[] $path
+         * @return mixed
+         */
+        private function getAttribute(array $block, array $path)
+        {
+        }
+        /** @param array<string, mixed> $block */
+        private function getHtml(array $block): string
+        {
+        }
+        /**
+         * The content of the outermost tag. If that isn't all there is in the HTML, building the block
+         * again gives something else, and read() returns null.
+         */
+        private function getContent(string $html): string
+        {
+        }
+        private function decode(string $text): string
+        {
+        }
+    }
+    /**
+     * What the abilities working with newsletter drafts share: the input fields, how they are
+     * checked, and the output.
+     *
+     * @phpstan-import-type DraftError from NewsletterDraftBlocks
+     * @phpstan-type PreparedDraft array{subject: ?string, preheader: ?string, markup: ?string, segments: ?array<int, array{id: int}>, errors: DraftError[], warnings: string[]}
+     */
+    class NewsletterDrafts
+    {
+        /** @var NewsletterDraftBlocks */
+        private $draftBlocks;
+        /** @var \MailPoet\Segments\SegmentsSimpleListRepository */
+        private $segmentsListRepository;
+        /** @var \MailPoet\Segments\SegmentsRepository */
+        private $segmentsRepository;
+        /** @var \MailPoet\Segments\WooCommerce */
+        private $wooCommerceSegment;
+        /** @var \MailPoet\Newsletter\NewslettersRepository */
+        private $newslettersRepository;
+        /** @var \MailPoet\WP\Functions */
+        private $wp;
+        public function __construct(\MailPoet\Abilities\NewsletterDraftBlocks $draftBlocks, \MailPoet\Segments\SegmentsSimpleListRepository $segmentsListRepository, \MailPoet\Segments\SegmentsRepository $segmentsRepository, \MailPoet\Segments\WooCommerce $wooCommerceSegment, \MailPoet\Newsletter\NewslettersRepository $newslettersRepository, \MailPoet\WP\Functions $wp)
+        {
+        }
+        /**
+         * The same lists and counts as the Send to control in the send step.
+         *
+         * @return array<int, array{id: int, name: string, type: string, subscribers: int}>
+         */
+        public function getLists(): array
+        {
+        }
+        /** Standard newsletters from the block email editor. */
+        public function findNewsletter(int $id): ?\MailPoet\Entities\NewsletterEntity
+        {
+        }
+        public function getNotFoundError(): \WP_Error
+        {
+        }
+        public function getContent(\MailPoet\Entities\NewsletterEntity $newsletter): string
+        {
+        }
+        /** It changes whenever the content does, so an update can tell that it read the current one. */
+        public function getVersion(\MailPoet\Entities\NewsletterEntity $newsletter): string
+        {
+        }
+        /**
+         * @param array<string, string> $fields
+         * @throws \RuntimeException
+         */
+        public function updatePost(int $postId, array $fields): void
+        {
+        }
+        /** @param array<int, array<string, mixed>>|null $blocks The draft's blocks, null if they can't be read. */
+        public function getNotEditableReason(\MailPoet\Entities\NewsletterEntity $newsletter, ?array $blocks): ?string
+        {
+        }
+        public function getInputProperties(): array
+        {
+        }
+        /**
+         * Fields that are not in the input stay null.
+         *
+         * @param array<string, mixed> $input
+         * @return PreparedDraft
+         */
+        public function prepareInput(array $input): array
+        {
+        }
+        /**
+         * @param array<string, mixed> $input
+         * @param string[] $warnings
+         */
+        private function sanitizeField(array $input, string $field, array &$warnings): ?string
+        {
+        }
+        /**
+         * @param int[] $ids
+         * @return int[]
+         */
+        private function findUsableListIds(array $ids): array
+        {
+        }
+        /** @param DraftError[] $errors */
+        public function getInvalidInputError(array $errors): \WP_Error
+        {
+        }
+        public function buildOutput(\MailPoet\Entities\NewsletterEntity $newsletter): array
+        {
+        }
+        public function getOutputProperties(): array
+        {
+        }
+        public function getWarningsProperty(): array
+        {
+        }
     }
     class RecentNewslettersAbility implements \MailPoet\Abilities\Ability
     {
@@ -2696,6 +3370,43 @@ namespace MailPoet\Abilities {
         {
         }
         private function getOutputSchema(): array
+        {
+        }
+    }
+    class UpdateNewsletterDraftAbility implements \MailPoet\Abilities\Ability
+    {
+        public const NAME = 'mailpoet/update-newsletter-draft';
+        /** @var NewsletterDrafts */
+        private $drafts;
+        /** @var NewsletterDraftReader */
+        private $reader;
+        /** @var \MailPoet\Newsletter\NewsletterSaveController */
+        private $saveController;
+        /** @var \MailPoet\Logging\LoggerFactory */
+        private $loggerFactory;
+        /** @var \MailPoet\WP\Functions */
+        private $wp;
+        public function __construct(\MailPoet\Abilities\NewsletterDrafts $drafts, \MailPoet\Abilities\NewsletterDraftReader $reader, \MailPoet\Newsletter\NewsletterSaveController $saveController, \MailPoet\Logging\LoggerFactory $loggerFactory, \MailPoet\WP\Functions $wp)
+        {
+        }
+        public function getName(): string
+        {
+        }
+        public function getRegistrationArgs(): array
+        {
+        }
+        public function hasPermission(): bool
+        {
+        }
+        /**
+         * @param array|null $input
+         * @return array|\WP_Error
+         */
+        public function execute($input = null)
+        {
+        }
+        /** The same rule as the editor's: the name follows the subject until a person picks one. */
+        private function campaignNameFollowsSubject(\MailPoet\Entities\NewsletterEntity $newsletter): bool
         {
         }
     }
@@ -2854,6 +3565,7 @@ namespace MailPoet\AdminPages {
     }
     class PageRenderer
     {
+        public const CHATBOT_PRODUCT = 'MailPoet';
         /** @var \MailPoet\Services\Bridge */
         private $bridge;
         /** @var \MailPoet\Config\Renderer */
@@ -2912,6 +3624,13 @@ namespace MailPoet\AdminPages {
         {
         }
         public function displayChatBotWidget(): bool
+        {
+        }
+        /**
+         * The line the support chat shows at the top.
+         * The widget only uses it if it contains the product name exactly.
+         */
+        private function getChatBotAiDisclosure(): string
         {
         }
     }
@@ -11559,7 +12278,14 @@ namespace MailPoet\Config {
         public function init()
         {
         }
-        public function authenticateReleaseRequests(array $args, string $url): array
+        /**
+         * Hooked to `http_request_args`, which any code can apply with any values.
+         *
+         * @param mixed $args
+         * @param mixed $url
+         * @return mixed
+         */
+        public function authenticateReleaseRequests($args, $url)
         {
         }
         public function buildDownloadUrl(): string
@@ -15494,6 +16220,9 @@ namespace MailPoet\Cron\Workers {
         public function __construct(\MailPoet\Analytics\Analytics $analytics)
         {
         }
+        public function checkProcessingRequirements()
+        {
+        }
         public function processTaskStrategy(\MailPoet\Entities\ScheduledTaskEntity $task, $timer)
         {
         }
@@ -15975,11 +16704,10 @@ namespace MailPoet\Cron\Workers\SendingQueue\Tasks {
          * have made. A restored URL may also carry a non-link shortcode of its own, such as
          * `http://example.com/?email=[subscriber:email]`, or a personalization tag embedded the same way.
          * The click redirect resolves both; for these recipients the shortcodes are resolved here
-         * (STOMAIL-8340) and the embedded tags later, by the Personalizer in the HTML part and by
-         * resolveMarkdownLinks() in the text part. Links of block emails whose URL is a personalization
-         * tag token are resolved with the resolver the redirect uses. A token link or shortcode that
-         * cannot be resolved becomes empty rather than shipping as literal text; an embedded tag that
-         * cannot be resolved stays literal.
+         * (STOMAIL-8340) and the embedded tags later, by the Personalizer. Links of block emails whose
+         * URL is a personalization tag token are resolved with the resolver the redirect uses. A token
+         * link or shortcode that cannot be resolved becomes empty rather than shipping as literal text;
+         * an embedded tag that cannot be resolved stays literal.
          *
          * @param array<string, mixed>|null $personalizationContext
          */
@@ -15990,10 +16718,9 @@ namespace MailPoet\Cron\Workers\SendingQueue\Tasks {
          * The destination a recipient we may not track gets for one stored link; see untrackLinks().
          *
          * A personalization tag embedded in a stored URL (https://example.com/?ref=[acme/url]) is resolved
-         * here too. On the rendered path the Personalizer does that for the HTML href while it runs over
-         * the restored content, writing it through esc_url(), and resolveMarkdownLinks() does it for the
-         * text body's link targets; on the templated path the URL leaves as a substitution value, so it
-         * has to be complete and, in the HTML part, escaped the same way.
+         * here too. On the rendered path the Personalizer does that while it runs over the restored
+         * content, writing HTML hrefs through esc_url(); on the templated path the URL leaves as a
+         * substitution value, so it has to be complete and, in the HTML part, escaped the same way.
          *
          * @param string $part The PlaceholderCollector::PART_* constant the URL is for
          * @param string $shortcodeLookupSource Content that shortcodes such as [newsletter:post_title] look their value up in
@@ -16801,6 +17528,9 @@ namespace MailPoet\Cron\Workers {
         private $analytics;
         const TASK_TYPE = 'tracks';
         public function __construct(\MailPoet\Analytics\Analytics $analytics)
+        {
+        }
+        public function checkProcessingRequirements()
         {
         }
         public function processTaskStrategy(\MailPoet\Entities\ScheduledTaskEntity $task, $timer)
@@ -18664,6 +19394,8 @@ namespace MailPoet\EmailEditor\Integrations\MailPoet\Blocks\BlockTypes {
          * block in its email markup, so an emptied block leaves no wrapper behind.
          */
         private const PASSWORD_FILTER_PRIORITY = PHP_INT_MAX;
+        /** Before core formats the text, trims the excerpt (10) and runs registered shortcodes (11). */
+        private const REMOVE_SHORTCODES_PRIORITY = 9;
         /** Template blocks. Not email-enabled by default, so we opt them in. */
         private const TEMPLATE_CORE_BLOCKS = ['core/post-featured-image', 'core/post-title', 'core/post-excerpt', 'core/post-date', 'core/post-author', 'core/post-author-name', 'core/post-author-biography', 'core/post-terms', 'core/avatar', 'core/read-more'];
         /**
@@ -18681,6 +19413,8 @@ namespace MailPoet\EmailEditor\Integrations\MailPoet\Blocks\BlockTypes {
         /** @var array<int, int[]> */
         private $renderedPostsByRequest = [];
         private bool $isRenderingPostContent = false;
+        /** Nested Latest Posts blocks share the shortcode filters, so only the outermost render adds and removes them. */
+        private int $innerRenderDepth = 0;
         private \MailPoet\Newsletter\AutomatedLatestContent $automatedLatestContent;
         private \MailPoet\Newsletter\NewsletterPostsRepository $newsletterPostsRepository;
         private \MailPoet\Newsletter\NewslettersRepository $newslettersRepository;
@@ -18997,6 +19731,15 @@ namespace MailPoet\EmailEditor\Integrations\MailPoet\Blocks\BlockTypes {
          * @param array<int, mixed> $innerBlocks
          */
         private function renderInnerBlocks(\WP_Post $templatePost, array $innerBlocks): string
+        {
+        }
+        /**
+         * Some plugins and themes register their shortcodes only on some requests.
+         * When they are not registered, WordPress keeps them in the post text.
+         * Only tags with attributes, a closing tag or a closing slash are removed, so plain text in
+         * square brackets stays. Escaped tags like [[tag]] stay too, as in WordPress.
+         */
+        public function removeUnregisteredShortcodes(string $content): string
         {
         }
         /**
@@ -19380,13 +20123,14 @@ namespace MailPoet\EmailEditor\Integrations\MailPoet {
         private \MailPoet\Util\License\Features\CapabilitiesManager $capabilitiesManager;
         private \MailPoet\Subscribers\TrackingConsentController $trackingConsentController;
         private \MailPoet\API\JSON\AjaxErrorMessages $ajaxErrorMessages;
-        public function __construct(\MailPoet\WP\Functions $wp, \MailPoet\Util\CdnAssetUrl $cdnAssetUrl, \MailPoet\Config\ServicesChecker $servicesChecker, \MailPoet\Util\License\Features\Subscribers $subscribersFeature, \MailPoet\EmailEditor\Integrations\MailPoet\DependencyNotice $dependencyNotice, \MailPoet\Settings\SettingsController $mailpoetSettings, \MailPoet\Newsletter\NewslettersRepository $newslettersRepository, \MailPoet\Settings\UserFlagsController $userFlagsController, \MailPoet\Analytics\Analytics $analytics, \MailPoet\Services\Bridge $bridge, \MailPoet\Services\AuthorizedEmailsController $authorizedEmailsController, \MailPoet\Services\AuthorizedSenderDomainController $senderDomainController, \MailPoet\Features\FeaturesController $featuresController, \MailPoet\Util\License\Features\CapabilitiesManager $capabilitiesManager, \MailPoet\Subscribers\TrackingConsentController $trackingConsentController, \MailPoet\API\JSON\AjaxErrorMessages $ajaxErrorMessages)
+        private \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\EmailPresetPostType $emailPresetPostType;
+        public function __construct(\MailPoet\WP\Functions $wp, \MailPoet\Util\CdnAssetUrl $cdnAssetUrl, \MailPoet\Config\ServicesChecker $servicesChecker, \MailPoet\Util\License\Features\Subscribers $subscribersFeature, \MailPoet\EmailEditor\Integrations\MailPoet\DependencyNotice $dependencyNotice, \MailPoet\Settings\SettingsController $mailpoetSettings, \MailPoet\Newsletter\NewslettersRepository $newslettersRepository, \MailPoet\Settings\UserFlagsController $userFlagsController, \MailPoet\Analytics\Analytics $analytics, \MailPoet\Services\Bridge $bridge, \MailPoet\Services\AuthorizedEmailsController $authorizedEmailsController, \MailPoet\Services\AuthorizedSenderDomainController $senderDomainController, \MailPoet\Features\FeaturesController $featuresController, \MailPoet\Util\License\Features\CapabilitiesManager $capabilitiesManager, \MailPoet\Subscribers\TrackingConsentController $trackingConsentController, \MailPoet\API\JSON\AjaxErrorMessages $ajaxErrorMessages, \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\EmailPresetPostType $emailPresetPostType)
         {
         }
         public function render()
         {
         }
-        private function preloadRestApiData(\WP_Post $post): void
+        private function preloadRestApiData(\WP_Post $post, ?\MailPoet\Entities\NewsletterEntity $newsletter): void
         {
         }
         public function loadAnalyticsModule()
@@ -19484,6 +20228,9 @@ namespace MailPoet\EmailEditor\Integrations\MailPoet {
     class EmailEditor
     {
         const MAILPOET_EMAIL_POST_TYPE = 'mailpoet_email';
+        // Post types that MailPoet's templates, patterns and personalization tags support.
+        const EDITOR_POST_TYPES = [self::MAILPOET_EMAIL_POST_TYPE, \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\EmailPresetPostType::NAME];
+        private const POST_TYPE_CAPABILITIES = ['read' => \MailPoet\Config\AccessControl::PERMISSION_MANAGE_EMAILS, 'edit_posts' => \MailPoet\Config\AccessControl::PERMISSION_MANAGE_EMAILS, 'edit_others_posts' => \MailPoet\Config\AccessControl::PERMISSION_MANAGE_EMAILS, 'edit_published_posts' => \MailPoet\Config\AccessControl::PERMISSION_MANAGE_EMAILS, 'edit_private_posts' => \MailPoet\Config\AccessControl::PERMISSION_MANAGE_EMAILS, 'publish_posts' => \MailPoet\Config\AccessControl::PERMISSION_MANAGE_EMAILS, 'read_private_posts' => \MailPoet\Config\AccessControl::PERMISSION_MANAGE_EMAILS, 'delete_posts' => \MailPoet\Config\AccessControl::PERMISSION_MANAGE_EMAILS, 'delete_others_posts' => \MailPoet\Config\AccessControl::PERMISSION_MANAGE_EMAILS, 'delete_published_posts' => \MailPoet\Config\AccessControl::PERMISSION_MANAGE_EMAILS, 'delete_private_posts' => \MailPoet\Config\AccessControl::PERMISSION_MANAGE_EMAILS, 'create_posts' => \MailPoet\Config\AccessControl::PERMISSION_MANAGE_EMAILS];
         private \MailPoet\WP\Functions $wp;
         private \MailPoet\EmailEditor\Integrations\MailPoet\EmailApiController $emailApiController;
         private \MailPoet\EmailEditor\Integrations\MailPoet\EditorPageRenderer $editorPageRenderer;
@@ -19493,8 +20240,11 @@ namespace MailPoet\EmailEditor\Integrations\MailPoet {
         private \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTagManager $personalizationTagManager;
         private \MailPoet\EmailEditor\Integrations\MailPoet\Templates\TemplatesController $templatesController;
         private \MailPoet\Newsletter\NewslettersRepository $newslettersRepository;
+        private \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\EmailPresetPostType $emailPresetPostType;
+        private \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\EmailPresetPatterns $emailPresetPatterns;
+        private \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\RestApi\Api $emailPresetsApi;
         private bool $editorAlreadyRendered = false;
-        public function __construct(\MailPoet\WP\Functions $wp, \MailPoet\EmailEditor\Integrations\MailPoet\EmailApiController $emailApiController, \MailPoet\EmailEditor\Integrations\MailPoet\EditorPageRenderer $editorPageRenderer, \MailPoet\EmailEditor\Integrations\MailPoet\EmailEditorPreviewEmail $emailEditorPreviewEmail, \MailPoet\EmailEditor\Integrations\MailPoet\Patterns\PatternsController $patternsController, \MailPoet\EmailEditor\Integrations\MailPoet\Templates\TemplatesController $templatesController, \MailPoet\EmailEditor\Integrations\MailPoet\Cli $cli, \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTagManager $personalizationTagManager, \MailPoet\Newsletter\NewslettersRepository $newslettersRepository)
+        public function __construct(\MailPoet\WP\Functions $wp, \MailPoet\EmailEditor\Integrations\MailPoet\EmailApiController $emailApiController, \MailPoet\EmailEditor\Integrations\MailPoet\EditorPageRenderer $editorPageRenderer, \MailPoet\EmailEditor\Integrations\MailPoet\EmailEditorPreviewEmail $emailEditorPreviewEmail, \MailPoet\EmailEditor\Integrations\MailPoet\Patterns\PatternsController $patternsController, \MailPoet\EmailEditor\Integrations\MailPoet\Templates\TemplatesController $templatesController, \MailPoet\EmailEditor\Integrations\MailPoet\Cli $cli, \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTagManager $personalizationTagManager, \MailPoet\Newsletter\NewslettersRepository $newslettersRepository, \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\EmailPresetPostType $emailPresetPostType, \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\EmailPresetPatterns $emailPresetPatterns, \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\RestApi\Api $emailPresetsApi)
         {
         }
         public function initialize(): void
@@ -19507,6 +20257,12 @@ namespace MailPoet\EmailEditor\Integrations\MailPoet {
         {
         }
         private function registerApiRoutes(): void
+        {
+        }
+        /**
+         * @param \WP_Post|mixed $post
+         */
+        public function isEditorPost($post): bool
         {
         }
         public function extendEmailPostApi()
@@ -19542,7 +20298,9 @@ namespace MailPoet\EmailEditor\Integrations\MailPoet {
         private \MailPoet\Newsletter\NewslettersRepository $newslettersRepository;
         private \MailPoet\Newsletter\Preview\SendPreviewController $sendPreviewController;
         private \MailPoet\WP\Functions $wp;
-        public function __construct(\MailPoet\Newsletter\NewslettersRepository $newslettersRepository, \MailPoet\Newsletter\Preview\SendPreviewController $sendPreviewController, \MailPoet\WP\Functions $wp)
+        private \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\EmailPresetPostType $emailPresetPostType;
+        private \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\EmailPresetsController $emailPresetsController;
+        public function __construct(\MailPoet\Newsletter\NewslettersRepository $newslettersRepository, \MailPoet\Newsletter\Preview\SendPreviewController $sendPreviewController, \MailPoet\WP\Functions $wp, \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\EmailPresetPostType $emailPresetPostType, \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\EmailPresetsController $emailPresetsController)
         {
         }
         /**
@@ -19563,6 +20321,298 @@ namespace MailPoet\EmailEditor\Integrations\MailPoet {
          * @throws \Exception
          */
         private function fetchNewsletter($postData): \MailPoet\Entities\NewsletterEntity
+        {
+        }
+    }
+}
+namespace MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets {
+    /**
+     * Shows saved presets in the editor's "Start with an email preset" modal.
+     * They are registered as block patterns hidden from the block inserter.
+     */
+    class EmailPresetPatterns
+    {
+        const CATEGORY = 'mailpoet-saved-presets';
+        const NAME_PREFIX = 'mailpoet/saved-preset-';
+        // The modal renders a live preview of each preset, so it can't show many of them.
+        const LIMIT = 100;
+        private const PATTERNS_ROUTE = '/wp/v2/block-patterns/patterns';
+        private \MailPoet\WP\Functions $wp;
+        public function __construct(\MailPoet\WP\Functions $wp)
+        {
+        }
+        public function initialize(): void
+        {
+        }
+        /**
+         * The patterns route only needs edit_posts, so presets are added to it only
+         * for users who can manage emails. The user is already authenticated here.
+         *
+         * @param mixed $result
+         * @return mixed
+         */
+        public function registerPatternsForRequest($result, $server, \WP_REST_Request $request)
+        {
+        }
+        public function registerPatterns(): void
+        {
+        }
+        /**
+         * The modal orders its tabs by the order of the patterns, so saved presets
+         * go first to follow the "Recent" tab.
+         *
+         * @param \WP_REST_Response|\WP_HTTP_Response|\WP_Error|mixed $response
+         * @return \WP_REST_Response|\WP_HTTP_Response|\WP_Error|mixed
+         */
+        public function moveSavedPresetsFirst($response, $handler, \WP_REST_Request $request)
+        {
+        }
+    }
+    /**
+     * Saved block email presets. A preset has no newsletter row, so it can never be sent.
+     */
+    class EmailPresetPostType
+    {
+        const NAME = 'mailpoet_preset';
+        // Private keeps the preview URL away from visitors.
+        const STATUS = 'private';
+        const META_DESCRIPTION = 'mailpoet_preset_description';
+        const META_SUBJECT = 'mailpoet_preset_subject';
+        const META_PREHEADER = 'mailpoet_preset_preheader';
+        const META_KEYS = [self::META_DESCRIPTION, self::META_SUBJECT, self::META_PREHEADER];
+        private \MailPoet\Features\FeaturesController $featuresController;
+        private \MailPoet\WP\Functions $wp;
+        public function __construct(\MailPoet\Features\FeaturesController $featuresController, \MailPoet\WP\Functions $wp)
+        {
+        }
+        public function isEnabled(): bool
+        {
+        }
+        public function isPreset(?\WP_Post $post): bool
+        {
+        }
+        /**
+         * @param array<string, string> $capabilities
+         * @return array{name: string, args: array<string, mixed>}
+         */
+        public function getDefinition(array $capabilities): array
+        {
+        }
+        public function registerMeta(): void
+        {
+        }
+        /**
+         * Like sanitize_text_field(), but keeps personalization tags such as <!--[user/firstname]-->.
+         */
+        public function sanitizeTextWithTags($value): string
+        {
+        }
+    }
+    class EmailPresetsController
+    {
+        const GROUP_ALL = 'all';
+        const GROUP_TRASH = 'trash';
+        private \MailPoet\WP\Functions $wp;
+        private \MailPoet\EmailEditor\Integrations\MailPoet\Templates\TemplatesController $templatesController;
+        private \MailPoet\Newsletter\NewslettersRepository $newslettersRepository;
+        private \MailPoet\Mailer\MailerFactory $mailerFactory;
+        private \MailPoet\Mailer\MetaInfo $mailerMetaInfo;
+        private \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTags\PersonalizationTagLinkResolver $linkResolver;
+        private \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTagManager $personalizationTagManager;
+        private \MailPoet\Newsletter\Preview\SendPreviewController $sendPreviewController;
+        public function __construct(\MailPoet\WP\Functions $wp, \MailPoet\EmailEditor\Integrations\MailPoet\Templates\TemplatesController $templatesController, \MailPoet\Newsletter\NewslettersRepository $newslettersRepository, \MailPoet\Mailer\MailerFactory $mailerFactory, \MailPoet\Mailer\MetaInfo $mailerMetaInfo, \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTags\PersonalizationTagLinkResolver $linkResolver, \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTagManager $personalizationTagManager, \MailPoet\Newsletter\Preview\SendPreviewController $sendPreviewController)
+        {
+        }
+        public function getPreset(int $postId, bool $includeTrashed = false): ?\WP_Post
+        {
+        }
+        /**
+         * A block email or a preset that can be saved as a new preset.
+         */
+        public function getSource(int $postId): ?\WP_Post
+        {
+        }
+        /**
+         * Creates a blank preset, or a copy of a block email or another preset.
+         */
+        public function create(string $title, ?\WP_Post $source = null): int
+        {
+        }
+        public function duplicate(\WP_Post $preset): int
+        {
+        }
+        public function rename(\WP_Post $preset, string $title): void
+        {
+        }
+        public function trash(\WP_Post $preset): bool
+        {
+        }
+        public function restore(\WP_Post $preset): bool
+        {
+        }
+        public function delete(\WP_Post $preset): bool
+        {
+        }
+        /**
+         * @param array{group?: string, search?: string, orderby?: string, order?: string, page?: int, per_page?: int} $args
+         * @return array{items: \WP_Post[], count: int, groups: array<string, int>}
+         */
+        public function list(array $args): array
+        {
+        }
+        /**
+         * Renders the preset with the current WordPress user as the recipient.
+         *
+         * @return array{subject: string, html: string, text: string}
+         */
+        public function render(\WP_Post $preset): array
+        {
+        }
+        public function sendPreview(\WP_Post $preset, string $emailAddress): void
+        {
+        }
+        public function getEditUrl(int $postId): string
+        {
+        }
+        /**
+         * @return array<string, string>
+         */
+        private function getSourceMeta(\WP_Post $source): array
+        {
+        }
+        /**
+         * WordPress stores 'default' for a template slug it does not know.
+         */
+        private function getTemplateSlug(\WP_Post $post): string
+        {
+        }
+    }
+}
+namespace MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\RestApi {
+    class Api
+    {
+        private \MailPoet\WP\Functions $wp;
+        public function __construct(\MailPoet\WP\Functions $wp)
+        {
+        }
+        public function initialize(): void
+        {
+        }
+        public function registerRoutes(\MailPoet\API\REST\API $api): void
+        {
+        }
+    }
+}
+namespace MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\RestApi\Endpoints {
+    abstract class EmailPresetsEndpoint extends \MailPoet\API\REST\Endpoint
+    {
+        protected \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\EmailPresetsController $controller;
+        protected \MailPoet\WP\Functions $wp;
+        public function __construct(\MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\EmailPresetsController $controller, \MailPoet\WP\Functions $wp)
+        {
+        }
+        public function checkPermissions(): bool
+        {
+        }
+        protected function getPreset(\MailPoet\API\REST\Request $request, bool $includeTrashed = false): \WP_Post
+        {
+        }
+        protected function getTitle(\MailPoet\API\REST\Request $request): string
+        {
+        }
+        protected function presetResponse(int $presetId, bool $includeTrashed = false): \MailPoet\API\REST\Response
+        {
+        }
+        /** @return array<string, mixed> */
+        protected function buildItem(\WP_Post $preset): array
+        {
+        }
+    }
+    /**
+     * Deletes a preset permanently. Use the trash endpoint to move it to the trash.
+     */
+    class EmailPresetDeleteEndpoint extends \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\RestApi\Endpoints\EmailPresetsEndpoint
+    {
+        public function handle(\MailPoet\API\REST\Request $request): \MailPoet\API\REST\Response
+        {
+        }
+        public static function getRequestSchema(): array
+        {
+        }
+    }
+    class EmailPresetDuplicateEndpoint extends \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\RestApi\Endpoints\EmailPresetsEndpoint
+    {
+        public function handle(\MailPoet\API\REST\Request $request): \MailPoet\API\REST\Response
+        {
+        }
+        public static function getRequestSchema(): array
+        {
+        }
+    }
+    class EmailPresetPreviewEndpoint extends \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\RestApi\Endpoints\EmailPresetsEndpoint
+    {
+        public function handle(\MailPoet\API\REST\Request $request): \MailPoet\API\REST\Response
+        {
+        }
+        public static function getRequestSchema(): array
+        {
+        }
+    }
+    class EmailPresetPutEndpoint extends \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\RestApi\Endpoints\EmailPresetsEndpoint
+    {
+        public function handle(\MailPoet\API\REST\Request $request): \MailPoet\API\REST\Response
+        {
+        }
+        public static function getRequestSchema(): array
+        {
+        }
+    }
+    class EmailPresetRestoreEndpoint extends \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\RestApi\Endpoints\EmailPresetsEndpoint
+    {
+        public function handle(\MailPoet\API\REST\Request $request): \MailPoet\API\REST\Response
+        {
+        }
+        public static function getRequestSchema(): array
+        {
+        }
+    }
+    class EmailPresetTrashEndpoint extends \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\RestApi\Endpoints\EmailPresetsEndpoint
+    {
+        public function handle(\MailPoet\API\REST\Request $request): \MailPoet\API\REST\Response
+        {
+        }
+        public static function getRequestSchema(): array
+        {
+        }
+    }
+    class EmailPresetsGetEndpoint extends \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\RestApi\Endpoints\EmailPresetsEndpoint
+    {
+        use \MailPoet\API\REST\ListingRequestValidationTrait;
+        public function handle(\MailPoet\API\REST\Request $request): \MailPoet\API\REST\Response
+        {
+        }
+        private function getStringParam(\MailPoet\API\REST\Request $request, string $name, string $default): string
+        {
+        }
+        private function getIntParam(\MailPoet\API\REST\Request $request, string $name, int $default): int
+        {
+        }
+        protected function getListingValidationErrorPrefix(): string
+        {
+        }
+        public static function getRequestSchema(): array
+        {
+        }
+    }
+    /**
+     * Creates a blank preset, or saves a block email or another preset as a new preset.
+     */
+    class EmailPresetsPostEndpoint extends \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\RestApi\Endpoints\EmailPresetsEndpoint
+    {
+        public function handle(\MailPoet\API\REST\Request $request): \MailPoet\API\REST\Response
+        {
+        }
+        public static function getRequestSchema(): array
         {
         }
     }
@@ -20549,7 +21599,8 @@ namespace MailPoet\EmailEditor\Integrations\MailPoet {
         private \MailPoet\Automation\Engine\Registry $registry;
         private \MailPoet\Newsletter\NewslettersRepository $newslettersRepository;
         private \MailPoet\CustomFields\CustomFieldsRepository $customFieldsRepository;
-        public function __construct(\MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTags\Subscriber $subscriber, \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTags\Site $site, \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTags\Link $link, \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTags\Newsletter $newsletter, \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTags\Date $date, \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTags\OrderReviewUrl $orderReviewUrl, \MailPoet\WP\Functions $wp, \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTags\PersonalizationTagLinkNormalizer $linkNormalizer, \MailPoet\Automation\Engine\Storage\AutomationStorage $automationStorage, \MailPoet\Automation\Engine\Registry $registry, \MailPoet\Newsletter\NewslettersRepository $newslettersRepository, \MailPoet\CustomFields\CustomFieldsRepository $customFieldsRepository)
+        private \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\EmailPresetPostType $emailPresetPostType;
+        public function __construct(\MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTags\Subscriber $subscriber, \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTags\Site $site, \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTags\Link $link, \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTags\Newsletter $newsletter, \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTags\Date $date, \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTags\OrderReviewUrl $orderReviewUrl, \MailPoet\WP\Functions $wp, \MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTags\PersonalizationTagLinkNormalizer $linkNormalizer, \MailPoet\Automation\Engine\Storage\AutomationStorage $automationStorage, \MailPoet\Automation\Engine\Registry $registry, \MailPoet\Newsletter\NewslettersRepository $newslettersRepository, \MailPoet\CustomFields\CustomFieldsRepository $customFieldsRepository, \MailPoet\EmailEditor\Integrations\MailPoet\EmailPresets\EmailPresetPostType $emailPresetPostType)
         {
         }
         /**
@@ -20567,6 +21618,9 @@ namespace MailPoet\EmailEditor\Integrations\MailPoet {
          * @param int $automationId The automation ID
          */
         public function extendPersonalizationTagsByAutomationSubjects(int $automationId): void
+        {
+        }
+        public function extendPersonalizationTagsByAllSubjects(): void
         {
         }
         /**
@@ -20887,12 +21941,11 @@ namespace MailPoet\EmailEditor\Integrations\MailPoet\PersonalizationTags {
          * ("http://%5B...%5D"), and tokens embedded in a longer target
          * ("[Profile](https://example.com/?email=[mailpoet/subscriber-email])").
          *
-         * The Personalizer resolves tokens only in HTML constructs (comments, anchor hrefs), never in the
-         * markdown links of the text body, so every target that can still carry a token when this runs is
-         * covered here: links that were not hashed (tracking disabled), links restored for recipients
-         * without tracking consent, and send previews. A whole token that does not resolve becomes an
-         * empty target rather than shipping as literal text; an embedded one stays literal unless an
-         * interceptor replaces it.
+         * Callers run it after the Personalizer, which fills in the registered tags of these targets
+         * itself, on targets that can still carry a token: links that were not hashed (tracking disabled),
+         * links restored for recipients without tracking consent, and send previews. A whole token that
+         * does not resolve becomes an empty target rather than shipping as literal text; an embedded one
+         * stays literal unless an interceptor replaces it.
          *
          * @param array<string, mixed> $context
          * @param (callable(string, string): string)|null $valueInterceptor Receives the resolved URL or token value
@@ -24910,9 +25963,11 @@ namespace MailPoet\Features {
         const FEATURE_BRAND_TEMPLATES = 'brand_templates';
         const FEATURE_SEND_BY_TIMEZONE = 'send_by_timezone';
         const FEATURE_MSS_TEMPLATED_SENDING = 'mss_templated_sending';
+        const FEATURE_MCP_WRITE_ABILITIES = 'mcp_write_abilities';
+        const FEATURE_EMAIL_PRESETS = 'email_presets';
         // Define feature defaults in the array below in the following form:
         //   self::FEATURE_NAME_OF_FEATURE => true,
-        private $defaults = [self::FEATURE_BRAND_TEMPLATES => false, self::FEATURE_SEND_BY_TIMEZONE => false, self::FEATURE_MSS_TEMPLATED_SENDING => false];
+        private $defaults = [self::FEATURE_BRAND_TEMPLATES => false, self::FEATURE_SEND_BY_TIMEZONE => false, self::FEATURE_MSS_TEMPLATED_SENDING => false, self::FEATURE_MCP_WRITE_ABILITIES => false, self::FEATURE_EMAIL_PRESETS => false];
         /** @var array|null */
         private $flags;
         /** @var FeatureFlagsRepository */
@@ -25604,6 +26659,24 @@ namespace MailPoet\Form {
         private function getSupportedPostTypes()
         {
         }
+        /**
+         * Excluded pages and posts win over every rule that displays the form (all pages, homepage, categories, tags…)
+         */
+        private function isCurrentPostExcluded(array $setup): bool
+        {
+        }
+        /**
+         * @return string[]
+         */
+        private function getExcludedIds(array $setup, string $postsKey): array
+        {
+        }
+        /**
+         * ID of the page or post the visitor is on. Archives and the latest posts homepage have none.
+         */
+        private function getCurrentPostId(): ?int
+        {
+        }
         private function shouldDisplayFormOnPost(array $setup, string $postsKey, $postId = null): bool
         {
         }
@@ -25798,9 +26871,8 @@ namespace MailPoet\Listing {
         /**
          * Returns the UTC `Y-m-d H:i:s` start of a site-local `yyyy-MM-dd` day, shifted by
          * `$addDays` days (1 gives the exclusive end of the day), or null for an invalid day.
-         * Filter bounds use the offset in force on that date (DST aware), while the listing
-         * display uses the site’s current gmt_offset, so close to a DST change a row can land
-         * on the neighbouring day. This is intentional.
+         * Filter bounds use the offset in force on that date (DST aware), as the listing
+         * display does.
          */
         protected function getSiteDayStartInUtc(string $day, int $addDays = 0): ?string
         {
@@ -29322,6 +30394,17 @@ namespace MailPoet\Migrations\App {
         {
         }
     }
+    /**
+     * With analytics sharing off, the Mixpanel and Tracks workers used to complete a task on almost
+     * every cron run. Nothing reads the completed tasks, so this deletes them in batches.
+     */
+    class Migration_20261111_103341_App extends \MailPoet\Migrator\AppMigration
+    {
+        private const BATCH_SIZE = 10000;
+        public function run(): void
+        {
+        }
+    }
 }
 namespace MailPoet\Migrator {
     abstract class DbMigration
@@ -30943,6 +32026,14 @@ namespace MailPoet\Newsletter\Links {
         public function extract($content)
         {
         }
+        /**
+         * An href is read from the HTML as it is written there, where "&" is usually "&amp;" ("&#038;" by
+         * esc_url()), while the text part has a plain "&". Links are stored and matched with plain ampersands;
+         * only ampersands are decoded, once.
+         */
+        public static function decodeAmpersands(string $url): string
+        {
+        }
         public function replace($content, $processedLinks)
         {
         }
@@ -31376,6 +32467,15 @@ namespace MailPoet\Newsletter {
         private function updateQueue(\MailPoet\Entities\NewsletterEntity $newsletter, array $options)
         {
         }
+        /**
+         * The name follows the subject until the user picks one, as it does in the email editor.
+         */
+        private function updateCampaignNameForSubject(\MailPoet\Entities\NewsletterEntity $newsletter, string $newSubject): void
+        {
+        }
+        private function getDefaultEmailName(): string
+        {
+        }
         private function ensureWpPost(\MailPoet\Entities\NewsletterEntity $newsletter): void
         {
         }
@@ -31448,6 +32548,10 @@ namespace MailPoet\Newsletter {
          * @return \MailPoet\Entities\NewsletterEntity[]
          */
         public function findActiveByTypeAndGroup(string $type, ?string $group): array
+        {
+        }
+        /** @return \MailPoet\Entities\NewsletterEntity[] */
+        public function findRecentBlockEditorDrafts(int $limit): array
         {
         }
         /**
@@ -31680,7 +32784,7 @@ namespace MailPoet\Newsletter\Preview {
          * @param array<string, mixed> $context Existing context
          * @return array<string, mixed> Context with sample data added
          */
-        private function addSampleDataToContext(array $context): array
+        public function addSampleDataToContext(array $context): array
         {
         }
     }
@@ -33208,8 +34312,9 @@ namespace MailPoet\Newsletter\Sending\Placeholders {
      * this only intercepts the values it is about to write.
      *
      * A tag that resolves to an empty value still gets a placeholder. The rendered path leaves such
-     * a link untouched, but the template has to look the same for every recipient, so the empty
-     * value travels in the substitution map instead.
+     * a link untouched, or in the text body drops a link target that is only the tag ("[text]"), but
+     * the template has to look the same for every recipient, so the empty value travels in the
+     * substitution map instead ("[text]()").
      */
     class TemplatePersonalizer
     {
@@ -33710,6 +34815,14 @@ namespace MailPoet\Newsletter\Sending {
         }
         /** @return \MailPoet\Entities\SendingQueueEntity[] */
         public function getCampaignQueues(\MailPoet\Entities\SendingQueueEntity $queue): array
+        {
+        }
+        /**
+         * Batches of the campaign that nothing was sent for and that no worker is running.
+         *
+         * @return \MailPoet\Entities\SendingQueueEntity[]
+         */
+        public function getUnstartedCampaignQueues(\MailPoet\Entities\SendingQueueEntity $queue): array
         {
         }
         /** Resolves replay sources directly so newsletters with many replays stay cheap to inspect. */
@@ -35261,7 +36374,7 @@ namespace MailPoet\Router\Endpoints {
         {
         }
         /**
-         * index.php and .htaccess only work on a local disk served by the web server,
+         * index.php, .htaccess and web.config only work on a local disk served by the web server,
          * so they are skipped by default when uploads live on remote storage.
          */
         private static function shouldWriteServerFiles(\MailPoet\WP\Functions $wp, string $exportDirectory): bool
@@ -35996,7 +37109,19 @@ namespace MailPoet\Segments\DynamicSegments\Filters {
         private function buildEmailLinkFilter(int $newsletterId, array $rawLinkIds, string $parameterSuffix): \MailPoet\Segments\DynamicSegments\Filters\EmailLinkFilter
         {
         }
+        /**
+         * Links sent before they were stored with plain ampersands keep "&amp;" (see Links::decodeAmpersands()),
+         * so both forms of a URL are matched as one.
+         */
         private function normalizeUrlForMatching(string $url): string
+        {
+        }
+        /**
+         * The SQL counterpart of normalizeUrlForMatching(). The numeric forms are replaced first, so "&amp;#38;"
+         * is decoded once, as in PHP. The two differ only when a numeric "&" is followed by "amp;" ("&#38;amp;"),
+         * that is for a URL that itself contains the text "&amp;".
+         */
+        private function normalizeUrlColumnForMatching(string $column): string
         {
         }
         /**
@@ -38109,6 +39234,14 @@ namespace MailPoet\Segments {
         public function shouldShowWooCommerceSegment(): bool
         {
         }
+        /**
+         * The segment types a newsletter can be sent to. Empty means all types.
+         *
+         * @return string[]
+         */
+        public function getNewsletterSegmentTypes(): array
+        {
+        }
         public function synchronizeRegisteredCustomer(int $wpUserId, ?string $currentFilter = null): bool
         {
         }
@@ -39579,6 +40712,15 @@ namespace MailPoet\Statistics {
         {
         }
         public function findLatestForSubscriber(\MailPoet\Entities\SubscriberEntity $subscriber): ?\MailPoet\Entities\StatisticsUnsubscribeEntity
+        {
+        }
+        /**
+         * The date of the latest unsubscribe of each subscriber that has one.
+         *
+         * @param int[] $subscriberIds
+         * @return array<int, string> Dates as Y-m-d H:i:s, keyed by subscriber id.
+         */
+        public function getLatestDatesBySubscriberIds(array $subscriberIds): array
         {
         }
         public function getReasonCountsForNewsletter(\MailPoet\Entities\NewsletterEntity $newsletter): array
@@ -41553,9 +42695,12 @@ namespace MailPoet\Subscribers\RestApi\Endpoints {
         {
         }
         /**
+         * The subscriber's subscription to the list, when they are unsubscribed from it.
+         *
          * @param array<string, mixed> $subscriber
+         * @return array<mixed>|null
          */
-        private function isUnsubscribedFromSegment(array $subscriber, string $segmentId): bool
+        private function getUnsubscribedSubscription(array $subscriber, string $segmentId): ?array
         {
         }
     }
@@ -45736,6 +46881,25 @@ namespace MailPoet\Util\Notices {
         {
         }
     }
+    class IISServerNotice
+    {
+        const OPTION_NAME = 'dismissed-iis-server-notice';
+        const DISMISS_NOTICE_TIMEOUT_SECONDS = 15552000;
+        // 6 months
+        private \MailPoet\WP\Functions $wp;
+        public function __construct(\MailPoet\WP\Functions $wp)
+        {
+        }
+        public function init($shouldDisplay): ?\MailPoet\WP\Notice
+        {
+        }
+        public function disable(): void
+        {
+        }
+        private function isIIS(): bool
+        {
+        }
+    }
     class InactiveSubscribersNotice
     {
         const OPTION_NAME = 'inactive-subscribers-notice';
@@ -45908,6 +47072,8 @@ namespace MailPoet\Util\Notices {
         private $wordPressPlaygroundNotice;
         /** @var DatabaseEngineNotice */
         private $databaseEngineNotice;
+        /** @var IISServerNotice */
+        private $iisServerNotice;
         /** @var SendingQueueBodyCleanupNotice */
         private $sendingQueueBodyCleanupNotice;
         /** @var StuckPostNotificationNotice */
@@ -47061,7 +48227,7 @@ namespace MailPoet\WP {
         public function registerAbility(string $name, array $args): ?\WP_Ability
         {
         }
-        public function currentUserCan($capability)
+        public function currentUserCan($capability, ...$args)
         {
         }
         public function wpDoingCron(): bool
@@ -47178,6 +48344,14 @@ namespace MailPoet\WP {
         {
         }
         public function getPost($post = null, $output = OBJECT, $filter = 'raw')
+        {
+        }
+        /**
+         * @param string $field
+         * @param int $postId
+         * @return mixed
+         */
+        public function getPostField(string $field, int $postId)
         {
         }
         public function getTerm(int $termId, string $taxonomy = '')
@@ -47493,6 +48667,33 @@ namespace MailPoet\WP {
         public function wpDeletePost(int $id, $force = false)
         {
         }
+        /**
+         * @return \WP_Post|false|null
+         */
+        public function wpTrashPost(int $id)
+        {
+        }
+        /**
+         * @return \WP_Post|false|null
+         */
+        public function wpUntrashPost(int $id)
+        {
+        }
+        public function wpCountPosts(string $type = 'post', string $perm = ''): \stdClass
+        {
+        }
+        public function wpQuery(array $args): \WP_Query
+        {
+        }
+        public function registerPostMeta(string $postType, string $metaKey, array $args = []): bool
+        {
+        }
+        public function registerBlockPattern(string $name, array $properties): bool
+        {
+        }
+        public function registerBlockPatternCategory(string $name, array $properties): bool
+        {
+        }
         public function wpJsonEncode($data, $options = 0, $depth = 512)
         {
         }
@@ -47577,6 +48778,9 @@ namespace MailPoet\WP {
         {
         }
         public function stripShortcodes(string $content): string
+        {
+        }
+        public function shortcodeExists(string $tag): bool
         {
         }
         public function inTheLoop(): bool
@@ -47695,6 +48899,9 @@ namespace MailPoet\WP {
         public function wpKses(string $string, $allowedHtml, $allowedProtocols = [])
         {
         }
+        public function forceBalanceTags(string $text): string
+        {
+        }
         public function wpKsesAllowedHtml($context = '')
         {
         }
@@ -47743,6 +48950,9 @@ namespace MailPoet\WP {
         public function sanitizeKey(string $key): string
         {
         }
+        public function sanitizeHexColor(string $color): string
+        {
+        }
         public function sanitizeTextField(string $text): string
         {
         }
@@ -47757,6 +48967,13 @@ namespace MailPoet\WP {
          * @return mixed
          */
         public function wpUnslash($value)
+        {
+        }
+        /**
+         * @param string|array $value
+         * @return ($value is array ? array : string)
+         */
+        public function wpSlash($value)
         {
         }
         public function restUrl(string $path = '', string $scheme = 'rest'): string
@@ -49595,9 +50812,14 @@ namespace MailPoet {
     }
 }
 namespace {
+    function render_tracy()
+    {
+    }
+}
+namespace {
     const MAILPOET_MINIMUM_REQUIRED_WP_VERSION = '7.0';
     // L-1 version, not the latest
-    const MAILPOET_MINIMUM_REQUIRED_WOOCOMMERCE_VERSION = '11.1';
+    const MAILPOET_MINIMUM_REQUIRED_WOOCOMMERCE_VERSION = '11.2';
     // L-1 version, not the latest
     const MAILPOET_MINIMUM_REQUIRED_PHP_VERSION = '7.4';
     const MAILPOET_RECOMMENDED_PHP_VERSION = '8.5';
@@ -49607,10 +50829,6 @@ namespace {
     }
     // Display WooCommerce version error notice
     function mailpoet_woocommerce_version_notice()
-    {
-    }
-    // Display IIS server error notice
-    function mailpoet_microsoft_iis_notice()
     {
     }
     // Display missing core dependencies error notice
