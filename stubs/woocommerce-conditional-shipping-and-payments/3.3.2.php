@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for woocommerce-conditional-shipping-and-payments 3.3.1.
+ * Generated stub declarations for woocommerce-conditional-shipping-and-payments 3.3.2.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -6552,7 +6552,7 @@ interface WC_CSP_Checkout_Restriction
  * Restrict Payment Gateways.
  *
  * @class    WC_CSP_Restrict_Payment_Gateways
- * @version  3.2.2
+ * @version  3.3.2
  */
 class WC_CSP_Restrict_Payment_Gateways extends \WC_CSP_Restriction implements \WC_CSP_Checkout_Restriction
 {
@@ -7246,7 +7246,7 @@ interface WC_CSP_Update_Cart_Restriction
 class WC_Conditional_Shipping_Payments
 {
     /* Plugin version */
-    const VERSION = '3.3.1';
+    const VERSION = '3.3.2';
     /* Required WC version */
     const REQ_WC_VERSION = '11.2.0';
     /* Required PHP version */
