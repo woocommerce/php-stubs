@@ -121,11 +121,11 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "3.10.1": {
-                "source_url": "https://downloads.wordpress.org/plugin/google-listings-and-ads.3.10.1.zip",
-                "source_zip_sha256": "8ef3bfe458406147f0343904c2cac2191d0c126e5b2913382bf2b94c7c57d9ca",
-                "stub_sha256": "34689a042f821468691c89c495184b982cd4f30f6e655ad2564990f064967bd7",
-                "generated_at": "2026-11-17T03:03:54Z",
+            "3.11.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/google-listings-and-ads.3.11.0.zip",
+                "source_zip_sha256": "42066971c64a87c104c25613e582eaa9216a6a9ae1f1de734d440c9e5fd272a4",
+                "stub_sha256": "67e4138698af2c4b42ab1483bf5bb5d6573cd3abf46df4feccd591bf51af9b5f",
+                "generated_at": "2026-11-26T03:03:40Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -345,11 +345,11 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "1.0.8": {
-                "source_url": "https://downloads.wordpress.org/plugin/reddit-for-woocommerce.1.0.8.zip",
-                "source_zip_sha256": "2e5f01febe8ba16725b27f9532de243c9364625b64db997d81ecc02f66e7aae7",
-                "stub_sha256": "99df6905164f0dc239efc7d9b7e817835df1eef19ddd1b07eaa5a30e94e18aee",
-                "generated_at": "2026-11-17T03:05:32Z",
+            "1.1.0": {
+                "source_url": "https://downloads.wordpress.org/plugin/reddit-for-woocommerce.1.1.0.zip",
+                "source_zip_sha256": "9d1ba5366e0674ff101fd32b505ea4092c028bdc86e397ae5fb50bcfa6d66ff2",
+                "stub_sha256": "b9dfdf575d4709c1a5463391c5f34e88adc0380084047c6c0fa9813d7dc11a41",
+                "generated_at": "2026-11-26T03:04:28Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }
@@ -1767,10 +1767,10 @@
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             },
-            "9.4.1": {
-                "source_zip_sha256": "ed8c529d1382e2d06fa6e605e799c9db5607d8459806c229e74a20571f871083",
-                "stub_sha256": "fa3ed4567f62817406bcec66128cf7cac2534cf074f1502ec1b945be81fd3c4d",
-                "generated_at": "2026-11-06T14:51:07Z",
+            "9.4.2": {
+                "source_zip_sha256": "76aee8f1530b82703289dfca5c20af1ea428808bf80e297dee01ffed3bcd6e90",
+                "stub_sha256": "a912c480485a45307b0557fd4102058416f56ece28e7f5b7bc3a1d8e236065f1",
+                "generated_at": "2026-11-26T03:05:05Z",
                 "generator": "php-stubs/generator v0.9.0",
                 "frameworks": []
             }

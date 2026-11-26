@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for google-listings-and-ads 3.10.1.
+ * Generated stub declarations for google-listings-and-ads 3.11.0.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -327,13 +327,39 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\API\Google {
          *
          * @var int
          */
-        protected const MAX_PAYLOAD_BYTES = 30 * 1024 * 1024;
+        public const MAX_PAYLOAD_BYTES = 30 * 1024 * 1024;
+        /**
+         * Maximum number of assets in one campaign or asset group request. Comfortably more
+         * than a Performance Max asset group can hold, and leaves room for an edit to replace
+         * every asset, since edits send deletions in the same list as additions.
+         *
+         * @var int
+         */
+        public const MAX_ASSETS_PER_REQUEST = 200;
         /**
          * Maximum image size in bytes.
          *
          * @var int
          */
         protected const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
+        /**
+         * Timeout in seconds for downloading an image.
+         *
+         * @var int
+         */
+        protected const IMAGE_FETCH_TIMEOUT = 5;
+        /**
+         * Maximum number of redirects to follow when downloading an image.
+         *
+         * @var int
+         */
+        protected const IMAGE_FETCH_MAX_REDIRECTS = 3;
+        /**
+         * Image types accepted by Google Ads image assets.
+         *
+         * @var int[]
+         */
+        protected const SUPPORTED_IMAGE_TYPES = [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_GIF];
         /**
          * AdsAsset constructor.
          *
@@ -377,32 +403,23 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\API\Google {
          * @param string $url The image url.
          *
          * @return array The image data.
-         * @throws \Exception If the image url is not a valid url or the image size is too large.
+         * @throws \Automattic\WooCommerce\GoogleListingsAndAds\Exception\InvalidSourceImage If the download fails, doesn't return a supported image, or the image is too large.
          */
-        protected function get_image_data(string $url): array
-        {
-        }
-        /**
-         * Returns a list of batches of assets.
-         *
-         * @param array $assets A list of assets.
-         * @param int   $max_size The maximum size of the payload in bytes.
-         *
-         * @return array A list of batches of assets.
-         * @throws \Exception If the image url is not a valid url, if the field type is not supported or the image size is too big.
-         */
-        protected function create_batches(array $assets, int $max_size = self::MAX_PAYLOAD_BYTES): array
+        public function get_image_data(string $url): array
         {
         }
         /**
          * Creates the assets so they can be used in the asset groups.
          *
+         * Downloads images in order and sends each batch before adding an image that would take it
+         * over $batch_size, so only one batch of images is in memory at a time.
+         *
          * @param array $assets The assets to create.
          * @param int   $batch_size The maximum size of the payload in bytes.
          *
-         * @return array A list of Asset's ARN created.
+         * @return array A list of Asset's ARN created, in the same order as the assets.
          *
-         * @throws \Exception If the asset type is not supported or if the image url is not a valid url.
+         * @throws \Exception If the asset type is not supported, or an image download fails or is too large.
          * @throws \Google\ApiCore\ApiException If any of the operations fail.
          */
         public function create_assets(array $assets, int $batch_size = self::MAX_PAYLOAD_BYTES): array
@@ -423,10 +440,22 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\API\Google {
         /**
          * Returns an array of operations to create multiple assets.
          *
-         * @param array $assets An array of assets, each containing content and field_type keys
+         * @param array $assets   An array of assets, each containing content and field_type keys
+         * @param int   $max_size The image byte limit across all operations.
          * @return array An array of MutateOperation
+         * @throws \Automattic\WooCommerce\GoogleListingsAndAds\Exception\InvalidSourceImage If an image download fails or the images go over $max_size.
          */
-        public function create_operations(array $assets): array
+        public function create_operations(array $assets, int $max_size = self::MAX_PAYLOAD_BYTES): array
+        {
+        }
+        /**
+         * Returns the total image bytes carried by asset create operations.
+         *
+         * @param \Google\Ads\GoogleAds\V23\Services\MutateOperation[] $operations The operations to measure.
+         *
+         * @return int The total image bytes.
+         */
+        public static function get_image_bytes(array $operations): int
         {
         }
         /**
@@ -1136,10 +1165,11 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\API\Google {
          * Build Asset create operations and matching CampaignAsset link operations for brand assets.
          *
          * @param array $brand_assets
+         * @param int   $max_size     The image byte limit for the brand assets.
          *
          * @return \Google\Ads\GoogleAds\V23\Services\MutateOperation[]
          */
-        protected function create_brand_asset_operations(array $brand_assets): array
+        protected function create_brand_asset_operations(array $brand_assets, int $max_size = \Automattic\WooCommerce\GoogleListingsAndAds\API\Google\AdsAsset::MAX_PAYLOAD_BYTES): array
         {
         }
         /**
@@ -2256,11 +2286,22 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds {
         /**
          * Gets the main site URL which is used for the home page.
          *
+         * WPML returns the home URL of the requested language, whatever language is switched to,
+         * so the URL is converted to the default language to be the same on every request.
+         *
          * @since 1.1.0
          *
          * @return string
          */
         protected function get_site_url(): string
+        {
+        }
+        /**
+         * Whether WPML is active. Other plugins also answer the `wpml_` filters, but return different URLs.
+         *
+         * @return bool
+         */
+        protected function is_wpml_active(): bool
         {
         }
         /**
@@ -3747,12 +3788,15 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Mapi\Services {
      * and the cache-key prefix. Reuses an existing matching data source when one is already
      * on the merchant, otherwise creates one. Resolved names are cached in options.
      * Resolution is lazy: the first write into a given market triggers the lookup/create.
+     * A cached name is re-checked against the account at most once per VERIFY_TTL, so steady
+     * state costs a couple of dataSources.get calls per data source per day, not one per request.
      *
      * @package Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Mapi\Services
      */
-    class MapiDataSourcesService implements \Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareInterface
+    class MapiDataSourcesService implements \Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Options\TransientsAwareInterface
     {
         use \Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareTrait;
+        use \Automattic\WooCommerce\GoogleListingsAndAds\Options\TransientsAwareTrait;
         /** Display name prefix used when creating the plugin's data sources. */
         public const DATA_SOURCE_DISPLAY_NAME = 'Google for WooCommerce';
         /** Descriptor for the primary product data source. */
@@ -3809,11 +3853,18 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Mapi\Services {
          * destinations-doesn't-fix-it scenario stays a minor nuisance over weeks rather than a flood.
          */
         private const RECREATE_RATE_LIMIT = DAY_IN_SECONDS;
+        /**
+         * How long a confirmed data source is trusted before its cached name is checked again.
+         * A deleted or local-only source is also recovered by the product insert retry, and a
+         * source's input type is fixed at creation, so this only bounds how long unchanged products
+         * (skipped by hash, so never inserted) can wait for a re-resolve after a deletion.
+         */
+        private const VERIFY_TTL = 12 * HOUR_IN_SECONDS;
         /** @var \Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Mapi\MerchantApiClient */
         protected $client;
         /**
-         * Resource names confirmed to exist on the account during this request, so repeat
-         * resolutions of the same data source do not re-issue a dataSources.get.
+         * Resource names this request uses without a dataSources.get: confirmed now or within
+         * VERIFY_TTL, or kept after a non-404 check error.
          *
          * @var array<string, true>
          */
@@ -3930,8 +3981,8 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Mapi\Services {
         {
         }
         /**
-         * Write a resolved data source name into the option cache and mark it verified for the rest
-         * of this request, so a repeat resolution of the same pair does not re-issue a dataSources.get.
+         * Write a resolved data source name into the option cache and mark it verified for VERIFY_TTL,
+         * so a repeat resolution of the same pair does not re-issue a dataSources.get.
          *
          * @param array  $type             One of the *_SOURCE descriptors.
          * @param string $content_language Language code.
@@ -3949,7 +4000,8 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Mapi\Services {
          *
          * Only a 404 proves absence, so any other error (auth, transient 5xx) keeps the cached name:
          * discarding it there would force a needless list-or-create, and a genuinely missing source
-         * still surfaces on the insert that follows.
+         * still surfaces on the insert that follows. Such an error skips the check for the rest of
+         * this request only; just a successful get of a usable source is recorded for VERIFY_TTL.
          *
          * @param array  $type One of the *_SOURCE descriptors.
          * @param string $name Data source resource name.
@@ -3957,6 +4009,41 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Mapi\Services {
          * @return bool
          */
         private function verify_cached_source(array $type, string $name): bool
+        {
+        }
+        /**
+         * Whether a data source was confirmed to exist during this request or within VERIFY_TTL.
+         *
+         * @param string $name Data source resource name.
+         *
+         * @return bool
+         */
+        private function is_recently_verified(string $name): bool
+        {
+        }
+        /**
+         * Record that a data source was just confirmed to exist, for this request and for VERIFY_TTL.
+         * Expired entries are pruned on each write so the transient does not grow.
+         *
+         * @param string $name Data source resource name.
+         */
+        private function mark_verified(string $name): void
+        {
+        }
+        /**
+         * Drop a data source's verification, so the next cache hit checks it against the account.
+         *
+         * @param string $name Data source resource name.
+         */
+        private function unmark_verified(string $name): void
+        {
+        }
+        /**
+         * When each data source was last confirmed to exist, keyed by resource name.
+         *
+         * @return array<string, int>
+         */
+        private function get_verified_timestamps(): array
         {
         }
         /**
@@ -4040,7 +4127,17 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Mapi\Services {
         {
         }
         /**
-         * Drop a cached data source from both the option cache and the verified-this-request set.
+         * Drop every recorded verification, so the next cache hit of each data source is checked
+         * against the account again. For manual diagnostics that must reflect the account's current
+         * state, not a check up to VERIFY_TTL old. Cached names are kept.
+         *
+         * @since n.e.x.t
+         */
+        public function clear_verifications(): void
+        {
+        }
+        /**
+         * Drop a cached data source from the option cache and its verification.
          *
          * @param array  $type             One of the *_SOURCE descriptors.
          * @param string $content_language Language code.
@@ -6953,6 +7050,12 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\API\Site\Controllers\Ads {
          */
         protected $service;
         /**
+         * Maximum allowed length for the image generation prompt.
+         *
+         * @var int
+         */
+        protected const MAX_PROMPT_LENGTH = 1500;
+        /**
          * AssetGenerationController constructor.
          *
          * @param \Automattic\WooCommerce\GoogleListingsAndAds\Proxies\RESTServer                $server  The REST server instance.
@@ -6981,6 +7084,23 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\API\Site\Controllers\Ads {
          * @return array
          */
         protected function get_generate_images_params(): array
+        {
+        }
+        /**
+         * Sanitize the image generation prompt.
+         *
+         * The prompt only goes to the Google Ads API and nothing outputs it as HTML, so this keeps
+         * text in angle brackets instead of stripping it as a tag.
+         *
+         * A prompt with content that sanitizes to an empty string is an error, so the request
+         * doesn't fall back to generating images from the final URL.
+         *
+         * @param mixed  $prompt The prompt from the request.
+         * @param string $param  The parameter name.
+         *
+         * @return string|\WP_Error The sanitized prompt, or an error when no usable text remains.
+         */
+        protected function sanitize_prompt($prompt, string $param)
         {
         }
         /**
@@ -12295,6 +12415,24 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports {
         public static function failed_to_create_file(string $file_path): \Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\ExportException
         {
         }
+        /**
+         * Return a new instance when a subfolder name is invalid.
+         *
+         * @param string $subfolder The invalid subfolder name.
+         * @return static
+         */
+        public static function invalid_subfolder(string $subfolder): \Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\ExportException
+        {
+        }
+        /**
+         * Return a new instance when moving a file fails.
+         *
+         * @param string $file_path The file path that failed to be moved.
+         * @return static
+         */
+        public static function failed_to_move_file(string $file_path): \Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\ExportException
+        {
+        }
     }
 }
 namespace Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\RowBuilder {
@@ -12374,6 +12512,22 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\Writer {
          */
         protected const EXPORT_FOLDER = 'gla-exports';
         /**
+         * Apache rules denying all web access to a directory.
+         */
+        private const HTACCESS_RULES = <<<'HTACCESS'
+        # Apache 2.4+
+        <IfModule mod_authz_core.c>
+        	Require all denied
+        </IfModule>
+        
+        # Apache 2.2
+        <IfModule !mod_authz_core.c>
+        	Order deny,allow
+        	Deny from all
+        </IfModule>
+        
+        HTACCESS;
+        /**
          * Filesystem handler.
          *
          * @var WP_Filesystem_Direct
@@ -12386,15 +12540,57 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\Writer {
         {
         }
         /**
-         * Create an export file.
+         * Create an export file inside a subfolder of the export directory.
          *
-         * @param string $filename
+         * Both the export directory and the subfolder are protected against
+         * directory listing and direct web access.
+         *
+         * @param string $filename  File name without extension.
+         * @param string $subfolder Name of the subfolder to store the file in, made of lowercase hex characters.
+         *
+         * @return string Full path to the file.
+         *
+         * @throws \Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\ExportException When the subfolder is invalid or unable to create a directory or file.
+         */
+        public function create_file(string $filename, string $subfolder): string
+        {
+        }
+        /**
+         * Get the full path to the export directory.
          *
          * @return string
          *
-         * @throws \Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\ExportException When unable to create a directory or file.
+         * @throws \Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\ExportException When the upload directory is unavailable.
          */
-        public function create_file(string $filename): string
+        public function get_export_dir(): string
+        {
+        }
+        /**
+         * Get the full paths of the files directly inside the export directory, sorted by name.
+         *
+         * Subdirectories and their contents are not included.
+         *
+         * @return string[]
+         *
+         * @throws \Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\ExportException When the upload directory is unavailable.
+         */
+        public function list_export_files(): array
+        {
+        }
+        /**
+         * Move an export file into a subfolder of the export directory.
+         *
+         * When the file doesn't exist, nothing is moved and the path it would have
+         * in the subfolder is returned.
+         *
+         * @param string $file_path Full path to the file.
+         * @param string $subfolder Name of the subfolder to move the file to, made of lowercase hex characters.
+         *
+         * @return string Full path to the file in the subfolder.
+         *
+         * @throws \Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\ExportException When the subfolder is invalid or unable to create a directory or move the file.
+         */
+        public function move_file(string $file_path, string $subfolder): string
         {
         }
         /**
@@ -12408,16 +12604,6 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\Writer {
         {
         }
         /**
-         * Generate a URL for the file.
-         *
-         * @param string $file_path
-         * @return string
-         * @throws \Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\ExportException When upload directory has an error.
-         */
-        public function generate_url(string $file_path): string
-        {
-        }
-        /**
          * Get the size of a file in bytes.
          *
          * @param string $file_path Full path to the file.
@@ -12427,12 +12613,63 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\Writer {
         {
         }
         /**
+         * Check whether a file exists.
+         *
+         * @param string $file_path Full path to the file.
+         * @return bool
+         */
+        public function file_exists(string $file_path): bool
+        {
+        }
+        /**
          * Delete a file.
          *
          * @param string $file_path Full path to the file.
          * @return bool True on success, false on failure.
          */
         public function delete_file(string $file_path): bool
+        {
+        }
+        /**
+         * Delete a subfolder of the export directory and everything in it.
+         *
+         * @param string $subfolder Name of the subfolder, made of lowercase hex characters.
+         * @return bool True on success, false when the subfolder is invalid, missing or can't be deleted.
+         */
+        public function delete_directory(string $subfolder): bool
+        {
+        }
+        /**
+         * Get the full path to a subfolder of the export directory.
+         *
+         * @param string $subfolder Name of the subfolder, made of lowercase hex characters.
+         * @return string Full path to the subfolder.
+         *
+         * @throws \Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\ExportException When the subfolder is invalid or the upload directory is unavailable.
+         */
+        private function get_subfolder_path(string $subfolder): string
+        {
+        }
+        /**
+         * Create a subfolder of the export directory when missing, and protect both.
+         *
+         * @param string $subfolder Name of the subfolder, made of lowercase hex characters.
+         * @return string Full path to the subfolder.
+         *
+         * @throws \Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\ExportException When the subfolder is invalid or unable to create a directory.
+         */
+        private function prepare_subfolder(string $subfolder): string
+        {
+        }
+        /**
+         * Add an empty index.html and a deny-all .htaccess to a directory.
+         *
+         * Existing files are left untouched.
+         *
+         * @param string $dir_path Full path to the directory.
+         * @return void
+         */
+        private function protect_directory(string $dir_path): void
         {
         }
     }
@@ -13234,106 +13471,6 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Admin\Input {
          * Text constructor.
          */
         public function __construct()
-        {
-        }
-    }
-}
-namespace Automattic\WooCommerce\GoogleListingsAndAds\Admin {
-    /**
-     * Class MerchantApiMigrationNotice
-     *
-     * Renders a non-dismissible admin warning banner urging merchants to update the
-     * plugin before Google retires the Content API for Shopping on 18 August 2026.
-     *
-     * The banner only renders while an update at or above the migration target
-     * version is available and the installed version is still below it, so it
-     * disappears on its own once the merchant updates.
-     *
-     * @package Automattic\WooCommerce\GoogleListingsAndAds\Admin
-     */
-    class MerchantApiMigrationNotice implements \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Registerable
-    {
-        use \Automattic\WooCommerce\GoogleListingsAndAds\PluginHelper;
-        /**
-         * The first plugin version using the Merchant API. The banner renders only
-         * while an update at or above this version is available and the installed
-         * version is below it.
-         *
-         * @var string
-         */
-        public const MIGRATION_TARGET_VERSION = '3.8.0';
-        /**
-         * Google's announcement of the Content API deprecation date.
-         *
-         * @var string
-         */
-        public const MIGRATION_DETAILS_URL = 'https://ads-developers.googleblog.com/2026/04/merchant-api-is-coming-to-google-ads.html';
-        /**
-         * @var \Automattic\WooCommerce\GoogleListingsAndAds\Proxies\WP
-         */
-        protected $wp;
-        /**
-         * @var \Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantCenterService
-         */
-        protected $merchant_center;
-        /**
-         * MerchantApiMigrationNotice constructor.
-         *
-         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Proxies\WP                    $wp
-         * @param \Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantCenterService $merchant_center
-         */
-        public function __construct(\Automattic\WooCommerce\GoogleListingsAndAds\Proxies\WP $wp, \Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantCenterService $merchant_center)
-        {
-        }
-        /**
-         * Register a service.
-         *
-         * @return void
-         */
-        public function register(): void
-        {
-        }
-        /**
-         * Render the migration notice when a qualifying update is available.
-         *
-         * @return void
-         */
-        public function maybe_render(): void
-        {
-        }
-        /**
-         * Whether the migration notice should render.
-         *
-         * @return bool
-         */
-        private function should_render(): bool
-        {
-        }
-        /**
-         * Pad a version string to at least three components so `version_compare`
-         * treats versions like "3.8" and "3.8.0" as equal.
-         *
-         * @param string $version Version string.
-         *
-         * @return string
-         */
-        private function pad_version(string $version): string
-        {
-        }
-        /**
-         * Get the available update entry for this plugin, if WordPress is reporting one.
-         *
-         * @return \stdClass|null
-         */
-        private function get_available_update(): ?\stdClass
-        {
-        }
-        /**
-         * Render the migration notice.
-         *
-         * @return void
-         */
-        private function render(): void
         {
         }
     }
@@ -14788,6 +14925,12 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Ads {
          */
         protected $google_ads_client;
         /**
+         * The Ads Asset helper.
+         *
+         * @var \Automattic\WooCommerce\GoogleListingsAndAds\API\Google\AdsAsset
+         */
+        protected $ads_asset;
+        /**
          * Valid text asset field types.
          *
          * @var array
@@ -14803,8 +14946,9 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Ads {
          * AdsAssetGenerationService constructor.
          *
          * @param \Automattic\WooCommerce\GoogleListingsAndAds\Google\Ads\GoogleAdsClient $client The Google Ads client.
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\API\Google\AdsAsset        $ads_asset The Ads Asset helper.
          */
-        public function __construct(\Automattic\WooCommerce\GoogleListingsAndAds\Google\Ads\GoogleAdsClient $client)
+        public function __construct(\Automattic\WooCommerce\GoogleListingsAndAds\Google\Ads\GoogleAdsClient $client, \Automattic\WooCommerce\GoogleListingsAndAds\API\Google\AdsAsset $ads_asset)
         {
         }
         /**
@@ -14842,12 +14986,46 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Ads {
          *     Optional. Arguments for generating image assets.
          *
          *     @type string $final_url        The final URL - defaults to the Site URL.
+         *     @type string $prompt           Optional prompt for freeform or recontext generation.
+         *     @type string $source_image_url Optional source image URL - triggers recontext generation.
          *     @type array  $asset_field_types Can be one or more of: marketing_image, square_marketing_image, portrait_marketing_image.
          * }
          * @return array Array of generated image objects with 'temporary_image_url' and 'type' keys.
          * @throws \Exception If the image assets can't be generated.
          */
         public function generate_images(array $args = []): array
+        {
+        }
+        /**
+         * Determine the `GenerateImagesRequest` oneof generation input from the supplied args.
+         *
+         * There is no explicit mode param: a source image selects recontext generation,
+         * otherwise a prompt selects freeform generation, otherwise generation falls
+         * back to the final URL.
+         *
+         * @param array $args {
+         *     @type string $final_url        The final URL - defaults to the Site URL.
+         *     @type string $prompt           Optional prompt for freeform or recontext generation.
+         *     @type string $source_image_url Optional source image URL - triggers recontext generation.
+         * }
+         * @return array {
+         *     @type string $0 The `GenerateImagesRequest` oneof field name.
+         *     @type object $1 The generation input instance for that field.
+         * }
+         * @throws \Exception If a source image is supplied but can't be fetched or exceeds the maximum allowed size.
+         */
+        protected function get_generation_input(array $args): array
+        {
+        }
+        /**
+         * Build the recontext generation input, downloading the source image bytes server-side.
+         *
+         * @param array  $args              The generate_images() args (may include an optional prompt).
+         * @param string $source_image_url The source image URL.
+         * @return \Google\Ads\GoogleAds\V23\Services\ProductRecontextGenerationImageInput
+         * @throws \Exception If the source image can't be fetched or exceeds the maximum allowed size.
+         */
+        protected function get_recontext_generation_input(array $args, string $source_image_url): \Google\Ads\GoogleAds\V23\Services\ProductRecontextGenerationImageInput
         {
         }
         /**
@@ -16581,7 +16759,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Coupon {
         protected $coupon_helper;
         /**
          *
-         * @var \Symfony\Component\Validator\Validator\ValidatorInterface
+         * @var \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Validator\ValidatorInterface
          */
         protected $validator;
         /**
@@ -16604,12 +16782,12 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Coupon {
          * @param \Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Mapi\Services\MapiPromotionsService  $promotions_service
          * @param \Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Mapi\Services\MapiDataSourcesService $data_sources
          * @param CouponHelper           $coupon_helper
-         * @param \Symfony\Component\Validator\Validator\ValidatorInterface     $validator
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Validator\ValidatorInterface     $validator
          * @param \Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantCenterService  $merchant_center
          * @param \Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\TargetAudience         $target_audience
          * @param \Automattic\WooCommerce\GoogleListingsAndAds\Proxies\WC                     $wc
          */
-        public function __construct(\Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Mapi\Services\MapiPromotionsService $promotions_service, \Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Mapi\Services\MapiDataSourcesService $data_sources, \Automattic\WooCommerce\GoogleListingsAndAds\Coupon\CouponHelper $coupon_helper, \Symfony\Component\Validator\Validator\ValidatorInterface $validator, \Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantCenterService $merchant_center, \Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\TargetAudience $target_audience, \Automattic\WooCommerce\GoogleListingsAndAds\Proxies\WC $wc)
+        public function __construct(\Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Mapi\Services\MapiPromotionsService $promotions_service, \Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Mapi\Services\MapiDataSourcesService $data_sources, \Automattic\WooCommerce\GoogleListingsAndAds\Coupon\CouponHelper $coupon_helper, \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Validator\ValidatorInterface $validator, \Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantCenterService $merchant_center, \Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\TargetAudience $target_audience, \Automattic\WooCommerce\GoogleListingsAndAds\Proxies\WC $wc)
         {
         }
         /**
@@ -16932,9 +17110,9 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Validator {
     interface Validatable
     {
         /**
-         * @param \Symfony\Component\Validator\Mapping\ClassMetadata $metadata
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Mapping\ClassMetadata $metadata
          */
-        public static function load_validator_metadata(\Symfony\Component\Validator\Mapping\ClassMetadata $metadata);
+        public static function load_validator_metadata(\Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Mapping\ClassMetadata $metadata);
     }
 }
 namespace Automattic\WooCommerce\GoogleListingsAndAds\Coupon {
@@ -17113,9 +17291,9 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Coupon {
         {
         }
         /**
-         * @param \Symfony\Component\Validator\Mapping\ClassMetadata $metadata
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Mapping\ClassMetadata $metadata
          */
-        public static function load_validator_metadata(\Symfony\Component\Validator\Mapping\ClassMetadata $metadata)
+        public static function load_validator_metadata(\Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Mapping\ClassMetadata $metadata)
         {
         }
         /**
@@ -17809,7 +17987,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\DB {
          * A simple product counts by its own value. A variable product counts once when any of its
          * variations has a matching value; the value saved on the parent itself is ignored.
          *
-         * @since x.x.x
+         * @since 3.11.0
          *
          * @param string   $meta_key The meta key to match.
          * @param string[] $values   The meta values to count.
@@ -18842,7 +19020,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\DB\Table {
         /**
          * Count the Merchant Center account issues with any of the given severities.
          *
-         * @since x.x.x
+         * @since 3.11.0
          *
          * @param string[] $severities Severities to count.
          *
@@ -18856,7 +19034,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\DB\Table {
          *
          * A variation is counted as its parent product, so a variable product counts once.
          *
-         * @since x.x.x
+         * @since 3.11.0
          *
          * @param string   $source              Issue source, e.g. 'mc' or 'pre-sync'.
          * @param string[] $excluded_severities Severities to leave out of the count.
@@ -19633,6 +19811,48 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Exception {
         }
     }
     /**
+     * Class InvalidSourceImage
+     *
+     * @package Automattic\WooCommerce\GoogleListingsAndAds\Exception
+     */
+    class InvalidSourceImage extends \RuntimeException implements \Automattic\WooCommerce\GoogleListingsAndAds\Exception\GoogleListingsAndAdsException
+    {
+        public const REASON_FETCH_FAILED = 'fetch_failed';
+        public const REASON_TOO_LARGE = 'too_large';
+        /**
+         * The reason the source image was invalid.
+         *
+         * @var string
+         */
+        protected $reason;
+        /**
+         * Return an instance of the exception for a source image URL that could not be fetched.
+         *
+         * @param string $url The source image URL.
+         *
+         * @return static
+         */
+        public static function fetch_failed(string $url)
+        {
+        }
+        /**
+         * Return an instance of the exception for a source image exceeding the maximum allowed size.
+         *
+         * @return static
+         */
+        public static function too_large()
+        {
+        }
+        /**
+         * Get the reason the source image was invalid.
+         *
+         * @return string
+         */
+        public function get_reason(): string
+        {
+        }
+    }
+    /**
      * Class InvalidTerm
      *
      * @package Automattic\WooCommerce\GoogleListingsAndAds\Exception
@@ -20243,11 +20463,11 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Google {
         {
         }
         /**
-         * @param \Symfony\Component\Validator\ConstraintViolationListInterface $violations
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\ConstraintViolationListInterface $violations
          *
          * @return BatchInvalidProductEntry
          */
-        public function map_validation_violations(\Symfony\Component\Validator\ConstraintViolationListInterface $violations): \Automattic\WooCommerce\GoogleListingsAndAds\Google\BatchInvalidProductEntry
+        public function map_validation_violations(\Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\ConstraintViolationListInterface $violations): \Automattic\WooCommerce\GoogleListingsAndAds\Google\BatchInvalidProductEntry
         {
         }
         /**
@@ -20433,6 +20653,109 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Google {
         }
     }
     /**
+     * A destination country's delivery time, and the delivery date it gives for an order.
+     *
+     * Handling and transit times are counted in business days, as Merchant Center defines them.
+     *
+     * @since 3.11.0
+     */
+    class EstimatedDeliveryTime
+    {
+        /** @var int[] ISO-8601 weekday numbers Merchant Center assumes when no business days are configured: Monday to Friday. */
+        protected const DEFAULT_BUSINESS_DAYS = [1, 2, 3, 4, 5];
+        /** @var int[] Merchant API Weekday enum values, mapped to ISO-8601 weekday numbers. */
+        protected const WEEKDAYS = ['MONDAY' => 1, 'TUESDAY' => 2, 'WEDNESDAY' => 3, 'THURSDAY' => 4, 'FRIDAY' => 5, 'SATURDAY' => 6, 'SUNDAY' => 7];
+        /** @var int */
+        private $max_handling_days;
+        /** @var int */
+        private $max_transit_days;
+        /** @var int[] */
+        private $handling_business_days;
+        /** @var int[] */
+        private $transit_business_days;
+        /** @var array|null Cutoff with `hour`, `minute`, and a DateTimeZone `timezone`. Null means no cutoff. */
+        private $cutoff;
+        /**
+         * EstimatedDeliveryTime constructor.
+         *
+         * @param int        $max_handling_days      Maximum business days before an order ships.
+         * @param int        $max_transit_days       Maximum business days in transit.
+         * @param int[]      $handling_business_days ISO-8601 weekday numbers. Empty means Monday to Friday.
+         * @param int[]      $transit_business_days  ISO-8601 weekday numbers. Empty means Monday to Friday.
+         * @param array|null $cutoff_time            Merchant API CutoffTime (`hour`, `minute`, `timeZone`). Null or invalid means no cutoff.
+         */
+        public function __construct(int $max_handling_days, int $max_transit_days, array $handling_business_days = [], array $transit_business_days = [], ?array $cutoff_time = null)
+        {
+        }
+        /**
+         * Build from a Merchant API DeliveryTime.
+         *
+         * @param array $delivery_time Merchant API DeliveryTime.
+         *
+         * @return self|null Null when the delivery time has no maximum transit days.
+         */
+        public static function from_merchant_center(array $delivery_time): ?self
+        {
+        }
+        /**
+         * @return int
+         */
+        public function get_max_transit_days(): int
+        {
+        }
+        /**
+         * The latest estimated delivery date for an order placed at the given time.
+         *
+         * Handling starts on the order day, or on the next handling business day when the shopper
+         * orders on a non-business day or after the cutoff. The date then moves forward by the maximum
+         * handling days, then by the maximum transit days, each counting only its own business days.
+         *
+         * Without a cutoff, the order date's own timezone decides the order day, and the time of day
+         * does not matter.
+         *
+         * @param \DateTimeInterface $order_date When the order was placed.
+         *
+         * @return string Delivery date in YYYY-MM-DD format.
+         */
+        public function get_delivery_date(\DateTimeInterface $order_date): string
+        {
+        }
+        /**
+         * @param \DateTimeImmutable $date
+         * @param int               $days
+         * @param int[]             $business_days ISO-8601 weekday numbers, never empty.
+         *
+         * @return \DateTimeImmutable
+         */
+        private static function add_business_days(\DateTimeImmutable $date, int $days, array $business_days): \DateTimeImmutable
+        {
+        }
+        /**
+         * @param mixed $weekdays Merchant API Weekday enum values.
+         *
+         * @return int[] ISO-8601 weekday numbers. Drops unknown values, such as WEEKDAY_UNSPECIFIED, and returns none for a non-array.
+         */
+        private static function map_weekdays($weekdays): array
+        {
+        }
+        /**
+         * @param array $days ISO-8601 weekday numbers.
+         *
+         * @return int[] Valid, unique weekday numbers, or Monday to Friday when none are valid.
+         */
+        private static function normalize_business_days(array $days): array
+        {
+        }
+        /**
+         * @param array|null $cutoff_time Merchant API CutoffTime.
+         *
+         * @return array|null The cutoff. Null when the cutoff is missing, incomplete, or invalid.
+         */
+        private static function parse_cutoff_time(?array $cutoff_time): ?array
+        {
+        }
+    }
+    /**
      * Resolves a single-country estimated delivery time for the post-purchase GCR opt-in prompt.
      *
      * Routes on the merchant's declared `shipping_time` setting (`flat`/`manual`) rather than
@@ -20463,10 +20786,24 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Google {
         {
         }
         /**
-         * Resolve the maximum transit days for an order's destination country, from whichever
-         * source the merchant's declared `shipping_time` setting makes authoritative. Returns null
-         * (never a fabricated value) when that source has no entry for the country, when a
-         * `manual` merchant isn't connected to Merchant Center, or when the Merchant-API read fails.
+         * Resolve the delivery time for an order's destination country, from whichever source the
+         * merchant's declared `shipping_time` setting makes authoritative. Returns null (never a
+         * fabricated value) when that source has no entry for the country, when a `manual` merchant
+         * isn't connected to Merchant Center, or when the Merchant-API read fails.
+         *
+         * @since 3.11.0
+         *
+         * @param string $country Destination country code.
+         *
+         * @return EstimatedDeliveryTime|null
+         */
+        public function get_delivery_time_for_country(string $country): ?\Automattic\WooCommerce\GoogleListingsAndAds\Google\EstimatedDeliveryTime
+        {
+        }
+        /**
+         * Resolve the maximum transit days for an order's destination country.
+         *
+         * @see get_delivery_time_for_country() for the full delivery time, including handling time and business days.
          *
          * @param string $country Destination country code.
          *
@@ -20487,8 +20824,10 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Google {
         {
         }
         /**
-         * Resolve maximum transit days from this plugin's own local shipping-time table,
+         * Resolve the delivery time from this plugin's own local shipping-time table,
          * single-country-scoped, mirroring ShippingTimeController::get_shipping_time_for_country().
+         * The table holds transit days only. Handling time and business days use the Merchant Center
+         * defaults, matching how this plugin syncs these times to Merchant Center. No cutoff applies.
          *
          * A fresh ShippingTimeQuery is fetched from the container on every call rather than
          * constructor-injected, since Query::where()/get_results() accumulate and memoize state on
@@ -20497,21 +20836,21 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Google {
          *
          * @param string $country
          *
-         * @return int|null
+         * @return EstimatedDeliveryTime|null
          */
-        private function get_max_transit_days_from_local_table(string $country): ?int
+        private function get_delivery_time_from_local_table(string $country): ?\Automattic\WooCommerce\GoogleListingsAndAds\Google\EstimatedDeliveryTime
         {
         }
         /**
-         * Resolve maximum transit days from the connected account's Merchant-Center-sourced shipping
+         * Resolve the delivery time from the connected account's Merchant-Center-sourced shipping
          * settings. Not connected, an empty account (no shipping policy configured), no matching
          * country entry, or a failed read all resolve to null.
          *
          * @param string $country
          *
-         * @return int|null
+         * @return EstimatedDeliveryTime|null
          */
-        private function get_max_transit_days_from_merchant_center(string $country): ?int
+        private function get_delivery_time_from_merchant_center(string $country): ?\Automattic\WooCommerce\GoogleListingsAndAds\Google\EstimatedDeliveryTime
         {
         }
         /**
@@ -20573,6 +20912,13 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Google {
         private $pending_events = [];
         /** @var bool|null Whether Ads configuration was attached to Woo Analytics; null before activation. */
         private $use_wcga_handle = null;
+        /**
+         * Whether this request printed GLA's own gtag.js snippet, including its consent default.
+         * Set where display_global_site_tag() is called, so an override that skips the parent keeps the consent bridge.
+         *
+         * @var bool
+         */
+        private $printed_global_site_tag = false;
         /**
          * Global Site Tag constructor.
          *
@@ -21323,11 +21669,11 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Google {
         }
         /**
          *
-         * @param \Symfony\Component\Validator\ConstraintViolationListInterface $violations
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\ConstraintViolationListInterface $violations
          *
          * @return InvalidCouponEntry
          */
-        public function map_validation_violations(\Symfony\Component\Validator\ConstraintViolationListInterface $violations): \Automattic\WooCommerce\GoogleListingsAndAds\Google\InvalidCouponEntry
+        public function map_validation_violations(\Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\ConstraintViolationListInterface $violations): \Automattic\WooCommerce\GoogleListingsAndAds\Google\InvalidCouponEntry
         {
         }
         /**
@@ -21539,12 +21885,25 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Google {
          * declared shipping_time setting). Returns null (never a fabricated date) when the
          * mode-appropriate source has no entry for the country.
          *
+         * Handling and transit times count business days, as Merchant Center defines them. Merchant
+         * Center's order cutoff applies when the merchant set one.
+         *
          * @param \WC_Order $order
          * @param string   $delivery_country
          *
          * @return string|null Delivery date in YYYY-MM-DD format, or null if unresolvable.
          */
         protected function get_estimated_delivery_date(\WC_Order $order, string $delivery_country): ?string
+        {
+        }
+        /**
+         * Whether a value is a real calendar date in YYYY-MM-DD format.
+         *
+         * @param mixed $value
+         *
+         * @return bool
+         */
+        protected static function is_valid_date($value): bool
         {
         }
         /**
@@ -22644,7 +23003,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Internal\DependencyManagem
         /**
          * @var array
          */
-        protected $provides = [\Automattic\WooCommerce\GoogleListingsAndAds\Admin\Admin::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Menu\AttributeMapping::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Admin\BulkEdit\BulkEditInitializer::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\ConnectionTest::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Admin\BulkEdit\CouponBulkEdit::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Menu\Dashboard::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Admin\MerchantApiMigrationNotice::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Menu\NotificationManager::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Admin\NotificationsSystem::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Admin\NotificationsSystemSlot::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Menu\GetStarted::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Admin\MetaBox\MetaBoxInterface::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Admin\MetaBox\MetaBoxInitializer::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Menu\ProductFeed::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Admin\Redirect::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Menu\Reports::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Menu\Settings::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Menu\SetupAds::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Menu\SetupMerchantCenter::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service::class => true];
+        protected $provides = [\Automattic\WooCommerce\GoogleListingsAndAds\Admin\Admin::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Menu\AttributeMapping::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Admin\BulkEdit\BulkEditInitializer::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\ConnectionTest::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Admin\BulkEdit\CouponBulkEdit::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Menu\Dashboard::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Menu\NotificationManager::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Admin\NotificationsSystem::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Admin\NotificationsSystemSlot::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Menu\GetStarted::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Admin\MetaBox\MetaBoxInterface::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Admin\MetaBox\MetaBoxInitializer::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Menu\ProductFeed::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Admin\Redirect::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Menu\Reports::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Menu\Settings::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Menu\SetupAds::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Menu\SetupMerchantCenter::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service::class => true];
         /**
          * Use the register method to register items with the container via the
          * protected $this->container property or the `getContainer` method
@@ -23063,7 +23422,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Internal\DependencyManagem
         /**
          * @var array
          */
-        protected $provides = [\Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\NotificationEvaluatorInterface::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\NotificationService::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\NotificationCacheInvalidator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\AbandonedOnboardingEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\BadgeWidgetEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\CampaignNoSalesEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\CollectReviewsEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\CouponsNotSyncedEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\EnhancedConversionsOffEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\NotOnboardedEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\PausedCampaignEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\ProductIssuesEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\ReadyButNoSalesEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\RecommendationsAvailableEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\SalesNotGrowingEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\SkippedCampaignCreationEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\SmallProductImagesEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\PaidOrdersEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\TrackingOffEvaluator::class => true];
+        protected $provides = [\Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\NotificationEvaluatorInterface::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\NotificationService::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\NotificationCacheInvalidator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\AbandonedOnboardingEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\BadgeWidgetEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\CampaignNoSalesEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\CollectReviewsEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\CouponsNotSyncedEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\CyoSurveyNoSpendEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\CyoSurveySpendEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\EnhancedConversionsOffEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\NotOnboardedEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\PausedCampaignEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\ProductIssuesEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\ReadyButNoSalesEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\RecommendationsAvailableEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\SalesNotGrowingEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\SkippedCampaignCreationEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\SmallProductImagesEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\PaidOrdersEvaluator::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\TrackingOffEvaluator::class => true];
         /**
          * Registers the notification services with the container.
          */
@@ -23152,7 +23511,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Internal\DependencyManagem
          *
          * @var array
          */
-        protected $provides = [\Automattic\Jetpack\Config::class => true, \Automattic\Jetpack\Connection\Manager::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\League\ISO3166\ISO3166DataProvider::class => true, \Symfony\Component\Validator\Validator\ValidatorInterface::class => true];
+        protected $provides = [\Automattic\Jetpack\Config::class => true, \Automattic\Jetpack\Connection\Manager::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\League\ISO3166\ISO3166DataProvider::class => true, \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Validator\ValidatorInterface::class => true];
         /**
          * Use the register method to register items with the container via the
          * protected $this->container property or the `getContainer` method
@@ -24586,6 +24945,18 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Jobs {
         {
         }
         /**
+         * Get the date of the report being built, if the job has a batch pending or running.
+         *
+         * Passing null args matches the job's actions whatever their arguments.
+         *
+         * @since 3.11.0
+         *
+         * @return string|null Date formatted YYYY-MM-DD, or null when the job is idle.
+         */
+        public function get_in_progress_date(): ?string
+        {
+        }
+        /**
          * Get a single batch of items.
          *
          * If no items are returned the job will stop.
@@ -25122,6 +25493,175 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Jobs {
         }
     }
     /**
+     * Class ProcessQueuedProductUpdates
+     *
+     * Schedules update jobs, in batches, for products queued for a delayed update.
+     *
+     * Stores opt in by setting a batch window. They also get a daily run, so products stay queued no longer than a day if a scheduled run is lost.
+     *
+     * @package Automattic\WooCommerce\GoogleListingsAndAds\Jobs
+     */
+    class ProcessQueuedProductUpdates extends \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\AbstractProductSyncerJob implements \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\RecurringJobInterface
+    {
+        /**
+         * Number of products handled in one run before continuing in a follow-up run.
+         *
+         * Counted in products rather than batches, so a large filtered batch size doesn't make a run too heavy.
+         * A batch is never split, so one batch larger than this still runs.
+         */
+        protected const MAX_PRODUCTS_PER_RUN = 500;
+        /**
+         * Arguments for every run. Fixed, so the job monitor counts all runs together.
+         */
+        protected const RUN_ARGS = [[]];
+        /**
+         * @var UpdateProducts
+         */
+        protected $update_products_job;
+        /**
+         * @var \Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductMetaHandler
+         */
+        protected $meta_handler;
+        /**
+         * @var \Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductFilter
+         */
+        protected $product_filter;
+        /**
+         * ProcessQueuedProductUpdates constructor.
+         *
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\ActionScheduler\ActionSchedulerInterface  $action_scheduler
+         * @param ActionSchedulerJobMonitor $monitor
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductSyncer             $product_syncer
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductRepository         $product_repository
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantCenterService     $merchant_center
+         * @param UpdateProducts            $update_products_job
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductMetaHandler        $meta_handler
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductFilter             $product_filter
+         */
+        public function __construct(\Automattic\WooCommerce\GoogleListingsAndAds\ActionScheduler\ActionSchedulerInterface $action_scheduler, \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\ActionSchedulerJobMonitor $monitor, \Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductSyncer $product_syncer, \Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductRepository $product_repository, \Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantCenterService $merchant_center, \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\UpdateProducts $update_products_job, \Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductMetaHandler $meta_handler, \Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductFilter $product_filter)
+        {
+        }
+        /**
+         * Get the name of the job.
+         *
+         * @return string
+         */
+        public function get_name(): string
+        {
+        }
+        /**
+         * Get how long, in seconds, product updates wait to be sent together. 0 means they are sent right away.
+         *
+         * @return int
+         */
+        public function get_batch_window(): int
+        {
+        }
+        /**
+         * Can the job be scheduled.
+         *
+         * Only stores that set a window get the daily run. The window is checked first,
+         * so stores without one skip the parent's Action Scheduler query.
+         *
+         * @param array|null $args
+         *
+         * @return bool Returns true if the job can be scheduled.
+         */
+        public function can_schedule($args = []): bool
+        {
+        }
+        /**
+         * Queue products for a delayed update, and schedule a run after the window.
+         *
+         * @param int[] $product_ids
+         */
+        public function queue(array $product_ids): void
+        {
+        }
+        /**
+         * Remove a product from the queue.
+         *
+         * Takes an ID, so it also works for a product that is being deleted.
+         *
+         * @param int $product_id
+         */
+        public function dequeue(int $product_id): void
+        {
+        }
+        /**
+         * Schedule a run right away.
+         *
+         * @param array $args Unused.
+         */
+        public function schedule(array $args = [])
+        {
+        }
+        /**
+         * Schedule a run after the given delay, unless a run is already waiting to start.
+         *
+         * A run in progress doesn't count, because it may have already passed products queued after it started.
+         *
+         * @param int $delay The delay in seconds.
+         */
+        public function schedule_delayed(int $delay): void
+        {
+        }
+        /**
+         * Schedule one update job per batch of queued products, and remove them from the queue.
+         *
+         * Products no longer ready to sync are removed from the queue without an update job.
+         *
+         * @param array $items Unused.
+         */
+        protected function process_items(array $items)
+        {
+        }
+        /**
+         * Remove products from the queue, keeping any product queued again since it was read.
+         *
+         * ProductMetaHandler can't delete by value, so this deletes the post meta directly.
+         *
+         * @param array $queued_at Time each product was queued, keyed by product ID.
+         *
+         * @return int The number of products removed from the queue.
+         */
+        protected function remove_from_queue(array $queued_at): int
+        {
+        }
+        /**
+         * Get how many products one run handles before continuing in a follow-up run.
+         *
+         * @return int
+         */
+        protected function get_max_products_per_run(): int
+        {
+        }
+        /**
+         * Check whether a run is waiting to start.
+         *
+         * @return bool
+         */
+        protected function has_pending_run(): bool
+        {
+        }
+        /**
+         * Get the name of an action hook to attach the job's start method to.
+         *
+         * @return StartHook
+         */
+        public function get_start_hook(): \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\StartHook
+        {
+        }
+        /**
+         * Return the recurring job's interval in seconds.
+         *
+         * @return int
+         */
+        public function get_interval(): int
+        {
+        }
+    }
+    /**
      * Class ProductSyncStats
      *
      * Counts how many scheduled jobs we have for syncing products.
@@ -25139,8 +25679,10 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Jobs {
         protected $scheduler;
         /**
          * Job names for syncing products.
+         *
+         * Queued product updates match on the run hook only, because the job's daily start action is always pending.
          */
-        protected const MATCHES = ['refresh_synced_products', 'update_all_products', 'update_products', 'delete_products'];
+        protected const MATCHES = ['refresh_synced_products', 'update_all_products', 'update_products', 'delete_products', 'process_queued_product_updates/process_item'];
         /**
          * ProductSyncStats constructor.
          *
@@ -25165,6 +25707,57 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Jobs {
          * @return int
          */
         public function get_count(): int
+        {
+        }
+    }
+    /**
+     * Class RefreshNotificationEvaluators
+     *
+     * Recalculates stale cached notification results outside the request that found them stale,
+     * so Google Ads API calls and large queries never run during an admin page load.
+     *
+     * @since 3.11.0
+     *
+     * @package Automattic\WooCommerce\GoogleListingsAndAds\Jobs
+     */
+    class RefreshNotificationEvaluators extends \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\AbstractActionSchedulerJob
+    {
+        /**
+         * @var \Automattic\WooCommerce\GoogleListingsAndAds\Notification\NotificationService
+         */
+        protected $notification_service;
+        /**
+         * RefreshNotificationEvaluators constructor.
+         *
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\ActionScheduler\ActionSchedulerInterface  $action_scheduler
+         * @param ActionSchedulerJobMonitor $monitor
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Notification\NotificationService       $notification_service
+         */
+        public function __construct(\Automattic\WooCommerce\GoogleListingsAndAds\ActionScheduler\ActionSchedulerInterface $action_scheduler, \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\ActionSchedulerJobMonitor $monitor, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\NotificationService $notification_service)
+        {
+        }
+        /**
+         * Get the name of the job.
+         *
+         * @return string
+         */
+        public function get_name(): string
+        {
+        }
+        /**
+         * Schedule the job, unless a refresh is already pending or running.
+         *
+         * @param array $args Unused.
+         */
+        public function schedule(array $args = [])
+        {
+        }
+        /**
+         * Recalculate the stale cached notification results.
+         *
+         * @param array $items Unused.
+         */
+        protected function process_items(array $items)
         {
         }
     }
@@ -25386,13 +25979,171 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Jobs\Update {
         }
     }
     /**
+     * Class DeleteYouTubeConversionReports
+     *
+     * Deletes conversion report CSVs left at the top level of the export folder,
+     * where they can be downloaded from the web, along with their saved report state.
+     *
+     * @since 3.11.0
+     * @package Automattic\WooCommerce\GoogleListingsAndAds\Jobs\Update
+     */
+    class DeleteYouTubeConversionReports extends \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\AbstractBatchedActionSchedulerJob implements \Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareInterface
+    {
+        use \Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareTrait;
+        /**
+         * Matches a report file name and captures its date and optional part number.
+         */
+        protected const REPORT_PATTERN = '/^youtube-merchant-conversion-report-(\d{4}-\d{2}-\d{2})(?:-(\d+))?\.csv$/';
+        /**
+         * @var \Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\Writer\CsvExportWriter
+         */
+        protected $writer;
+        /**
+         * @var \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\CreateMerchantReportedConversionReport
+         */
+        protected $report_job;
+        /**
+         * DeleteYouTubeConversionReports constructor.
+         *
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\ActionScheduler\ActionSchedulerInterface               $action_scheduler
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\ActionSchedulerJobMonitor              $monitor
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\Writer\CsvExportWriter                        $writer
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\CreateMerchantReportedConversionReport $report_job
+         */
+        public function __construct(\Automattic\WooCommerce\GoogleListingsAndAds\ActionScheduler\ActionSchedulerInterface $action_scheduler, \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\ActionSchedulerJobMonitor $monitor, \Automattic\WooCommerce\GoogleListingsAndAds\Admin\Exports\Writer\CsvExportWriter $writer, \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\CreateMerchantReportedConversionReport $report_job)
+        {
+        }
+        /**
+         * Get the name of the job.
+         *
+         * @return string
+         */
+        public function get_name(): string
+        {
+        }
+        /**
+         * Get a single batch of report files to delete.
+         *
+         * The first batch lists the report files and saves the list. Every batch
+         * then takes its slice of that saved list, so batches never overlap and a
+         * file that fails to delete isn't batched again.
+         *
+         * @param int $batch_number The batch number increments for each new batch in the job cycle.
+         *
+         * @return string[] Full paths to report files.
+         */
+        public function get_batch(int $batch_number): array
+        {
+        }
+        /**
+         * Log and delete each report file in the batch.
+         *
+         * Files for the date the report job is still building are skipped, so that
+         * report isn't uploaded with missing rows. The report job deletes them itself
+         * once it uploads successfully. Any other date's saved report state, such as
+         * one left behind by a failed upload, is removed along with its files.
+         *
+         * @param string[] $items Full paths to report files from the get_batch() method.
+         */
+        protected function process_items(array $items)
+        {
+        }
+        /**
+         * Remove the saved file list once the job finishes.
+         *
+         * @param int $final_batch_number The final batch number when the job was completed.
+         */
+        protected function handle_complete(int $final_batch_number)
+        {
+        }
+        /**
+         * Get the files tracked for the date the report job is still building, keyed by full path.
+         *
+         * @param string|null $in_progress_date Date the report job is building, or null when it's idle.
+         *
+         * @return array<string, true>
+         */
+        protected function get_in_use_report_files(?string $in_progress_date): array
+        {
+        }
+        /**
+         * Remove the saved report state for dates whose files were deleted.
+         *
+         * The report job only clears a date's state after a successful upload, so
+         * state from a failed upload would otherwise stay forever.
+         *
+         * @param string[]    $dates            Dates whose files were deleted.
+         * @param string|null $in_progress_date Date the report job is building, which is never removed.
+         */
+        protected function remove_report_state(array $dates, ?string $in_progress_date): void
+        {
+        }
+        /**
+         * Get the full paths of report files at the top level of the export folder, sorted by name.
+         *
+         * @return string[]
+         */
+        protected function find_report_files(): array
+        {
+        }
+    }
+}
+namespace Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter {
+    /**
+     * Interface MerchantCenterAwareInterface
+     *
+     * @package Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter
+     */
+    interface MerchantCenterAwareInterface
+    {
+        /**
+         * @param MerchantCenterService $merchant_center
+         */
+        public function set_merchant_center_object(\Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantCenterService $merchant_center): void;
+    }
+    /**
+     * Trait MerchantCenterAwareTrait
+     *
+     * @package Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter
+     */
+    trait MerchantCenterAwareTrait
+    {
+        /**
+         * The MerchantCenterService object.
+         *
+         * @var MerchantCenterService
+         */
+        protected $merchant_center;
+        /**
+         * @param MerchantCenterService $merchant_center
+         */
+        public function set_merchant_center_object(\Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantCenterService $merchant_center): void
+        {
+        }
+    }
+}
+namespace Automattic\WooCommerce\GoogleListingsAndAds\Jobs\Update {
+    /**
      * Runs update jobs when the plugin is updated.
+     *
+     * A job that can't be scheduled during the upgrade (e.g. a product re-sync while the store
+     * isn't ready to sync with Merchant Center) is kept in an option and retried from later admin
+     * requests, at most once per RETRY_INTERVAL, until it is scheduled. The installer advances the
+     * DB version regardless, so without this the job would never run.
      *
      * @since 1.1.0
      * @package Automattic\WooCommerce\GoogleListingsAndAds\Jobs\Update
      */
-    class PluginUpdate implements \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service, \Automattic\WooCommerce\GoogleListingsAndAds\Internal\Interfaces\InstallableInterface
+    class PluginUpdate implements \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Registerable, \Automattic\WooCommerce\GoogleListingsAndAds\Internal\Interfaces\InstallableInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareInterface, \Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantCenterAwareInterface
     {
+        use \Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantCenterAwareTrait;
+        use \Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareTrait;
+        /**
+         * Minimum time between two attempts to schedule a pending job.
+         *
+         * @var int
+         */
+        protected const RETRY_INTERVAL = HOUR_IN_SECONDS;
         /**
          * @var \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\JobRepository
          */
@@ -25416,9 +26167,31 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Jobs\Update {
             // Merchant API release: re-sync all products so ids synced under the legacy Content API
             // (colon format, rejected by the Merchant API) are rewritten to the Merchant API format.
             '3.8.0' => [\Automattic\WooCommerce\GoogleListingsAndAds\Jobs\UpdateAllProducts::class],
+            '3.11.0' => [
+                // Delete conversion report CSVs left in the web-reachable export folder by earlier versions.
+                \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\Update\DeleteYouTubeConversionReports::class,
+                // Products in exchange-rate secondary markets were marked invalid with a null
+                // price and are excluded from the expiring-products resync; re-sync them once.
+                \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\UpdateAllProducts::class,
+            ],
         ];
         /**
+         * Register a service.
+         *
+         * The retry runs after the installer's admin_init callback (default priority), so an
+         * upgrade's own attempt always comes first in the same request.
+         *
+         * @since 3.11.0
+         */
+        public function register(): void
+        {
+        }
+        /**
          * Run installation logic for this class.
+         *
+         * Also attempts the jobs still pending from earlier upgrades, and creates the pending jobs
+         * option on stores that don't have it yet, so retry_pending_jobs() reads it from the
+         * autoloaded options instead of querying the database for a missing option.
          *
          * @param string $old_version Previous version before updating.
          * @param string $new_version Current version after updating.
@@ -25427,11 +26200,156 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Jobs\Update {
         {
         }
         /**
-         * Schedules a list of jobs.
+         * Retry the update jobs that couldn't be scheduled during a previous upgrade.
+         *
+         * Runs on every admin request. With nothing pending it costs one read of the autoloaded
+         * option (created by install()). A pending job is retried at most once per RETRY_INTERVAL.
+         *
+         * @since 3.11.0
+         */
+        public function retry_pending_jobs(): void
+        {
+        }
+        /**
+         * Schedules a list of jobs, tracking those that can't be scheduled yet.
+         *
+         * Each job is attempted at most once, even when several versions ask for it. A job that
+         * can't be scheduled is kept pending with the time of the attempt, to be retried later.
+         *
+         * Nothing is kept when Merchant Center setup isn't complete. A full disconnect already
+         * cleared what was synced (and the pending jobs, see AccountService::disconnect()), and
+         * completing setup again queues a full sync. Like any sync, that one only runs once the
+         * store is ready to sync.
          *
          * @param array $jobs List of jobs
          */
         protected function schedule_jobs(array $jobs): void
+        {
+        }
+        /**
+         * Stamp the pending jobs about to be attempted with the time of this attempt, and save them
+         * before attempting anything, so a concurrent admin request sees them as not due.
+         *
+         * @since 3.11.0
+         *
+         * @param string[] $jobs Job class names about to be attempted.
+         *
+         * @return int[] The pending jobs, with the stamped ones updated.
+         */
+        protected function stamp_pending_jobs(array $jobs): array
+        {
+        }
+        /**
+         * Remove a job that was scheduled from the pending jobs.
+         *
+         * @since 3.11.0
+         *
+         * @param string $job     Job class name.
+         * @param int[]  $pending Pending jobs.
+         *
+         * @return int[] The pending jobs without this one.
+         */
+        protected function mark_scheduled(string $job, array $pending): array
+        {
+        }
+        /**
+         * Keep a job that couldn't be scheduled yet as pending, stamped with this attempt.
+         *
+         * @since 3.11.0
+         *
+         * @param string $job            Job class name.
+         * @param int[]  $pending        Pending jobs.
+         * @param bool   $setup_complete Whether Merchant Center setup is complete.
+         *
+         * @return int[] The pending jobs, including this one when setup is complete.
+         */
+        protected function mark_deferred(string $job, array $pending, bool $setup_complete): array
+        {
+        }
+        /**
+         * Discard the pending jobs, for a store whose Merchant Center setup isn't complete.
+         *
+         * @since 3.11.0
+         *
+         * @param int[] $pending Pending jobs.
+         *
+         * @return int[] No pending jobs.
+         */
+        protected function discard_pending_jobs(array $pending): array
+        {
+        }
+        /**
+         * Schedule a single job if it can be scheduled now.
+         *
+         * `schedule()` silently does nothing when the job can't be scheduled, so ask the job first
+         * through `can_schedule()`. The `null` args match the job running with any arguments.
+         *
+         * @since 3.11.0
+         *
+         * @param string $job Job class name.
+         *
+         * @return bool Whether the update's work is now queued: the job was scheduled, or a run that
+         *              will process everything with the current code is already queued. A job that
+         *              isn't an Action Scheduler job can't say whether it can be scheduled, so it is
+         *              not scheduled here, and is reported as done so it isn't kept pending forever.
+         *
+         * @throws \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\JobException If the job doesn't exist.
+         */
+        protected function schedule_job(string $job): bool
+        {
+        }
+        /**
+         * Whether a run of the job is queued that hasn't processed any batch yet.
+         *
+         * Such a run, e.g. one queued by a concurrent request running the same upgrade, processes
+         * every item with the current code, so it does the update's work. A run already past its
+         * first batch may have started before the upgrade, so the job stays pending and runs in
+         * full once that run finishes.
+         *
+         * @since 3.11.0
+         *
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\ActionSchedulerJobInterface $job The job.
+         *
+         * @return bool
+         */
+        protected function is_queued_from_first_batch(\Automattic\WooCommerce\GoogleListingsAndAds\Jobs\ActionSchedulerJobInterface $job): bool
+        {
+        }
+        /**
+         * Get the update jobs still waiting to be scheduled.
+         *
+         * Only job classes listed in the updates are returned, so a stale or unexpected
+         * value in the option is never passed on to the job repository.
+         *
+         * @since 3.11.0
+         *
+         * @return int[] Time of the last attempt to schedule each job, keyed by job class.
+         */
+        protected function get_pending_jobs(): array
+        {
+        }
+        /**
+         * Store the update jobs still waiting to be scheduled.
+         *
+         * The option is kept even when empty, so it stays autoloaded and the check in
+         * retry_pending_jobs() doesn't query the database for a missing option. It is only written
+         * when it changes: Options::update() fires an options-updated hook on every call, and this
+         * runs from admin requests while a job is pending.
+         *
+         * @since 3.11.0
+         *
+         * @param int[] $jobs Time of the last attempt to schedule each job, keyed by job class.
+         */
+        protected function save_pending_jobs(array $jobs): void
+        {
+        }
+        /**
+         * Log a message about the upgrade jobs.
+         *
+         * @param string $message
+         * @param string $method  The method logging the message.
+         */
+        protected function log(string $message, string $method): void
         {
         }
     }
@@ -25828,6 +26746,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Jobs {
      */
     class UpdateProducts extends \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\AbstractProductSyncerJob implements \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\StartOnHookInterface
     {
+        protected const DEFAULT_BATCH_SIZE = 25;
         /**
          * Get the name of the job.
          *
@@ -25855,6 +26774,14 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Jobs {
          * @throws JobException If no product is provided as argument. The exception will be logged by ActionScheduler.
          */
         public function schedule(array $args = [])
+        {
+        }
+        /**
+         * Get how many product IDs a single job can hold.
+         *
+         * @return int
+         */
+        public function get_batch_size(): int
         {
         }
         /**
@@ -27991,38 +28918,6 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter {
         }
     }
     /**
-     * Interface MerchantCenterAwareInterface
-     *
-     * @package Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter
-     */
-    interface MerchantCenterAwareInterface
-    {
-        /**
-         * @param MerchantCenterService $merchant_center
-         */
-        public function set_merchant_center_object(\Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantCenterService $merchant_center): void;
-    }
-    /**
-     * Trait MerchantCenterAwareTrait
-     *
-     * @package Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter
-     */
-    trait MerchantCenterAwareTrait
-    {
-        /**
-         * The MerchantCenterService object.
-         *
-         * @var MerchantCenterService
-         */
-        protected $merchant_center;
-        /**
-         * @param MerchantCenterService $merchant_center
-         */
-        public function set_merchant_center_object(\Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantCenterService $merchant_center): void
-        {
-        }
-    }
-    /**
      * Class MerchantCenterService
      *
      * ContainerAware used to access:
@@ -28092,6 +28987,18 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter {
          * @return boolean
          */
         public function is_ready_for_syncing(): bool
+        {
+        }
+        /**
+         * URLs the store may have claimed in Merchant Center. With WPML a store may have
+         * onboarded from any language, so the home URL of every active language counts.
+         * The list is the same on every request, so the cached result can't flip.
+         *
+         * @param string $site_url The site URL, already converted to the default language.
+         *
+         * @return string[]
+         */
+        private function get_claimable_site_urls(string $site_url): array
         {
         }
         /**
@@ -28274,7 +29181,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter {
         /**
          * Stored issue severities that are reported as warnings; any other severity is an error.
          *
-         * @since x.x.x
+         * @since 3.11.0
          */
         public const WARNING_SEVERITIES = ['warning', 'suggestion', 'DEMOTED', 'NOT_IMPACTED'];
         /**
@@ -28282,13 +29189,13 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter {
          * Product issues use the complement of WARNING_SEVERITIES instead, which also includes
          * raw Merchant API values such as DISAPPROVED.
          *
-         * @since x.x.x
+         * @since 3.11.0
          */
         public const BLOCKING_SEVERITIES = [self::SEVERITY_ERROR, 'critical'];
         /**
          * Keys of the feed issue summary saved when a status check completes.
          *
-         * @since x.x.x
+         * @since 3.11.0
          */
         public const FEED_ISSUE_SUMMARY_FIELDS = ['blocking_account_issue_count', 'disapproved_product_count', 'error_issue_product_count', 'presync_error_product_count', 'synced_product_count'];
         /**
@@ -28618,7 +29525,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter {
          * Keep this state separate from the statistics consumed by older plugin versions.
          * The token chain ensures a check started before an upgrade cannot publish partial counts.
          *
-         * @since x.x.x
+         * @since 3.11.0
          *
          * @param string|null $page_token      Token of the processed page; null for the first page.
          * @param string|null $next_page_token Token of the next page; null for the last page.
@@ -28629,7 +29536,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter {
         /**
          * Get the top-level product IDs of the current page's disapproved offers, counting a variation as its parent.
          *
-         * @since x.x.x
+         * @since 3.11.0
          *
          * @return int[]
          */
@@ -28672,7 +29579,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter {
         /**
          * Save the feed-blocking issue counts of the completed status check, for the WC Tracker snapshot.
          *
-         * @since x.x.x
+         * @since 3.11.0
          *
          * @param int $disapproved_product_count Products with an offer disapproved in any market during this check.
          */
@@ -29834,48 +30741,6 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notes {
 }
 namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification {
     /**
-     * Trait CachedNotificationEvaluatorTrait
-     *
-     * Caches an evaluator's boolean result to avoid repeated Google Ads API calls and database
-     * queries on every admin page load. The cached condition is site-wide (no evaluator's
-     * condition depends on the current user), so it is keyed per site by default: one transient
-     * per notification, which a relevant action can invalidate with a single delete_transient()
-     * even under an external object cache. Per-user concerns (dismiss, snooze, first-triggered
-     * time) live in NotificationService state and are unaffected by this cache.
-     *
-     * The one-hour expiry is a fallback; evaluators with a discrete triggering action opt into
-     * event-driven invalidation via InvalidatableNotificationEvaluatorInterface.
-     *
-     * @package Automattic\WooCommerce\GoogleListingsAndAds\Notification
-     */
-    trait CachedNotificationEvaluatorTrait
-    {
-        /**
-         * Whether the notification's condition is currently met.
-         *
-         * @return bool
-         */
-        public function should_show(): bool
-        {
-        }
-        /**
-         * Evaluate whether the notification condition is met.
-         *
-         * @return bool
-         */
-        abstract protected function evaluate_condition(): bool;
-        /**
-         * Get the transient cache key. Site-scoped by default because the cached condition is
-         * store-wide; an evaluator whose condition genuinely varies per user can override this
-         * to NotificationCacheKeys::for_user().
-         *
-         * @return string
-         */
-        protected function get_cache_key(): string
-        {
-        }
-    }
-    /**
      * Interface NotificationEvaluatorInterface
      *
      * Implemented by classes that evaluate whether a single notification should be
@@ -29917,6 +30782,122 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification {
          * @return int|null
          */
         public function get_snooze_duration(): ?int;
+    }
+    /**
+     * Interface CachedNotificationEvaluatorInterface
+     *
+     * An evaluator whose condition is expensive to check (Google Ads API calls, large order or
+     * coupon queries). should_show() only reads the stored result, and the condition is evaluated
+     * in the background by the RefreshNotificationEvaluators job, so no admin page load waits for it.
+     *
+     * The refresh runs without a current user, so an implementing evaluator's condition must not
+     * depend on who is viewing the page.
+     *
+     * @since 3.11.0
+     *
+     * @package Automattic\WooCommerce\GoogleListingsAndAds\Notification
+     */
+    interface CachedNotificationEvaluatorInterface extends \Automattic\WooCommerce\GoogleListingsAndAds\Notification\NotificationEvaluatorInterface
+    {
+        /**
+         * Age in seconds after which a stored result is recalculated.
+         */
+        public const STALE_AFTER = HOUR_IN_SECONDS;
+        /**
+         * How long a stored result is kept, so a stale value can still be shown while it is recalculated.
+         */
+        public const CACHE_EXPIRATION = DAY_IN_SECONDS;
+        /**
+         * Whether the stored result is missing or stale and should be recalculated.
+         *
+         * @return bool
+         */
+        public function needs_refresh(): bool;
+        /**
+         * Evaluate the condition now and store the result.
+         *
+         * @return bool The new result.
+         */
+        public function refresh(): bool;
+        /**
+         * Mark the stored result stale, so the next refresh recalculates it. The result stays
+         * visible until then.
+         *
+         * @return void
+         */
+        public function invalidate(): void;
+    }
+    /**
+     * Trait CachedNotificationEvaluatorTrait
+     *
+     * Stores an evaluator's boolean result so that Google Ads API calls and database queries never
+     * run during an admin page load. should_show() only reads the stored result; the
+     * RefreshNotificationEvaluators job calls refresh() in the background whenever needs_refresh()
+     * reports the result as missing or stale. Classes using this trait implement
+     * CachedNotificationEvaluatorInterface.
+     *
+     * The cached condition is site-wide (no evaluator's condition depends on the current user), so
+     * it is keyed per site: one transient per notification. Per-user concerns (dismiss,
+     * snooze, first-triggered time) live in NotificationService state and are unaffected by this cache.
+     *
+     * The stored result is kept for CACHE_EXPIRATION so a stale value can still be shown while the
+     * refresh runs; it is recalculated once it is older than STALE_AFTER, or sooner when an
+     * InvalidatableNotificationEvaluatorInterface hook marks it stale.
+     *
+     * @package Automattic\WooCommerce\GoogleListingsAndAds\Notification
+     */
+    trait CachedNotificationEvaluatorTrait
+    {
+        /**
+         * Whether the notification's condition is currently met, according to the stored result.
+         *
+         * Returns false when nothing is stored yet; the background refresh fills it in.
+         *
+         * @return bool
+         */
+        public function should_show(): bool
+        {
+        }
+        /**
+         * Whether the stored result is missing or stale and should be recalculated.
+         *
+         * @return bool
+         */
+        public function needs_refresh(): bool
+        {
+        }
+        /**
+         * Evaluate the condition now and store the result.
+         *
+         * @return bool The new result.
+         */
+        public function refresh(): bool
+        {
+        }
+        /**
+         * Mark the stored result stale, so the next refresh recalculates it. The result stays
+         * visible until then.
+         *
+         * @return void
+         */
+        public function invalidate(): void
+        {
+        }
+        /**
+         * Evaluate whether the notification condition is met.
+         *
+         * @return bool
+         */
+        abstract protected function evaluate_condition(): bool;
+        /**
+         * Get the transient cache key. Site-scoped because the cached condition is store-wide and
+         * is refreshed in the background, where there is no current user.
+         *
+         * @return string
+         */
+        protected function get_cache_key(): string
+        {
+        }
     }
 }
 namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators {
@@ -29980,6 +30961,140 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators {
          * @return int|null
          */
         public function get_snooze_duration(): ?int
+        {
+        }
+    }
+}
+namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification {
+    /**
+     * Marker interface for notifications whose trigger/dismiss state is stored
+     * site-wide (once per merchant) rather than per admin user.
+     *
+     * @package Automattic\WooCommerce\GoogleListingsAndAds\Notification
+     */
+    interface SiteScopedNotificationEvaluatorInterface extends \Automattic\WooCommerce\GoogleListingsAndAds\Notification\NotificationEvaluatorInterface
+    {
+    }
+}
+namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators {
+    /**
+     * Class AbstractCyoSurveyEvaluator
+     *
+     * Shared eligibility and spend check for the Choose Your Own (CYO) sign-up offer surveys.
+     * A store is eligible when its onboarding completed on or after the CYO launch, at least
+     * 60 days have passed since, and the campaign has not ended. Eligible stores are split by
+     * whether they have Google Ads spend since onboarding; each subclass shows for one side.
+     *
+     * The spend status is cached once per store in a single transient that both subclasses read,
+     * so they can never disagree and show both surveys at once. Dismissing either survey (including
+     * through its CTA) ends the ask for the store, so the other one never shows afterwards.
+     *
+     * @package Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators
+     */
+    abstract class AbstractCyoSurveyEvaluator implements \Automattic\WooCommerce\GoogleListingsAndAds\Notification\SiteScopedNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Ads\AdsAwareInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service
+    {
+        use \Automattic\WooCommerce\GoogleListingsAndAds\Ads\AdsAwareTrait;
+        use \Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareTrait;
+        protected const SPEND_SURVEY_ID = 'cyo-survey-spend';
+        protected const NO_SPEND_SURVEY_ID = 'cyo-survey-no-spend';
+        protected const SPEND_STATUS_SPENT = 'spent';
+        protected const SPEND_STATUS_NONE = 'none';
+        protected const SPEND_STATUS_UNKNOWN = 'unknown';
+        /** Onboarding must complete at or after this instant (2026-05-19T00:00:00Z, CYO launch). */
+        private const ELIGIBLE_FROM = 1779148800;
+        /** Surveys show only before this instant (2027-01-16T00:00:00Z). */
+        private const VISIBLE_UNTIL = 1800057600;
+        private const MINIMUM_DAYS_SINCE_ONBOARDING = 60;
+        private const CACHE_ID = 'cyo-survey';
+        /** @var \Automattic\WooCommerce\GoogleListingsAndAds\Options\OnboardingCompleted */
+        protected $onboarding_completed;
+        /** @var \Automattic\WooCommerce\GoogleListingsAndAds\API\Google\AdsReport */
+        protected $ads_report;
+        /**
+         * AbstractCyoSurveyEvaluator constructor.
+         *
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Options\OnboardingCompleted $onboarding_completed
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\API\Google\AdsReport           $ads_report
+         */
+        public function __construct(\Automattic\WooCommerce\GoogleListingsAndAds\Options\OnboardingCompleted $onboarding_completed, \Automattic\WooCommerce\GoogleListingsAndAds\API\Google\AdsReport $ads_report)
+        {
+        }
+        /**
+         * The spend status (one of the SPEND_STATUS_* constants) this survey is shown for.
+         *
+         * @return string
+         */
+        abstract protected function get_spend_status_to_show(): string;
+        /**
+         * Whether the notification's condition is currently met.
+         *
+         * @return bool
+         */
+        public function should_show(): bool
+        {
+        }
+        /**
+         * Get the notification's priority.
+         *
+         * @return int
+         */
+        public function get_priority(): int
+        {
+        }
+        /**
+         * Dismissal is permanent.
+         *
+         * @return int|null
+         */
+        public function get_snooze_duration(): ?int
+        {
+        }
+        /**
+         * Current Unix timestamp.
+         *
+         * @return int
+         */
+        protected function get_now(): int
+        {
+        }
+        /**
+         * Onboarding completion timestamp, or 0 when onboarding is incomplete or the stored value
+         * is not a positive timestamp.
+         *
+         * @return int
+         */
+        private function get_onboarding_completed_at(): int
+        {
+        }
+        /**
+         * Whether the store dismissed either survey. Reads the site-scoped state that
+         * NotificationService::dismiss() writes, keyed by notification ID.
+         *
+         * @return bool
+         */
+        private function is_any_survey_dismissed(): bool
+        {
+        }
+        /**
+         * Spend status since onboarding, shared by both surveys through one transient.
+         *
+         * @param int $completed_at Onboarding completion timestamp.
+         * @param int $now          Current timestamp.
+         *
+         * @return string One of the SPEND_STATUS_* constants.
+         */
+        private function get_spend_status(int $completed_at, int $now): string
+        {
+        }
+        /**
+         * Look up whether the store has Google Ads spend since onboarding.
+         *
+         * @param int $completed_at Onboarding completion timestamp.
+         * @param int $now          Current timestamp.
+         *
+         * @return string One of the SPEND_STATUS_* constants.
+         */
+        private function fetch_spend_status(int $completed_at, int $now): string
         {
         }
     }
@@ -30047,13 +31162,14 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification {
     /**
      * Interface InvalidatableNotificationEvaluatorInterface
      *
-     * Opt-in for cached evaluators whose result should be recalculated the moment a relevant
-     * action happens, rather than only when the one-hour cache expires. An implementing
-     * evaluator declares the action hooks that make its condition change; NotificationCacheInvalidator
-     * binds each hook and clears the evaluator's cached result when the hook fires.
+     * Opt-in for cached evaluators whose result should be recalculated as soon as a relevant
+     * action happens, rather than only when the cached result goes stale after an hour. An
+     * implementing evaluator declares the action hooks that make its condition change;
+     * NotificationCacheInvalidator binds each hook and, when one fires, marks the evaluator's cached
+     * result stale and schedules a background refresh.
      *
      * Evaluators without a discrete triggering action (gradual sales/accumulation trends) do not
-     * implement this and rely solely on the cache's expiry.
+     * implement this and rely solely on the result going stale.
      *
      * @package Automattic\WooCommerce\GoogleListingsAndAds\Notification
      */
@@ -30076,7 +31192,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators {
      *
      * @package Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators
      */
-    class CampaignNoSalesEvaluator implements \Automattic\WooCommerce\GoogleListingsAndAds\Notification\InvalidatableNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Ads\AdsAwareInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service
+    class CampaignNoSalesEvaluator implements \Automattic\WooCommerce\GoogleListingsAndAds\Notification\CachedNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\InvalidatableNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Ads\AdsAwareInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service
     {
         use \Automattic\WooCommerce\GoogleListingsAndAds\Ads\AdsAwareTrait;
         use \Automattic\WooCommerce\GoogleListingsAndAds\Notification\CachedNotificationEvaluatorTrait;
@@ -30212,7 +31328,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators {
      *
      * @package Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators
      */
-    class CouponsNotSyncedEvaluator implements \Automattic\WooCommerce\GoogleListingsAndAds\Notification\InvalidatableNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service
+    class CouponsNotSyncedEvaluator implements \Automattic\WooCommerce\GoogleListingsAndAds\Notification\CachedNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\InvalidatableNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service
     {
         use \Automattic\WooCommerce\GoogleListingsAndAds\Notification\CachedNotificationEvaluatorTrait;
         /**
@@ -30322,6 +31438,58 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators {
          * @return bool
          */
         protected function has_synced_coupon(): bool
+        {
+        }
+    }
+    /**
+     * Class CyoSurveyNoSpendEvaluator
+     *
+     * Fires for an eligible store without Google Ads spend since onboarding (the short CYO survey).
+     *
+     * @package Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators
+     */
+    class CyoSurveyNoSpendEvaluator extends \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\AbstractCyoSurveyEvaluator
+    {
+        /**
+         * Get the notification's unique ID.
+         *
+         * @return string
+         */
+        public function get_id(): string
+        {
+        }
+        /**
+         * The spend status this survey is shown for.
+         *
+         * @return string
+         */
+        protected function get_spend_status_to_show(): string
+        {
+        }
+    }
+    /**
+     * Class CyoSurveySpendEvaluator
+     *
+     * Fires for an eligible store with Google Ads spend since onboarding (the long CYO survey).
+     *
+     * @package Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators
+     */
+    class CyoSurveySpendEvaluator extends \Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators\AbstractCyoSurveyEvaluator
+    {
+        /**
+         * Get the notification's unique ID.
+         *
+         * @return string
+         */
+        public function get_id(): string
+        {
+        }
+        /**
+         * The spend status this survey is shown for.
+         *
+         * @return string
+         */
+        protected function get_spend_status_to_show(): string
         {
         }
     }
@@ -30491,15 +31659,6 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators {
 }
 namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification {
     /**
-     * Marker interface for notifications whose trigger/dismiss state is stored
-     * site-wide (once per merchant) rather than per admin user.
-     *
-     * @package Automattic\WooCommerce\GoogleListingsAndAds\Notification
-     */
-    interface SiteScopedNotificationEvaluatorInterface extends \Automattic\WooCommerce\GoogleListingsAndAds\Notification\NotificationEvaluatorInterface
-    {
-    }
-    /**
      * Trait RevenueOrdersTrait
      *
      * Counts paid WooCommerce orders that generated revenue (a total greater than zero), across HPOS
@@ -30546,7 +31705,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators {
      *
      * @package Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators
      */
-    class PaidOrdersEvaluator implements \Automattic\WooCommerce\GoogleListingsAndAds\Notification\SiteScopedNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service
+    class PaidOrdersEvaluator implements \Automattic\WooCommerce\GoogleListingsAndAds\Notification\CachedNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\SiteScopedNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service
     {
         use \Automattic\WooCommerce\GoogleListingsAndAds\Notification\CachedNotificationEvaluatorTrait;
         use \Automattic\WooCommerce\GoogleListingsAndAds\Notification\RevenueOrdersTrait;
@@ -30591,7 +31750,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators {
      *
      * @package Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators
      */
-    class PausedCampaignEvaluator implements \Automattic\WooCommerce\GoogleListingsAndAds\Notification\InvalidatableNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Ads\AdsAwareInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service
+    class PausedCampaignEvaluator implements \Automattic\WooCommerce\GoogleListingsAndAds\Notification\CachedNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\InvalidatableNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Ads\AdsAwareInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service
     {
         use \Automattic\WooCommerce\GoogleListingsAndAds\Ads\AdsAwareTrait;
         use \Automattic\WooCommerce\GoogleListingsAndAds\Notification\CachedNotificationEvaluatorTrait;
@@ -30708,7 +31867,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators {
      *
      * @package Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators
      */
-    class ReadyButNoSalesEvaluator implements \Automattic\WooCommerce\GoogleListingsAndAds\Notification\NotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service
+    class ReadyButNoSalesEvaluator implements \Automattic\WooCommerce\GoogleListingsAndAds\Notification\CachedNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service
     {
         use \Automattic\WooCommerce\GoogleListingsAndAds\Notification\CachedNotificationEvaluatorTrait;
         use \Automattic\WooCommerce\GoogleListingsAndAds\Notification\RevenueOrdersTrait;
@@ -30772,7 +31931,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators {
      *
      * @package Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators
      */
-    class RecommendationsAvailableEvaluator implements \Automattic\WooCommerce\GoogleListingsAndAds\Notification\InvalidatableNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Ads\AdsAwareInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service
+    class RecommendationsAvailableEvaluator implements \Automattic\WooCommerce\GoogleListingsAndAds\Notification\CachedNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\InvalidatableNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Ads\AdsAwareInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service
     {
         use \Automattic\WooCommerce\GoogleListingsAndAds\Ads\AdsAwareTrait;
         use \Automattic\WooCommerce\GoogleListingsAndAds\Notification\CachedNotificationEvaluatorTrait;
@@ -30842,7 +32001,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators {
      *
      * @package Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators
      */
-    class SalesNotGrowingEvaluator implements \Automattic\WooCommerce\GoogleListingsAndAds\Notification\NotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service
+    class SalesNotGrowingEvaluator implements \Automattic\WooCommerce\GoogleListingsAndAds\Notification\CachedNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service
     {
         use \Automattic\WooCommerce\GoogleListingsAndAds\Notification\CachedNotificationEvaluatorTrait;
         /**
@@ -30943,7 +32102,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators {
      *
      * @package Automattic\WooCommerce\GoogleListingsAndAds\Notification\Evaluators
      */
-    class SkippedCampaignCreationEvaluator implements \Automattic\WooCommerce\GoogleListingsAndAds\Notification\InvalidatableNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Ads\AdsAwareInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service
+    class SkippedCampaignCreationEvaluator implements \Automattic\WooCommerce\GoogleListingsAndAds\Notification\CachedNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Notification\InvalidatableNotificationEvaluatorInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Ads\AdsAwareInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareInterface, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service
     {
         use \Automattic\WooCommerce\GoogleListingsAndAds\Ads\AdsAwareTrait;
         use \Automattic\WooCommerce\GoogleListingsAndAds\Notification\CachedNotificationEvaluatorTrait;
@@ -31146,13 +32305,12 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification {
      * Class NotificationCacheInvalidator
      *
      * Binds the action hooks declared by each InvalidatableNotificationEvaluatorInterface and,
-     * when one fires, clears that evaluator's cached result so the next page load recalculates
-     * it. This keeps a notification's appearance/disappearance in step with the action that
-     * changed it (e.g. pausing a campaign) instead of waiting for the one-hour cache to expire.
+     * when one fires, marks that evaluator's cached result stale and schedules a background
+     * refresh. This keeps a notification's appearance/disappearance in step with the action that
+     * changed it (e.g. pausing a campaign) instead of waiting for the result to go stale on its own.
      *
-     * Relies on the cached condition being site-scoped (see CachedNotificationEvaluatorTrait):
-     * one transient per notification, cleared reliably with a single delete_transient() even
-     * under an external object cache.
+     * The stale result stays visible until the refresh replaces it, so a notification whose
+     * condition did not change does not disappear and come back.
      *
      * @package Automattic\WooCommerce\GoogleListingsAndAds\Notification
      */
@@ -31160,9 +32318,51 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification {
     {
         use \Automattic\WooCommerce\GoogleListingsAndAds\Internal\ContainerAwareTrait;
         /**
-         * Bind each evaluator's invalidation hooks to a cache clear.
+         * @var \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\JobRepository
+         */
+        protected $job_repository;
+        /**
+         * Whether a refresh was already scheduled during this request.
+         *
+         * @var bool
+         */
+        protected $refresh_scheduled = false;
+        /**
+         * NotificationCacheInvalidator constructor.
+         *
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\JobRepository $job_repository
+         */
+        public function __construct(\Automattic\WooCommerce\GoogleListingsAndAds\Jobs\JobRepository $job_repository)
+        {
+        }
+        /**
+         * Bind each evaluator's invalidation hooks.
          */
         public function register(): void
+        {
+        }
+        /**
+         * Mark the evaluator's cached result stale and schedule a refresh.
+         *
+         * An evaluator without the stale-while-revalidate cache has its transient deleted instead,
+         * so its next should_show() call recalculates it.
+         *
+         * @param InvalidatableNotificationEvaluatorInterface $evaluator
+         *
+         * @return void
+         */
+        protected function handle_invalidation(\Automattic\WooCommerce\GoogleListingsAndAds\Notification\InvalidatableNotificationEvaluatorInterface $evaluator): void
+        {
+        }
+        /**
+         * Schedule the refresh job, once per request.
+         *
+         * Skipped before Action Scheduler is initialized; the stale result then schedules the
+         * refresh on the next admin page load.
+         *
+         * @return void
+         */
+        protected function schedule_refresh(): void
         {
         }
         /**
@@ -31231,6 +32431,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification {
         public const RECOMMENDATIONS_AVAILABLE = 130;
         public const COLLECT_REVIEWS = 140;
         public const BADGE_WIDGET = 150;
+        public const CYO_SURVEY = 160;
     }
     /**
      * Class NotificationService
@@ -31267,11 +32468,16 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification {
          */
         protected $wp;
         /**
+         * @var \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\JobRepository
+         */
+        protected $job_repository;
+        /**
          * NotificationService constructor.
          *
-         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Proxies\WP $wp
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Proxies\WP            $wp
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\JobRepository $job_repository
          */
-        public function __construct(\Automattic\WooCommerce\GoogleListingsAndAds\Proxies\WP $wp)
+        public function __construct(\Automattic\WooCommerce\GoogleListingsAndAds\Proxies\WP $wp, \Automattic\WooCommerce\GoogleListingsAndAds\Jobs\JobRepository $job_repository)
         {
         }
         /**
@@ -31283,9 +32489,25 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Notification {
         /**
          * Get the notifications that should currently be shown, ordered by priority (ascending).
          *
+         * Cached evaluators report their stored result; when any of them is stale, one background
+         * refresh is scheduled instead of evaluating it during this request.
+         *
          * @return array[] List of [ 'id' => string, 'triggered_at' => int ] entries.
          */
         public function get_notifications(): array
+        {
+        }
+        /**
+         * Recalculate the stored result of every cached evaluator that is missing or stale.
+         *
+         * Runs in the background job, where there is no current user, so it does no capability
+         * check. A failing evaluator is reported and skipped so the others are still refreshed.
+         *
+         * @since 3.11.0
+         *
+         * @return void
+         */
+        public function refresh_stale_evaluators(): void
         {
         }
         /**
@@ -31725,12 +32947,14 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Options {
         public const YOUTUBE_ORDER_IDS_CACHE = 'youtube_export_order_ids';
         public const YOUTUBE_EXPORT_FILES = 'youtube_export_files';
         public const YOUTUBE_THIRD_PARTY_LINK = 'youtube_third_party_link';
+        public const YOUTUBE_REPORT_CLEANUP_FILES = 'youtube_report_cleanup_files';
         public const ONBOARDING_COMPLETED_AT = 'onboarding_completed_at';
         public const NOTIFICATIONS_SITE_STATE = 'notifications_site_state';
         public const WC_INSTALL_TIMESTAMP = 'wc_install_timestamp';
         public const IS_SERVICE_BASED_MERCHANT = 'is_service_based_merchant';
         public const SUPPORTED_PRODUCTS_CONFIRMED = 'supported_products_confirmed';
-        public const VALID_OPTIONS = [self::ADS_ACCOUNT_CURRENCY => true, self::ADS_ACCOUNT_OCID => true, self::ADS_ACCOUNT_STATE => true, self::ADS_ENHANCED_CONVERSIONS_ENABLED => true, self::ADS_BILLING_URL => true, self::ADS_HAS_UNCLAIMED_INCENTIVE => true, self::ADS_ID => true, self::ADS_INCENTIVE_APPLIED => true, self::ADS_INCENTIVE_APPLY_ERROR => true, self::ADS_CONVERSION_ACTION => true, self::ADS_EU_POLITICAL_DECLARATIONS_COMPLETE => true, self::ADS_SETUP_COMPLETED_AT => true, self::CAMPAIGN_CONVERT_STATUS => true, self::CLAIMED_URL_HASH => true, self::CONTACT_INFO_SETUP => true, self::CURRENCY_CONVERSION_AVAILABLE => true, self::DB_VERSION => true, self::FILE_VERSION => true, self::GOOGLE_CONNECTED => true, self::GOOGLE_CUSTOMER_REVIEWS => true, self::INSTALL_TIMESTAMP => true, self::INSTALL_VERSION => true, self::JETPACK_CONNECTED => true, self::JETPACK_AUTH_FAILED_AT => true, self::MAPI_DATA_SOURCES => true, self::MAPI_RECREATED_DATA_SOURCES => true, self::MC_SETUP_COMPLETED_AT => true, self::MERCHANT_ACCOUNT_STATE => true, self::MERCHANT_CENTER => true, self::MERCHANT_ID => true, self::MARKETS => true, self::DELAYED_ACTIVATE => true, self::SHIPPING_RATES => true, self::SHIPPING_SYNC_FAILURE => true, self::SHIPPING_TIMES => true, self::REDIRECT_TO_ONBOARDING => true, self::SITE_VERIFICATION => true, self::SYNCABLE_PRODUCTS_COUNT => true, self::SYNCABLE_PRODUCTS_COUNT_INTERMEDIATE_DATA => true, self::PRODUCT_STATUSES_COUNT_INTERMEDIATE_DATA => true, self::FEED_ISSUE_TRACKING => true, self::FEED_ISSUE_SUMMARY => true, self::TARGET_AUDIENCE => true, self::TOURS => true, self::UPDATE_ALL_PRODUCTS_LAST_SYNC => true, self::WP_TOS_ACCEPTED => true, self::GTIN_MIGRATION_STATUS => true, self::YOUTUBE_ORDER_IDS_CACHE => true, self::YOUTUBE_EXPORT_FILES => true, self::YOUTUBE_THIRD_PARTY_LINK => true, self::ONBOARDING_COMPLETED_AT => true, self::NOTIFICATIONS_SITE_STATE => true, self::WC_INSTALL_TIMESTAMP => true, self::IS_SERVICE_BASED_MERCHANT => true, self::SUPPORTED_PRODUCTS_CONFIRMED => true];
+        public const PLUGIN_UPDATE_PENDING_JOBS = 'plugin_update_pending_jobs';
+        public const VALID_OPTIONS = [self::ADS_ACCOUNT_CURRENCY => true, self::ADS_ACCOUNT_OCID => true, self::ADS_ACCOUNT_STATE => true, self::ADS_ENHANCED_CONVERSIONS_ENABLED => true, self::ADS_BILLING_URL => true, self::ADS_HAS_UNCLAIMED_INCENTIVE => true, self::ADS_ID => true, self::ADS_INCENTIVE_APPLIED => true, self::ADS_INCENTIVE_APPLY_ERROR => true, self::ADS_CONVERSION_ACTION => true, self::ADS_EU_POLITICAL_DECLARATIONS_COMPLETE => true, self::ADS_SETUP_COMPLETED_AT => true, self::CAMPAIGN_CONVERT_STATUS => true, self::CLAIMED_URL_HASH => true, self::CONTACT_INFO_SETUP => true, self::CURRENCY_CONVERSION_AVAILABLE => true, self::DB_VERSION => true, self::FILE_VERSION => true, self::GOOGLE_CONNECTED => true, self::GOOGLE_CUSTOMER_REVIEWS => true, self::INSTALL_TIMESTAMP => true, self::INSTALL_VERSION => true, self::JETPACK_CONNECTED => true, self::JETPACK_AUTH_FAILED_AT => true, self::MAPI_DATA_SOURCES => true, self::MAPI_RECREATED_DATA_SOURCES => true, self::MC_SETUP_COMPLETED_AT => true, self::MERCHANT_ACCOUNT_STATE => true, self::MERCHANT_CENTER => true, self::MERCHANT_ID => true, self::MARKETS => true, self::DELAYED_ACTIVATE => true, self::SHIPPING_RATES => true, self::SHIPPING_SYNC_FAILURE => true, self::SHIPPING_TIMES => true, self::REDIRECT_TO_ONBOARDING => true, self::SITE_VERIFICATION => true, self::SYNCABLE_PRODUCTS_COUNT => true, self::SYNCABLE_PRODUCTS_COUNT_INTERMEDIATE_DATA => true, self::PRODUCT_STATUSES_COUNT_INTERMEDIATE_DATA => true, self::FEED_ISSUE_TRACKING => true, self::FEED_ISSUE_SUMMARY => true, self::TARGET_AUDIENCE => true, self::TOURS => true, self::UPDATE_ALL_PRODUCTS_LAST_SYNC => true, self::WP_TOS_ACCEPTED => true, self::GTIN_MIGRATION_STATUS => true, self::YOUTUBE_ORDER_IDS_CACHE => true, self::YOUTUBE_EXPORT_FILES => true, self::YOUTUBE_THIRD_PARTY_LINK => true, self::YOUTUBE_REPORT_CLEANUP_FILES => true, self::ONBOARDING_COMPLETED_AT => true, self::NOTIFICATIONS_SITE_STATE => true, self::WC_INSTALL_TIMESTAMP => true, self::IS_SERVICE_BASED_MERCHANT => true, self::SUPPORTED_PRODUCTS_CONFIRMED => true, self::PLUGIN_UPDATE_PENDING_JOBS => true];
         public const OPTION_TYPES = [self::ADS_ID => \Automattic\WooCommerce\GoogleListingsAndAds\Value\PositiveInteger::class, self::MERCHANT_ID => \Automattic\WooCommerce\GoogleListingsAndAds\Value\PositiveInteger::class];
         /**
          * Get an option.
@@ -32069,12 +33293,13 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Options {
         public const ADS_BUDGET_RECOMMENDATIONS = 'ads_budget_recommendations';
         public const ADS_RECOMMENDATIONS = 'ads_recommendations';
         public const FREE_LISTING_METRICS = 'free_listing_metrics';
+        public const MAPI_DATA_SOURCES_VERIFIED = 'mapi_data_sources_verified';
         public const MC_ACCOUNT_REVIEW = 'mc_account_review';
         public const MC_IS_SUBACCOUNT = 'mc_is_subaccount';
         public const MC_STATUSES = 'mc_statuses';
         public const SMALL_IMAGE_PRODUCT_COUNT = 'small_image_product_count';
         public const URL_MATCHES = 'url_matches';
-        public const VALID_OPTIONS = [self::ADS_BUDGET_METRICS => true, self::ADS_CAMPAIGN_COUNT => true, self::ADS_HIGHEST_SPEND_CAMPAIGN => true, self::ADS_INCENTIVE_APPLIED_CHECK => true, self::ADS_LOCATION_IDS => true, self::ADS_METRICS => true, self::ADS_RECOMMENDATIONS => true, self::ADS_BUDGET_RECOMMENDATIONS => true, self::FREE_LISTING_METRICS => true, self::MC_ACCOUNT_REVIEW => true, self::MC_IS_SUBACCOUNT => true, self::MC_STATUSES => true, self::SMALL_IMAGE_PRODUCT_COUNT => true, self::URL_MATCHES => true];
+        public const VALID_OPTIONS = [self::ADS_BUDGET_METRICS => true, self::ADS_CAMPAIGN_COUNT => true, self::ADS_HIGHEST_SPEND_CAMPAIGN => true, self::ADS_INCENTIVE_APPLIED_CHECK => true, self::ADS_LOCATION_IDS => true, self::ADS_METRICS => true, self::ADS_RECOMMENDATIONS => true, self::ADS_BUDGET_RECOMMENDATIONS => true, self::FREE_LISTING_METRICS => true, self::MAPI_DATA_SOURCES_VERIFIED => true, self::MC_ACCOUNT_REVIEW => true, self::MC_IS_SUBACCOUNT => true, self::MC_STATUSES => true, self::SMALL_IMAGE_PRODUCT_COUNT => true, self::URL_MATCHES => true];
         /**
          * Get a transient.
          *
@@ -33602,7 +34827,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Product {
          */
         protected $product_helper;
         /**
-         * @var \Symfony\Component\Validator\Validator\ValidatorInterface
+         * @var \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Validator\ValidatorInterface
          */
         protected $validator;
         /**
@@ -33640,7 +34865,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Product {
          *
          * @param ProductMetaHandler         $meta_handler
          * @param ProductHelper              $product_helper
-         * @param \Symfony\Component\Validator\Validator\ValidatorInterface         $validator
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Validator\ValidatorInterface         $validator
          * @param ProductFactory             $product_factory
          * @param \Automattic\WooCommerce\GoogleListingsAndAds\DB\Query\AttributeMappingRulesQuery $attribute_mapping_rules_query
          * @param \Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MarketService              $market_service
@@ -33648,7 +34873,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Product {
          * @param \Automattic\WooCommerce\GoogleListingsAndAds\Product\Attributes\AttributeManager           $attribute_manager
          * @param \Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Mapi\Services\MapiDataSourcesService     $data_sources
          */
-        public function __construct(\Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductMetaHandler $meta_handler, \Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductHelper $product_helper, \Symfony\Component\Validator\Validator\ValidatorInterface $validator, \Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductFactory $product_factory, \Automattic\WooCommerce\GoogleListingsAndAds\DB\Query\AttributeMappingRulesQuery $attribute_mapping_rules_query, \Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MarketService $market_service, \Automattic\WooCommerce\GoogleListingsAndAds\Integration\WPML $wpml, \Automattic\WooCommerce\GoogleListingsAndAds\Product\Attributes\AttributeManager $attribute_manager, \Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Mapi\Services\MapiDataSourcesService $data_sources)
+        public function __construct(\Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductMetaHandler $meta_handler, \Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductHelper $product_helper, \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Validator\ValidatorInterface $validator, \Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductFactory $product_factory, \Automattic\WooCommerce\GoogleListingsAndAds\DB\Query\AttributeMappingRulesQuery $attribute_mapping_rules_query, \Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MarketService $market_service, \Automattic\WooCommerce\GoogleListingsAndAds\Integration\WPML $wpml, \Automattic\WooCommerce\GoogleListingsAndAds\Product\Attributes\AttributeManager $attribute_manager, \Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Mapi\Services\MapiDataSourcesService $data_sources)
         {
         }
         /**
@@ -33811,6 +35036,16 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Product {
          * @return bool
          */
         private function product_priced_in_currency(\WC_Product $product, string $currency): bool
+        {
+        }
+        /**
+         * Number of distinct currencies a market lists other than the store currency.
+         *
+         * @param array $market
+         *
+         * @return int
+         */
+        private static function count_non_store_currencies(array $market): int
         {
         }
         /**
@@ -34055,12 +35290,14 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Product {
          * @param string      $feed_label        Optional feed label.
          * @param string      $language          Optional ISO 639-1 language code.
          * @param string|null $currency_override Optional ISO 4217 currency code to override the store currency.
+         * @param float       $exchange_rate     Optional fixed market exchange rate used to convert prices into the
+         *                                       override currency when WPML cannot convert them (since 3.11.0).
          *
          * @return WCProductAdapter
          *
          * @throws \Automattic\WooCommerce\GoogleListingsAndAds\Exception\InvalidValue When the product is a variation and its parent does not exist.
          */
-        public function create(\WC_Product $product, string $target_country, array $mapping_rules, string $feed_label = '', string $language = '', ?string $currency_override = null): \Automattic\WooCommerce\GoogleListingsAndAds\Product\WCProductAdapter
+        public function create(\WC_Product $product, string $target_country, array $mapping_rules, string $feed_label = '', string $language = '', ?string $currency_override = null, float $exchange_rate = 0.0): \Automattic\WooCommerce\GoogleListingsAndAds\Product\WCProductAdapter
         {
         }
     }
@@ -34691,6 +35928,9 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Product {
      * @method update_sync_hash( \WC_Product $product, array $value )
      * @method delete_sync_hash( \WC_Product $product )
      * @method get_sync_hash( WC_Product $product ): array|string|null
+     * @method update_sync_queued_at( \WC_Product $product, $value )
+     * @method delete_sync_queued_at( \WC_Product $product )
+     * @method get_sync_queued_at( WC_Product $product ): int|null
      */
     class ProductMetaHandler implements \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service, \Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Registerable
     {
@@ -34705,6 +35945,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Product {
         public const KEY_SYNC_STATUS = 'sync_status';
         public const KEY_MC_STATUS = 'mc_status';
         public const KEY_SYNC_HASH = 'sync_hash';
+        public const KEY_SYNC_QUEUED_AT = 'sync_queued_at';
         protected const TYPES = [
             self::KEY_SYNCED_AT => 'int',
             self::KEY_GOOGLE_IDS => 'array',
@@ -34721,6 +35962,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Product {
             // a plain string, update() intentionally casts it to a single-element array;
             // that array holds no entry key, so it is also treated as no-match.
             self::KEY_SYNC_HASH => 'array',
+            self::KEY_SYNC_QUEUED_AT => 'int',
         ];
         /**
          * @param string $name
@@ -34840,6 +36082,8 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Product {
          * Products whose synced_at is older than this many days are treated as nearly expired
          * and re-submitted (see find_expiring_product_ids). The delta-sync freshness window is
          * clamped to this so an unchanged product can never be skipped past its resubmission point.
+         * Read the window through get_resubmit_expiry_days(), which applies the
+         * woocommerce_gla_resubmit_expiry_days filter.
          */
         public const RESUBMIT_EXPIRY_DAYS = 25;
         /**
@@ -34998,6 +36242,8 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Product {
         {
         }
         /**
+         * The SQL in find_expiring_product_ids() mirrors these visibility rules. Keep the two in step.
+         *
          * @return array
          */
         public function get_sync_ready_products_meta_query(): array
@@ -35012,6 +36258,11 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Product {
         {
         }
         /**
+         * The SQL in find_expiring_product_ids() mirrors these errors rules. Keep the two in step.
+         *
+         * @deprecated 3.11.0 No longer called: find_expiring_product_ids(), its only caller, now checks
+         *             the errors meta in SQL. Kept for subclasses that call or override it.
+         *
          * @return array
          */
         protected function get_valid_products_meta_query(): array
@@ -35024,12 +36275,47 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Product {
          * uses "WHERE ID > $last_id ORDER BY ID ASC" so each batch starts exactly where the previous one
          * left off at O(log n) cost regardless of how deep into the result set we are.
          *
+         * Only the synced_at condition goes through meta_query, which turns it into a single postmeta
+         * join that matches one row per product. The visibility and errors conditions are added to the
+         * WHERE clause as NOT EXISTS lookups by meta key. As meta_query clauses they need NOT EXISTS
+         * and OR, which makes WP_Meta_Query LEFT JOIN postmeta on post ID alone: every meta row of a
+         * product then multiplies the rows the database reads, and large stores stalled for hours.
+         *
+         * Variations skip the publish status check because ProductHelper::is_sync_ready() judges a
+         * variation by its parent's status. The query can therefore return disabled variations, which
+         * is_sync_ready() still rejects by default (is_visible() and woocommerce_hide_invisible_variations).
+         *
          * @param int $last_id The last product ID processed in the previous batch (0 to start from the beginning).
          * @param int $limit   Maximum number of results to retrieve or -1 for unlimited.
          *
          * @return int[] Array of WooCommerce product IDs ordered by ID ASC.
          */
         public function find_expiring_product_ids(int $last_id = 0, int $limit = -1): array
+        {
+        }
+        /**
+         * Get the number of days after its last sync that a product is resubmitted to Merchant Center.
+         *
+         * Google expires a product 30 days after its last update, so the filtered value can shorten
+         * the window but not lengthen it past RESUBMIT_EXPIRY_DAYS.
+         *
+         * @since 3.11.0
+         *
+         * @return int Days, from 1 to RESUBMIT_EXPIRY_DAYS.
+         */
+        public static function get_resubmit_expiry_days(): int
+        {
+        }
+        /**
+         * Find the IDs of products queued for a delayed update job, ordered by ID ascending.
+         *
+         * Note: Includes product variations.
+         *
+         * @param int $limit Maximum number of results to retrieve or -1 for unlimited.
+         *
+         * @return int[] Array of WooCommerce product IDs ordered by ID ASC.
+         */
+        public function find_queued_update_ids(int $limit = -1): array
         {
         }
         /**
@@ -35339,6 +36625,12 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Product {
          */
         protected $already_scheduled = [];
         /**
+         * IDs of products waiting for an update job, keyed by product ID.
+         *
+         * @var int[]
+         */
+        protected $queued_update_ids = [];
+        /**
          * @var \Automattic\WooCommerce\GoogleListingsAndAds\Google\BatchProductIDRequestEntry[][]
          */
         protected $delete_requests_map;
@@ -35414,6 +36706,12 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Product {
         {
         }
         /**
+         * Schedule update jobs for the products queued during the current request.
+         */
+        public function schedule_queued_updates()
+        {
+        }
+        /**
          * Filters woocommerce_duplicate_product_exclude_meta adding some custom prefix
          *
          * @param array $exclude_meta
@@ -35438,6 +36736,23 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Product {
          * @param int $product_id
          */
         protected function handle_delete_product(int $product_id)
+        {
+        }
+        /**
+         * Queue a product for an update job, scheduling the queue as soon as it fills a whole batch.
+         *
+         * @param int $product_id
+         */
+        protected function queue_product_update(int $product_id): void
+        {
+        }
+        /**
+         * Schedule one update job per batch of queued products, and mark those products as pending.
+         *
+         * When a batch window is set, the batches wait for the window instead, so updates from separate requests are sent together.
+         * Drops products that no longer exist or are no longer ready to sync.
+         */
+        protected function handle_schedule_queued_updates(): void
         {
         }
         /**
@@ -35551,6 +36866,13 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Product {
          *             Empty string when no override is active.
          */
         protected string $currency_override = '';
+        /**
+         * @var float Fixed market exchange rate used to convert prices into the override currency when
+         *            WPML cannot convert them; 0.0 when unset.
+         *
+         * @since 3.11.0
+         */
+        protected float $exchange_rate = 0.0;
         /**
          * Initialize this object's properties from an array.
          *
@@ -35740,6 +37062,45 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Product {
         {
         }
         /**
+         * Whether prices are converted into the override currency: an override is set and there is a
+         * conversion source (WPML, or the market's fixed exchange rate).
+         *
+         * @since 3.11.0
+         *
+         * @return bool
+         */
+        protected function converts_to_override_currency(): bool
+        {
+        }
+        /**
+         * Regular price in the override currency: the WPML conversion when available, otherwise the
+         * regular price converted with the market's fixed exchange rate. Mirrors
+         * WCProductInputAdapter::map_price() so validation and sync agree on whether a price exists.
+         *
+         * @since 3.11.0
+         *
+         * @param \WC_Product $product
+         *
+         * @return float|null Null when the price cannot be converted.
+         */
+        protected function get_converted_regular_price(\WC_Product $product): ?float
+        {
+        }
+        /**
+         * Sale price in the override currency: the WPML conversion when available, otherwise the
+         * product's current sale price converted with the market's fixed exchange rate. Mirrors
+         * WCProductInputAdapter::map_sale_price().
+         *
+         * @since 3.11.0
+         *
+         * @param \WC_Product $product
+         *
+         * @return float|null Null when there is no sale price to convert.
+         */
+        protected function get_converted_sale_price(\WC_Product $product): ?float
+        {
+        }
+        /**
          * Map the sale price and sale effective date for a given WooCommerce product.
          *
          * @param \WC_Product $product
@@ -35776,26 +37137,26 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Product {
         {
         }
         /**
-         * @param \Symfony\Component\Validator\Mapping\ClassMetadata $metadata
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Mapping\ClassMetadata $metadata
          */
-        public static function load_validator_metadata(\Symfony\Component\Validator\Mapping\ClassMetadata $metadata)
+        public static function load_validator_metadata(\Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Mapping\ClassMetadata $metadata)
         {
         }
         /**
          * Used by the validator to check if the variation product has an itemGroupId
          *
-         * @param \Symfony\Component\Validator\Context\ExecutionContextInterface $context
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Context\ExecutionContextInterface $context
          */
-        public function validate_item_group_id(\Symfony\Component\Validator\Context\ExecutionContextInterface $context)
+        public function validate_item_group_id(\Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Context\ExecutionContextInterface $context)
         {
         }
         /**
          * Used by the validator to check if the availability date is set for product available as `backorder` or
          * `preorder`.
          *
-         * @param \Symfony\Component\Validator\Context\ExecutionContextInterface $context
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Context\ExecutionContextInterface $context
          */
-        public function validate_availability(\Symfony\Component\Validator\Context\ExecutionContextInterface $context)
+        public function validate_availability(\Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Context\ExecutionContextInterface $context)
         {
         }
         /**
@@ -37086,27 +38447,6 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Proxies {
          * @return int|bool Meta ID if the key didn't exist, true on successful update, false on failure or no change.
          */
         public function update_user_meta(int $user_id, string $key, $value)
-        {
-        }
-        /**
-         * Wrapper of get_site_transient.
-         *
-         * @param string $transient Transient name.
-         *
-         * @return mixed Value of the transient, or false if it does not exist.
-         */
-        public function get_site_transient(string $transient)
-        {
-        }
-        /**
-         * Wrapper of current_user_can.
-         *
-         * @param string $capability Capability name.
-         * @param mixed  ...$args    Optional further parameters, typically starting with an object ID.
-         *
-         * @return bool Whether the current user has the given capability.
-         */
-        public function current_user_can(string $capability, ...$args): bool
         {
         }
         /**
@@ -38919,7 +40259,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Tracking {
         /**
          * Get the feed-blocking issue counts saved by the last completed Merchant Center status check.
          *
-         * @since x.x.x
+         * @since 3.11.0
          *
          * @param bool $is_connected Whether Merchant Center is connected.
          *
@@ -39287,7 +40627,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Validator {
      *
      * @package Automattic\WooCommerce\GoogleListingsAndAds\Validator
      */
-    class GooglePriceConstraint extends \Symfony\Component\Validator\Constraint
+    class GooglePriceConstraint extends \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Constraint
     {
         /**
          * @var string
@@ -39299,18 +40639,18 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Validator {
      *
      * @package Automattic\WooCommerce\GoogleListingsAndAds\Validator
      */
-    class GooglePriceConstraintValidator extends \Symfony\Component\Validator\ConstraintValidator
+    class GooglePriceConstraintValidator extends \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\ConstraintValidator
     {
         /**
          * Checks if the passed value is valid.
          *
          * @param \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Google\Service\ShoppingContent\Price $value The value that should be validated
-         * @param \Symfony\Component\Validator\Constraint  $constraint
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Constraint  $constraint
          *
-         * @throws \Symfony\Component\Validator\Exception\UnexpectedTypeException If invalid constraint provided.
-         * @throws \Symfony\Component\Validator\Exception\UnexpectedValueException If invalid value provided.
+         * @throws \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Exception\UnexpectedTypeException If invalid constraint provided.
+         * @throws \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Exception\UnexpectedValueException If invalid value provided.
          */
-        public function validate($value, \Symfony\Component\Validator\Constraint $constraint)
+        public function validate($value, \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Constraint $constraint)
         {
         }
     }
@@ -39319,7 +40659,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Validator {
      *
      * @package Automattic\WooCommerce\GoogleListingsAndAds\Validator
      */
-    class ImageUrlConstraint extends \Symfony\Component\Validator\Constraints\Url
+    class ImageUrlConstraint extends \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Constraints\Url
     {
         /**
          * @var string
@@ -39331,7 +40671,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Validator {
      *
      * @package Automattic\WooCommerce\GoogleListingsAndAds\Validator
      */
-    class ImageUrlConstraintValidator extends \Symfony\Component\Validator\Constraints\UrlValidator
+    class ImageUrlConstraintValidator extends \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Constraints\UrlValidator
     {
         public const IMAGE_PATTERN = '~^
             (%s)://                                 # protocol
@@ -39360,12 +40700,12 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Validator {
          * Checks if the passed value is valid.
          *
          * @param string     $value The value that should be validated
-         * @param \Symfony\Component\Validator\Constraint $constraint
+         * @param \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Constraint $constraint
          *
-         * @throws \Symfony\Component\Validator\Exception\UnexpectedTypeException If invalid constraint provided.
-         * @throws \Symfony\Component\Validator\Exception\UnexpectedValueException If invalid value provided.
+         * @throws \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Exception\UnexpectedTypeException If invalid constraint provided.
+         * @throws \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Exception\UnexpectedValueException If invalid value provided.
          */
-        public function validate($value, \Symfony\Component\Validator\Constraint $constraint)
+        public function validate($value, \Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Symfony\Component\Validator\Constraint $constraint)
         {
         }
     }
@@ -40092,7 +41432,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\View {
     }
 }
 namespace {
-    \define('WC_GLA_VERSION', '3.10.1');
+    \define('WC_GLA_VERSION', '3.11.0');
     // WRCS: DEFINED_VERSION.
     \define('WC_GLA_MIN_PHP_VER', '7.4');
     \define('WC_GLA_MIN_WC_VER', '11.1');

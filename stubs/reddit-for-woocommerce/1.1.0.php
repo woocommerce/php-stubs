@@ -1,6 +1,6 @@
 <?php
 /**
- * Generated stub declarations for reddit-for-woocommerce 1.0.8.
+ * Generated stub declarations for reddit-for-woocommerce 1.1.0.
  * @see https://github.com/woocommerce/php-stubs
  */
 
@@ -1202,11 +1202,15 @@ namespace RedditForWooCommerce\API\Site\Controllers {
         /**
          * Sets the Site settings.
          *
+         * Rejects the whole request with a 400 when it sets `collect_pii` while
+         * Conversions API tracking is off, so no setting is saved.
+         *
          * @since 0.1.0
+         * @since 1.1.0 Returns a WP_Error when `collect_pii` is sent while Conversions API tracking is off.
          *
          * @param WP_REST_Request $request REST request object.
          *
-         * @return \WP_REST_Response
+         * @return \WP_REST_Response|\WP_Error
          */
         public function set_settings($request)
         {
@@ -4823,6 +4827,56 @@ namespace RedditForWooCommerce\Tracking {
         {
         }
     }
+    /**
+     * Reports the plugin's current settings in WooCommerce's usage tracker data.
+     *
+     * Click events only record changes, so a store that keeps the default
+     * settings would otherwise never report its state. The snapshot holds
+     * settings flags only, never customer data.
+     *
+     * @since 1.1.0
+     */
+    class TrackerSnapshot
+    {
+        /**
+         * Key for the plugin's entry in the tracker's `extensions` list.
+         *
+         * @since 1.1.0
+         */
+        private const EXTENSION_KEY = 'reddit-for-woocommerce';
+        /**
+         * Registers the tracker data filter.
+         *
+         * @since 1.1.0
+         *
+         * @return void
+         */
+        public static function register_hooks(): void
+        {
+        }
+        /**
+         * Adds the plugin's settings to the tracker data.
+         *
+         * @since 1.1.0
+         *
+         * @param mixed $data Tracker data collected so far.
+         *
+         * @return array Tracker data with the plugin's settings added.
+         */
+        public static function add_snapshot_data($data): array
+        {
+        }
+        /**
+         * Returns the settings reported in the snapshot.
+         *
+         * @since 1.1.0
+         *
+         * @return array<string,string> Plugin version and `yes`/`no` setting flags.
+         */
+        private static function get_settings(): array
+        {
+        }
+    }
 }
 namespace RedditForWooCommerce\Utils {
     /**
@@ -5074,6 +5128,29 @@ namespace RedditForWooCommerce\Utils {
         public static function amount_to_microcurrency(float $amount): int
         {
         }
+        /**
+         * Determines whether collecting customer PII for conversion matching is enabled.
+         *
+         * @since 1.1.0
+         *
+         * @return bool True if the setting is enabled, false otherwise.
+         */
+        public static function is_collect_pii_enabled(): bool
+        {
+        }
+        /**
+         * Determines whether the store's base country falls under GDPR or UK GDPR.
+         *
+         * When the base country cannot be resolved, the store is treated as GDPR so
+         * consent-first defaults apply.
+         *
+         * @since 1.1.0
+         *
+         * @return bool True if the base country is in the EU, EEA, or the UK.
+         */
+        public static function is_gdpr_region(): bool
+        {
+        }
     }
     /**
      * Helpers for setup state used by admin UI, marketing channel, and meta boxes.
@@ -5285,6 +5362,13 @@ namespace RedditForWooCommerce\Utils\Storage {
          * @since 0.1.0
          */
         public const CAMPAIGN_IDS = 'campaign_ids';
+        /**
+         * Option key that toggles whether customer PII is collected and shared
+         * with Conversions API events to improve ads measurement.
+         *
+         * @since 1.1.0
+         */
+        public const COLLECT_PII = 'collect_pii';
         /**
          * Returns default values for all known Ad Partner options.
          *
@@ -5749,26 +5833,113 @@ namespace RedditForWooCommerce\Utils {
     /**
      * Builds the user_data structure for CAPI event payloads.
      *
-     * This includes device metadata (IP, UA), Reddit cookies, and click ID data.
-     * Intended to improve event match rate and attribution accuracy.
+     * This includes device metadata (IP, UA), Reddit cookies, click ID data, and the
+     * hashed customer match keys used for Advanced Matching.
      *
      * @since 0.1.0
      */
     final class UserIdentifier
     {
         /**
+         * Option name (without the store prefix) holding the per-site secret that keys external IDs.
+         *
+         * Not `wp_salt()`: hosts and security plugins rotate salts, which would silently
+         * give every customer a new external ID.
+         *
+         * @since 1.1.0
+         */
+        private const EXTERNAL_ID_SECRET_OPTION = 'external_id_secret';
+        /**
+         * Minimum length of a stored secret before it is trusted as a key.
+         *
+         * @since 1.1.0
+         */
+        private const EXTERNAL_ID_SECRET_MIN_LENGTH = 32;
+        /**
+         * Countries whose national numbers keep their leading `0` in E.164, so it cannot be dropped.
+         *
+         * @since 1.1.0
+         */
+        private const LEADING_ZERO_KEPT_COUNTRIES = array('BJ', 'CG', 'CI', 'GA', 'IT', 'SM');
+        /**
+         * Calling codes of countries that share their parent country's numbering plan, keyed by country.
+         *
+         * WooCommerce returns these countries' calling code with an area code included
+         * (e.g. `+441534` for Jersey), while shoppers type the full national number.
+         *
+         * @since 1.1.0
+         */
+        private const PARENT_CALLING_CODES = array('AX' => '+358', 'GG' => '+44', 'IM' => '+44', 'JE' => '+44');
+        /**
+         * National trunk prefixes other than a single `0`, keyed by country.
+         *
+         * Where the country has a fixed national number length, the prefix is only
+         * treated as a trunk prefix at the length that includes it, since national
+         * numbers can start with the same digits (e.g. `812…` in St Petersburg).
+         *
+         * @since 1.1.0
+         */
+        private const OTHER_TRUNK_PREFIXES = array('BY' => '8', 'HU' => '06', 'KZ' => '8', 'RU' => '8');
+        /**
+         * National number lengths at which a number starting with a country's country code or trunk prefix digits is a national number.
+         *
+         * @since 1.1.0
+         */
+        private const NATIONAL_NUMBER_LENGTHS = array('BR' => array(10, 11), 'BY' => array(9), 'DK' => array(8), 'IN' => array(10), 'IT' => array(10), 'KZ' => array(10), 'NO' => array(8), 'PL' => array(9), 'RU' => array(10), 'SG' => array(8));
+        /**
+         * Area codes of the `+1` countries that have more than one, keyed by country.
+         *
+         * WooCommerce returns only one calling code for these countries.
+         *
+         * @since 1.1.0
+         */
+        private const NANP_AREA_CODES = array('DO' => array('809', '829', '849'), 'JM' => array('876', '658'), 'PR' => array('787', '939'));
+        /**
          * Returns a user_data array for CAPI payloads.
          *
-         * Includes:
-         * - IP address
-         * - user agent (from server)
-         * - unique user ID (UUID)
+         * Always includes the device identifiers available on the request: IP address,
+         * user agent and pixel UUID under `user`, plus the click ID.
+         *
+         * When Collect Customer PII is enabled, the hashed customer match keys are added
+         * under `user`:
+         *
+         * - `email`        — normalized, SHA-256 hashed email.
+         * - `phone_number` — E.164 canonicalized, SHA-256 hashed phone number.
+         * - `external_id`  — stable per-customer identifier, keyed with HMAC-SHA256 so it is
+         *                    unique to this store and cannot be reversed from the payload.
+         *
+         * The match keys are sourced from the order when one is passed (covering
+         * logged-in and guest purchases through billing details), and from the current
+         * user's billing meta for logged-in non-purchase events. Logged-out requests
+         * with no order carry no match keys.
          *
          * @since 0.1.0
+         * @since 1.1.0 Added the $order and $include_match_keys parameters for hashed customer match keys.
          *
+         * @param \WC_Order|null $order              Order to source purchase match keys from, when available.
+         * @param bool          $include_match_keys Whether to add the hashed customer match keys. Pass false for
+         *                                          synthetic events that must not carry a customer's identity, such as
+         *                                          the onboarding dummy purchase.
          * @return array<string,mixed> Associative array of user identifiers.
          */
-        public static function get_user_data(): array
+        public static function get_user_data(?\WC_Order $order = null, bool $include_match_keys = true): array
+        {
+        }
+        /**
+         * Adds the hashed customer match keys to a user_data array.
+         *
+         * Sources the raw values from the order for purchases, or from the current
+         * user's billing meta for logged-in non-purchase events, then normalizes and
+         * hashes each value before it is written into the array. Logged-out requests
+         * with no order add no keys.
+         *
+         * @since 1.1.0
+         *
+         * @param array<string,mixed> $data  The user_data array to extend.
+         * @param \WC_Order|null       $order Order to source purchase match keys from, when available.
+         * @return array<string,mixed> The user_data array with match keys appended.
+         */
+        private static function add_match_keys(array $data, ?\WC_Order $order): array
         {
         }
         /**
@@ -5837,10 +6008,232 @@ namespace RedditForWooCommerce\Utils {
         private static function get_reddit_click_id(): string
         {
         }
+        /**
+         * Normalizes and SHA-256 hashes an email address for Advanced Matching.
+         *
+         * @since 1.1.0
+         *
+         * @param string $email Raw email address.
+         * @return string SHA-256 hash of the normalized email, or an empty string when the email is invalid.
+         */
+        private static function hash_email(string $email): string
+        {
+        }
+        /**
+         * Normalizes an email address for Advanced Matching.
+         *
+         * Lowercases the address, removes any `+alias` from the local part, and removes
+         * dots from the local part while preserving dots in the domain.
+         *
+         * @since 1.1.0
+         *
+         * @param string $email Raw email address.
+         * @return string The normalized email, or an empty string when the input is not a valid address.
+         */
+        private static function normalize_email(string $email): string
+        {
+        }
+        /**
+         * Canonicalizes a phone number to E.164 and SHA-256 hashes it for Advanced Matching.
+         *
+         * @since 1.1.0
+         *
+         * @param string $phone   Raw phone number.
+         * @param string $country Billing country code used to derive the calling code.
+         * @return string SHA-256 hash of the canonicalized number, or an empty string when it cannot be canonicalized.
+         */
+        private static function hash_phone(string $phone, string $country): string
+        {
+        }
+        /**
+         * Canonicalizes a phone number to E.164 format.
+         *
+         * A number already in international form (leading `+`) keeps its digits with any
+         * extension and formatting removed. A national number is prefixed with the
+         * calling code derived from the billing country after its leading zero is
+         * dropped, unless the country keeps that zero in E.164. A trunk prefix other than
+         * a single `0`, such as `8` in Russia, is removed where the number's length shows
+         * it was typed. A national number in a `+1` country other than the US and Canada
+         * is matched against the country's area codes.
+         *
+         * An empty string is returned, so a mis-canonicalized value is never hashed and
+         * sent, when the number:
+         *
+         * - is national and no calling code can be resolved for the billing country
+         * - is international with a `(0)` trunk marker, or a trunk prefix after the country code
+         * - is international with the unused `+379` code
+         * - is national and starts with an international dialing prefix, or its own country code typed without a `+`
+         * - is national with a country-specific trunk prefix at an unexpected length
+         * - is a Vatican City national number without its leading `0`
+         * - is a `+1` country national number whose area code does not match the country
+         *
+         * @since 1.1.0
+         *
+         * @param string $phone   Raw phone number.
+         * @param string $country Billing country code used to derive the calling code.
+         * @return string The `+`-prefixed E.164 number, or an empty string when it cannot be resolved.
+         */
+        private static function normalize_phone(string $phone, string $country): string
+        {
+        }
+        /**
+         * Canonicalizes a national number from a `+1` country other than the US and Canada.
+         *
+         * WooCommerce returns these countries' calling code with the area code included
+         * (e.g. `+1876` for Jamaica), while shoppers usually type the full 10-digit number.
+         *
+         * @since 1.1.0
+         *
+         * @param string $digits       National number digits, with formatting removed.
+         * @param string $country      Uppercase billing country code.
+         * @param string $calling_code The country's `+1`-prefixed calling code, including its area code.
+         * @return string The `+`-prefixed E.164 number, or an empty string when it cannot be resolved.
+         */
+        private static function normalize_nanp_number(string $digits, string $country, string $calling_code): string
+        {
+        }
+        /**
+         * Whether an international number has a trunk `0` typed after its country code, e.g. `+44 020…`.
+         *
+         * Countries that keep the leading `0` in E.164 are not affected. A number whose
+         * country code is not recognized is left as typed.
+         *
+         * @since 1.1.0
+         *
+         * @param string $digits International number digits, without the `+` and formatting.
+         * @return bool True when the number should be left out.
+         */
+        private static function has_trunk_zero_after_country_code(string $digits): bool
+        {
+        }
+        /**
+         * Whether an international number has a trunk prefix other than `0` typed after its country code, e.g. `+7 8 812…`.
+         *
+         * A number whose national part merely starts with the prefix digits at the
+         * country's national number length, e.g. `+7 812…`, is left as typed.
+         *
+         * @since 1.1.0
+         *
+         * @param string $digits International number digits, without the `+` and formatting.
+         * @return bool True when the number should be left out.
+         */
+        private static function has_other_trunk_prefix_after_country_code(string $digits): bool
+        {
+        }
+        /**
+         * Whether a national number is typed in a form that cannot be converted to E.164 with confidence.
+         *
+         * Dropping a valid but unusual number is preferred over sending one that can never match.
+         *
+         * @since 1.1.0
+         *
+         * @param string $digits       National number digits, with formatting removed.
+         * @param string $country      Uppercase billing country code.
+         * @param string $calling_code The country's `+`-prefixed calling code.
+         * @return bool True when the number should be left out.
+         */
+        private static function is_ambiguous_national_number(string $digits, string $country, string $calling_code): bool
+        {
+        }
+        /**
+         * Removes a national trunk prefix other than a single `0`, e.g. `8` in Russia or `06` in Hungary.
+         *
+         * In a country with a fixed national number length, a number of that length is
+         * returned as typed, since it starts with its own area code. A number that is
+         * the length of the prefix plus a national number has the prefix removed, and
+         * any other number starting with the prefix cannot be resolved.
+         *
+         * @since 1.1.0
+         *
+         * @param string $digits  National number digits, with formatting removed.
+         * @param string $country Uppercase billing country code.
+         * @return string The digits without the trunk prefix, or an empty string when the number should be left out.
+         */
+        private static function strip_other_trunk_prefix(string $digits, string $country): string
+        {
+        }
+        /**
+         * Resolves the E.164 calling code for a country, including the leading `+`.
+         *
+         * @since 1.1.0
+         *
+         * @param string $country Two-letter country code.
+         * @return string The calling code (e.g. `+44`), or an empty string when it cannot be resolved.
+         */
+        private static function get_country_calling_code(string $country): string
+        {
+        }
+        /**
+         * Lists the calling codes of every country, without the leading `+`.
+         *
+         * The `+1` countries are listed as `1`, since their calling codes include an area code.
+         *
+         * @since 1.1.0
+         *
+         * @return string[] Unique calling codes.
+         */
+        private static function get_all_country_calling_codes(): array
+        {
+        }
+        /**
+         * SHA-256 hashes a value.
+         *
+         * @since 1.1.0
+         *
+         * @param string $value Value to hash.
+         * @return string Lowercase hexadecimal SHA-256 digest.
+         */
+        private static function hash(string $value): string
+        {
+        }
+        /**
+         * Builds a store-specific external ID.
+         *
+         * Customer IDs are small sequential integers, so a plain SHA-256 of one can be
+         * reversed by hashing every ID in turn, and gives the same value on every store.
+         * Keying the hash with a per-site secret keeps the ID stable for a customer
+         * within this store, while making it unique to the store and not reversible
+         * from the payload. Reddit treats the external ID as an advertiser-assigned
+         * identifier, so it does not need to reproduce the value.
+         *
+         * @since 1.1.0
+         *
+         * @param string $type  Identifier type, `user` or `email`, so the two kinds can never produce the same ID.
+         * @param string $value Customer ID or normalized email.
+         * @return string Lowercase hexadecimal HMAC-SHA256 digest, or an empty string when no secret is available.
+         */
+        private static function hash_external_id(string $type, string $value): string
+        {
+        }
+        /**
+         * Creates the per-site secret that keys external IDs, if it does not exist yet.
+         *
+         * Called when Collect Customer PII is switched on, so the secret is written by
+         * a single settings request rather than by concurrent storefront requests that
+         * could each store a different one.
+         *
+         * @since 1.1.0
+         */
+        public static function ensure_external_id_secret(): void
+        {
+        }
+        /**
+         * Returns the per-site secret that keys external IDs, creating it on first use.
+         *
+         * The secret is stored outside the plugin's option defaults so it is generated
+         * once, never reset by disconnecting Reddit, and not autoloaded.
+         *
+         * @since 1.1.0
+         *
+         * @return string The secret, or an empty string when it could not be stored.
+         */
+        private static function get_external_id_secret(): string
+        {
+        }
     }
 }
 namespace {
-    \define('REDDIT_FOR_WOOCOMMERCE_VERSION', '1.0.8');
+    \define('REDDIT_FOR_WOOCOMMERCE_VERSION', '1.1.0');
     \define('REDDIT_FOR_WOOCOMMERCE_FILE', __FILE__);
     \define('REDDIT_FOR_WOOCOMMERCE_PLUGIN_DIR', \plugin_dir_path(__FILE__));
     \define('REDDIT_FOR_WOOCOMMERCE_PLUGIN_URL', \plugin_dir_url(__FILE__));
